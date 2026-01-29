@@ -1,0 +1,263 @@
+syntax = "proto3";
+
+package grpc_comm;
+
+// Parameter definition - simplified as dictionary structure
+
+// Single parameter value - supports different types
+message Parameter {
+  string key = 1;
+  oneof value {
+    float float_value = 2;
+    int32 int_value = 3;
+    string string_value = 4;
+    bool bool_value = 5;
+  }
+}
+
+// Motion definition - unified motion representation
+
+message Motion {
+  string motion_id = 1;              // unique motion identifier
+  repeated Parameter parameters = 2; // parameters with default or override values
+}
+
+// Get motion list definition
+
+// Response for getting available motion list
+message GetMotionsResponse {
+  repeated Motion motions = 1;            // available motion list with default parameters
+  map<string, string> descriptions = 2;   // motion_id -> description text
+  bool success = 3;
+  string message = 4;
+}
+
+// Request for getting available motion list
+message GetMotionsRequest {
+  string fsm_state = 1;  // optional: filter by FSM state, empty to return all
+}
+
+// Complete choreography sequence
+message MotionSequence {
+  string sequence_id = 1;
+  string sequence_name = 2;
+  float bpm = 3;                     // beat speed
+  repeated Motion motions = 4;       // motion sequence with parameter overrides
+  bool loop = 5;                     // whether to loop playback
+}
+
+// Request for executing motion sequence
+message ExecuteSequenceRequest {
+  MotionSequence sequence = 1;
+  bool immediate_start = 2;  // whether to start playback immediately
+}
+
+// Response for executing motion sequence
+message ExecuteSequenceResponse {
+  bool success = 1;
+  string message = 2;
+  string execution_id = 3;  // execution ID for subsequent control
+}
+
+// Lidar data definition
+
+// 3D point definition
+message Point3D {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+}
+
+// Single lidar point with intensity information
+message LidarPoint {
+  Point3D position = 1;
+  float intensity = 2;    // reflection intensity
+  uint32 ring = 3;        // laser ring number for multi-line lidar
+}
+
+// Lidar point cloud data
+message LidarPointCloud {
+  uint64 timestamp_ns = 1;          // timestamp in nanoseconds
+  string frame_id = 2;              // coordinate frame ID
+  repeated LidarPoint points = 3;   // point cloud data
+  uint32 width = 4;                 // point cloud width for organized point cloud
+  uint32 height = 5;                // point cloud height for organized point cloud
+}
+
+// Request for getting lidar data
+message GetLidarDataRequest {
+  string lidar_id = 1;              // lidar ID, empty for default lidar
+  bool compressed = 2;              // whether to compress data
+  uint32 max_points = 3;            // maximum points to return, 0 for unlimited
+}
+
+// Response for getting lidar data
+message GetLidarDataResponse {
+  bool success = 1;
+  string message = 2;
+  LidarPointCloud point_cloud = 3;
+}
+
+// Camera data definition
+
+// Image format enumeration
+enum ImageFormat {
+  IMAGE_FORMAT_UNKNOWN = 0;
+  IMAGE_FORMAT_RGB8 = 1;
+  IMAGE_FORMAT_BGR8 = 2;
+  IMAGE_FORMAT_GRAY8 = 3;
+  IMAGE_FORMAT_DEPTH16 = 4;         // 16-bit depth image
+  IMAGE_FORMAT_JPEG = 5;            // JPEG compression
+  IMAGE_FORMAT_PNG = 6;             // PNG compression
+}
+
+// Camera intrinsic parameters
+message CameraIntrinsics {
+  float fx = 1;                     // focal length x
+  float fy = 2;                     // focal length y
+  float cx = 3;                     // principal point x
+  float cy = 4;                     // principal point y
+  repeated float distortion = 5;    // distortion coefficients
+}
+
+// Image data
+message ImageData {
+  uint64 timestamp_ns = 1;          // timestamp in nanoseconds
+  string frame_id = 2;              // coordinate frame ID
+  uint32 width = 3;                 // image width
+  uint32 height = 4;                // image height
+  ImageFormat format = 5;           // image format
+  bytes data = 6;                   // raw image data
+  CameraIntrinsics intrinsics = 7;  // camera intrinsics (optional)
+}
+
+// Request for getting camera data
+message GetCameraDataRequest {
+  string camera_id = 1;             // camera ID, empty for default camera
+  ImageFormat preferred_format = 2; // preferred image format
+  uint32 max_width = 3;             // maximum width, 0 for original size
+  uint32 max_height = 4;            // maximum height, 0 for original size
+  bool include_intrinsics = 5;      // whether to include camera intrinsics
+}
+
+// Response for getting camera data
+message GetCameraDataResponse {
+  bool success = 1;
+  string message = 2;
+  ImageData image = 3;
+}
+
+// Request for getting depth data
+message GetDepthDataRequest {
+  string camera_id = 1;             // depth camera ID
+  bool aligned_to_color = 2;        // whether to align to color image
+}
+
+// Response for getting depth data
+message GetDepthDataResponse {
+  bool success = 1;
+  string message = 2;
+  ImageData depth_image = 3;
+  ImageData color_image = 4;        // optional: aligned color image
+}
+
+// Sensor information query
+
+// Sensor type enumeration
+enum SensorType {
+  SENSOR_TYPE_UNKNOWN = 0;
+  SENSOR_TYPE_LIDAR = 1;
+  SENSOR_TYPE_CAMERA_RGB = 2;
+  SENSOR_TYPE_CAMERA_DEPTH = 3;
+  SENSOR_TYPE_CAMERA_STEREO = 4;
+}
+
+// Sensor information
+message SensorInfo {
+  string sensor_id = 1;
+  SensorType type = 2;
+  string name = 3;
+  string description = 4;
+  bool is_available = 5;
+}
+
+// Request for getting sensor list
+message GetSensorListRequest {
+  SensorType filter_type = 1;       // filter type, UNKNOWN to return all
+}
+
+// Response for getting sensor list
+message GetSensorListResponse {
+  bool success = 1;
+  string message = 2;
+  repeated SensorInfo sensors = 3;
+}
+
+// Robot state data
+message RobotState {
+  repeated float jpos_leg = 1;          // leg joint positions
+  repeated float jpos_leg_des = 2;      // desired leg joint positions
+  repeated float jvel_leg = 3;          // leg joint velocities
+  repeated float jtau_leg = 4;          // leg joint torques
+  repeated float jvel_leg_des = 5;      // desired leg joint velocities
+  repeated float jtau_leg_des = 6;      // desired leg joint torques
+  
+  repeated float jpos_arm = 7;          // arm joint positions
+  repeated float jvel_arm = 8;          // arm joint velocities
+  repeated float jtau_arm = 9;          // arm joint torques
+  
+  repeated float pos_body = 10;         // body position (x,y,z)
+  repeated float vel_body = 11;         // body velocity
+  repeated float acc_body = 12;         // body acceleration
+  repeated float omega_body = 13;       // body angular velocity
+  repeated float ori_body = 14;         // body orientation (roll,pitch,yaw)
+  
+  repeated float grf_left = 15;         // left foot contact force
+  repeated float grf_right = 16;        // right foot contact force
+  repeated float grf_vertical_filtered = 17;  // filtered vertical ground reaction force
+  
+  repeated float temp = 18;             // additional data (forces, battery, etc.)
+}
+
+message GetRobotStateRequest {}
+
+message GetRobotStateResponse {
+  bool success = 1;
+  string message = 2;
+  RobotState robot_state = 3;
+}
+
+// gRPC service definition
+
+service gRPCService {
+  // Motion control interface
+  // Get available motion module list
+  rpc GetAvailableMotions(GetMotionsRequest) returns (GetMotionsResponse);
+
+  // Execute motion sequence
+  rpc ExecuteSequence(ExecuteSequenceRequest) returns (ExecuteSequenceResponse);
+
+  // Sensor information interface
+  // Get available sensor list
+  rpc GetSensorList(GetSensorListRequest) returns (GetSensorListResponse);
+
+  // Lidar data interface
+  // Get lidar point cloud data (single shot)
+  rpc GetLidarData(GetLidarDataRequest) returns (GetLidarDataResponse);
+
+  // Lidar data stream (server side stream)
+  rpc StreamLidarData(GetLidarDataRequest) returns (stream GetLidarDataResponse);
+
+  // Camera data interface
+  // Get camera image (single shot)
+  rpc GetCameraData(GetCameraDataRequest) returns (GetCameraDataResponse);
+
+  // Camera data stream (server side stream)
+  rpc StreamCameraData(GetCameraDataRequest) returns (stream GetCameraDataResponse);
+
+  // Get depth data
+  rpc GetDepthData(GetDepthDataRequest) returns (GetDepthDataResponse);
+
+  // Get robot state data
+  rpc GetRobotState(GetRobotStateRequest) returns (GetRobotStateResponse);
+}

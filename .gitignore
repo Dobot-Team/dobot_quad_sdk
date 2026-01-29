@@ -1,0 +1,4 @@
+**/build/
+**/__pycache__/
+**/depth_images
+**/rgb_images

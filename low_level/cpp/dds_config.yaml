@@ -1,0 +1,19 @@
+domain_id: 0
+default_writer_qos:
+  reliability: reliable
+  history_kind: keep_last
+  history_depth: 10
+  durability: volatile
+  liveliness: automatic
+  deadline: infinite
+  # deadline_period: 100ms  # Use when deadline is finite, supports units: ns, ms, s
+  # liveliness_lease_duration: 1s  # Lease duration time
+default_reader_qos:
+  reliability: best_effort
+  history_kind: keep_last
+  history_depth: 10
+  durability: volatile
+  liveliness: automatic
+  deadline: infinite
+  # deadline_period: 100ms
+  # liveliness_lease_duration: 1s

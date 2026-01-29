@@ -1,0 +1,73 @@
+[tool.yapf]
+based_on_style = "google"
+column_limit = 100
+indent_width = 4
+use_tabs = false
+blank_line_before_nested_class_or_def = true
+blank_lines_between_top_level_imports_and_variables = 2
+dedent_closing_brackets = true
+split_before_logical_operator = true
+split_before_first_argument = false
+allow_multiline_dictionary_keys = false
+coalesce_brackets = false
+space_between_ending_comma_and_closing_bracket = false
+split_arguments_when_comma_terminated = false
+split_all_top_level_comma_separated_values = false
+split_before_named_assigns = true
+spaces_before_comment = 2
+
+
+[tool.isort]
+atomic = true
+profile = "black"
+line_length = 100
+py_version = 311
+skip_glob = ["docs/*", "logs/*", "build/*", "dds_middleware_project/build/*"]
+group_by_package = false
+force_sort_within_sections = true
+known_first_party = ["dds_middleware_python"]
+
+
+[tool.pyright]
+exclude = [
+    "**/__pycache__",
+    "**/docs",
+    "**/logs",
+    "**/build",
+    ".git",
+    ".vscode",
+    "dds_middleware_project/build",
+]
+typeCheckingMode = "basic"
+pythonVersion = "3.11"
+pythonPlatform = "Linux"
+enableTypeIgnoreComments = true
+reportMissingImports = "none"
+reportMissingModuleSource = "none"
+reportGeneralTypeIssues = "none"
+reportOptionalMemberAccess = "none"
+reportPrivateUsage = "none"
+reportArgumentType = "none"
+reportCallIssue = "none"
+reportAttributeAccessIssue = "none"
+reportUnknownMemberType = "none"
+reportUnknownVariableType = "none"
+
+
+[tool.codespell]
+quiet-level = 0
+ignore-words-list = "haa,slq,collapsable,buss,lamda"
+skip = "*.cpp,*.hpp,*.idl,*.xml,build,dds_middleware_project/build"
+
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+extend-exclude = '''
+/(
+  | build
+  | dds_middleware_project/build
+  | \.git
+  | \.vscode
+)/
+'''
