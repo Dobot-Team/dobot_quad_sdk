@@ -57,6 +57,8 @@ Both layers support C++ and Python development.
 
 Before running programs from this SDK, you need to configure network connection between your computer and the quadruped robot. Two connection methods are supported:
 
+⚠️ **Important**: **The low-level control layer (DDS) only supports wired network connection**; wireless connection is not available. This is because low-level control involves high-frequency sensor data reading and actuator command transmission (such as IMU, motor states, image data, etc.), requiring a stable low-latency network environment that wireless connections cannot provide. The high-level control layer (gRPC) supports both wired and wireless connections.
+
 #### Method 1: Wired Network Connection
 
 Use an Ethernet cable to connect your computer to the robot:
@@ -80,7 +82,9 @@ After powering on the robot, your computer needs to connect to a WiFi hotspot st
 
 #### 1️⃣ Configure DDS Network Interface
 
-Edit [cyclonedds.xml](cyclonedds.xml), change the network interface to your robot connection interface:
+⚠️ **Important**: The low-level control layer (DDS) only supports wired network connection. Please ensure you use an Ethernet cable and configure it to the 192.168.5.0/24 subnet. Due to high-frequency data transmission in low-level control (sensor data subscription, motor command publishing, etc.), the latency and stability of wireless connections cannot meet real-time control requirements.
+
+Edit [cyclonedds.xml](cyclonedds.xml), replace `<USER_PORT_INTERFACE>` with your wired network interface name:
 
 ```xml
 <CycloneDDS>
@@ -92,6 +96,8 @@ Edit [cyclonedds.xml](cyclonedds.xml), change the network interface to your robo
   </Domain>
 </CycloneDDS>
 ```
+
+Replace `enp2s0` with your actual wired network interface name (such as eth0, eno1, etc.).
 
 Set environment variable:
 
