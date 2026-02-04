@@ -134,16 +134,23 @@ cmake .. && make -j
 #### 3️⃣ Low-Level Control Environment (DDS) Configuration
 
 ```bash
-# System environment installation
+cd ~
+git clone https://github.com/eclipse-cyclonedds/cyclonedds.git -b releases/0.10.x
+cd cyclonedds && mkdir build install && cd build
+cmake -DCMAKE_INSTALL_PREFIX=../install ..
+make -j8 && make install
+export CYCLONEDDS_HOME="~/cyclonedds/install"
+
+# System environment installation or virtual environment
 sudo apt install python3 python3-pip
 pip install cyclonedds
 
-# Python
+# Python dds_middleware 
 conda create -n sdk python=3.10 -y
 conda activate sdk
 cd dist && pip3 install dds_middleware_python-*.whl
 
-# C++
+# C++ dds_middleware
 cd dist && sudo dpkg -i dds_middleware_project_*_amd64.deb  # x86_64
 ```
 

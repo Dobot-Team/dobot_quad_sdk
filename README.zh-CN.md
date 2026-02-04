@@ -131,16 +131,23 @@ cmake .. && make -j
 #### 3️⃣ 底层控制环境（DDS）配置
 
 ```bash
-# 系统环境安装
+cd ~
+git clone https://github.com/eclipse-cyclonedds/cyclonedds.git -b releases/0.10.x
+cd cyclonedds && mkdir build install && cd build
+cmake -DCMAKE_INSTALL_PREFIX=../install ..
+make -j8 && make install
+export CYCLONEDDS_HOME="~/cyclonedds/install"
+
+# 使用系统python环境或者虚拟环境
 sudo apt install python3 python3-pip
 pip install cyclonedds
 
-# Python
+# Python dds_middleware 
 conda create -n sdk python=3.10 -y
 conda activate sdk
 cd dist && pip3 install dds_middleware_python-*.whl
 
-# C++
+# C++ dds_middleware
 cd dist && sudo dpkg -i dds_middleware_project_*_amd64.deb  # x86_64
 ```
 
