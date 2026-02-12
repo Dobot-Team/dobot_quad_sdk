@@ -45,13 +45,13 @@ Dobot Quad SDK 是一个用于四足机器人二次开发的软件开发套件�
 
 ### 系统要求
 
-| 项目 | 要求 |
-|------|------|
-| **操作系统** | Linux (Ubuntu 22.04 或更高版本) |
-| **CMake** | 3.16+ |
-| **编译器** | GCC/G++ 9+ |
-| **Python** | 3.10+ |
-| **OpenCV** | 4.5.4 (测试版本) |
+| 项目         | 要求                            |
+| ------------ | ------------------------------- |
+| **操作系统** | Linux (Ubuntu 22.04) |
+| **CMake**    | 3.16+                           |
+| **编译器**   | GCC/G++ 9+                      |
+| **Python**   | 3.10+                           |
+| **OpenCV**   | 4.5.4 (测试版本)                |
 
 ### 网络连接配置
 
@@ -77,34 +77,7 @@ Dobot Quad SDK 是一个用于四足机器人二次开发的软件开发套件�
 
 ### 安装步骤
 
-#### 1️⃣ 配置 DDS 网络接口
-
-⚠️ **重要**：底层控制层（DDS）仅支持有线网络连接，请确保使用网线连接并配置为 192.168.5.0/24 网段。由于底层控制涉及高频数据传输（传感器数据订阅、电机指令发布等），无线连接的延迟和稳定性无法满足实时控制要求。
-
-编辑 [cyclonedds.xml](cyclonedds.xml) 配置文件，将 `<USER_PORT_INTERFACE>` 替换为你的有线网络接口名称：
-
-```xml
-<CycloneDDS>
-  <Domain>
-    <General>
-      <!-- 修改为你的网络接口名称，如 eth0（有线连接）等 -->
-      <NetworkInterfaces>"enp2s0"</NetworkInterfaces>
-    </General>
-  </Domain>
-</CycloneDDS>
-```
-
-将 `enp2s0` 替换为你实际的有线网络接口名称（如 eth0, eno1 等）。
-
-设置环境变量：
-
-```bash
-cd dobot_quad_sdk
-export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
-cyclonedds ps  # 验证配置
-```
-
-#### 2️⃣ 高级控制层 (gRPC) 环境配置
+#### 1️⃣ 高级控制层 (gRPC) 环境配置
 
 **Python 开发：**
 
@@ -128,67 +101,87 @@ cd high_level/cpp && mkdir build && cd build
 cmake .. && make -j
 ```
 
-#### 3️⃣ 底层控制环境（DDS）配置
+#### 2️⃣ 底层控制环境（DDS）配置
+
+⚠️ **重要**：底层控制层（DDS）仅支持有线网络连接，请确保使用网线连接并配置为 192.168.5.0/24 网段。
+
+**安装 DDS 中间件：**
 
 ```bash
-cd ~
-git clone https://github.com/eclipse-cyclonedds/cyclonedds.git -b releases/0.10.x
-cd cyclonedds && mkdir build install && cd build
-cmake -DCMAKE_INSTALL_PREFIX=../install ..
-make -j8 && make install
-export CYCLONEDDS_HOME="~/cyclonedds/install"
+# 安装 DDS 中间件包
+cd dist
+sudo dpkg -i dds-middleware-with-thirdparty*.deb
+export CYCLONEDDS_HOME="/usr/local/"
+```
 
-# 使用系统python环境或者虚拟环境
-sudo apt install python3 python3-pip
-pip install cyclonedds
+**Python 开发环境：**
 
-# Python dds_middleware 
+```bash
 conda create -n sdk python=3.10 -y
 conda activate sdk
-cd dist && pip3 install dds_middleware_python-*.whl
+cd dist
+pip install dds_middleware_python-*.whl
+pip install cyclonedds opencv-python
+```
 
-# C++ dds_middleware
-cd dist && sudo dpkg -i dds_middleware_project_*_amd64.deb  # x86_64
+**C++ 开发环境：**
+
+```bash
+# 安装依赖
+sudo apt install -y libboost-dev libopencv-dev libyaml-cpp-dev cmake build-essential
+
+# 编译项目
+cd low_level/cpp && mkdir -p build && cd build
+cmake .. && make -j
+```
+
+**配置 DDS 网络接口：**
+
+编辑 [cyclonedds.xml](cyclonedds.xml)，将 `enp2s0` 替换为你的有线网络接口名称（如 eth0, eno1 等）：
+
+```xml
+<NetworkInterfaces>"enp2s0"</NetworkInterfaces>
+```
+
+设置环境变量并验证：
+
+```bash
+cd dobot_quad_sdk
+export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
+cyclonedds ps  # 查看所有可订阅的话题
 ```
 
 ---
 
-## 功能概览
+## Docker 使用（可选）
 
-### 高级控制层 (gRPC)
+如果希望使用 Docker 容器运行 SDK，可以通过以下方式构建和运行：
 
-基于 gRPC 的高级运动控制接口，提供完整的状态机管理和运动规划功能。
+### 构建镜像
 
-| 功能 | 说明 |
-|------|------|
-| **获取可用动作** | 查询机器人支持的所有动作及其参数 |
-| **手动状态切换** | 按照状态机规则手动切换机器人状态 |
-| **自动状态切换** | 自动寻路到目标状态 |
-| **速度序列控制** | 发送速度指令序列控制行走 |
-| **机器人状态查询** | 获取关节、姿态、电池等状态信息 |
-| **平衡动作控制** | 在平衡站立模式下控制姿态 |
+```bash
+docker build -t quad_sdk:latest .
+```
 
-📖 **详细文档**: [高级控制层 API 文档](doc/high_level_api.zh-CN.md)
+### 运行容器
 
----
+```bash
+docker run -it --network host quad_sdk:latest
+```
 
-### 底层控制层 (DDS)
+⚠️ **容器内配置**：进入容器后，仍需配置 DDS 网络接口和环境变量：
 
-基于 CycloneDDS 的底层硬件通信接口，提供实时传感器数据订阅和执行器控制。
+```bash
+# 编辑 cyclonedds.xml 配置网络接口
+cd /root/dobot_quad_sdk
+vim cyclonedds.xml  # 修改为你的网络接口名称
 
-| 功能 | 说明 |
-|------|------|
-| **RGB 图像订阅** | 获取相机彩色图像 |
-| **深度图像订阅** | 获取相机深度图像 |
-| **LED 灯光控制** | 控制机器人 LED 灯效 |
-| **IMU 数据订阅** | 获取惯性测量单元原始数据 |
-| **电机状态订阅** | 获取 16 个电机的状态信息 |
-| **电池状态订阅** | 获取电池管理系统状态 |
-| **语音播放** | 播放音频文件或音频流 |
-| **语音采集** | 从麦克风获取音频流 |
-| **电机指令发布** | 直接控制电机（需停止主程序） |
+# 设置环境变量
+export CYCLONEDDS_URI=file:///root/dobot_quad_sdk/cyclonedds.xml
 
-📖 **详细文档**: [底层控制层 API 文档](doc/low_level_api.zh-CN.md)
+# 验证配置
+cyclonedds ps
+```
 
 ---
 
@@ -197,6 +190,9 @@ cd dist && sudo dpkg -i dds_middleware_project_*_amd64.deb  # x86_64
 ### 高级控制示例
 
 ```bash
+# 设置环境变量（每次运行前需执行）
+export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
+
 # Python
 cd high_level/python
 python3 e1_get_available_motions.py    # 获取可用运动
@@ -211,6 +207,9 @@ cd high_level/cpp/build
 ### 底层控制示例
 
 ```bash
+# 设置环境变量（每次运行前需执行）
+export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
+
 # Python
 cd low_level/python
 python3 e4_imu_state_sub.py            # IMU 数据
@@ -222,13 +221,44 @@ cd low_level/cpp/build
 ./e4_imu_state_sub
 ```
 
-### DDS 调试工具
+---
 
-```bash
-cyclonedds ps                      # 查看所有发布的主题
-cyclonedds typeof <topic_name>     # 检查话题类型信息
-cyclonedds sub <topic_name>        # 监听特定话题
-```
+## 功能概览
+
+### 高级控制层 (gRPC)
+
+基于 gRPC 的高级运动控制接口，提供完整的状态机管理和运动规划功能。
+
+| 功能               | 说明                             |
+| ------------------ | -------------------------------- |
+| **获取可用动作**   | 查询机器人支持的所有动作及其参数 |
+| **手动状态切换**   | 按照状态机规则手动切换机器人状态 |
+| **自动状态切换**   | 自动寻路到目标状态               |
+| **速度序列控制**   | 发送速度指令序列控制行走         |
+| **机器人状态查询** | 获取关节、姿态、电池等状态信息   |
+| **平衡动作控制**   | 在平衡站立模式下控制姿态         |
+
+📖 **详细文档**: [高级控制层 API 文档](doc/high_level_api.zh-CN.md)
+
+---
+
+### 底层控制层 (DDS)
+
+基于 CycloneDDS 的底层硬件通信接口，提供实时传感器数据订阅和执行器控制。
+
+| 功能             | 说明                         |
+| ---------------- | ---------------------------- |
+| **RGB 图像订阅** | 获取相机彩色图像             |
+| **深度图像订阅** | 获取相机深度图像             |
+| **LED 灯光控制** | 控制机器人 LED 灯效          |
+| **IMU 数据订阅** | 获取惯性测量单元原始数据     |
+| **电机状态订阅** | 获取 16 个电机的状态信息     |
+| **电池状态订阅** | 获取电池管理系统状态         |
+| **语音播放**     | 播放音频文件或音频流         |
+| **语音采集**     | 从麦克风获取音频流           |
+| **电机指令发布** | 直接控制电机（需停止主程序） |
+
+📖 **详细文档**: [底层控制层 API 文档](doc/low_level_api.zh-CN.md)
 
 ---
 

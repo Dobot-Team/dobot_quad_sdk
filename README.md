@@ -45,13 +45,13 @@ Both layers support C++ and Python development.
 
 ### System Requirements
 
-| Item | Requirement |
-|------|-------------|
-| **Operating System** | Linux (Ubuntu 22.04 or higher) |
-| **CMake** | 3.16+ |
-| **Compiler** | GCC/G++ 9+ |
-| **Python** | 3.10+ |
-| **OpenCV** | 4.5.4 (tested) |
+| Item                 | Requirement                    |
+| -------------------- | ------------------------------ |
+| **Operating System** | Linux (Ubuntu 22.04) |
+| **CMake**            | 3.16+                          |
+| **Compiler**         | GCC/G++ 9+                     |
+| **Python**           | 3.10+                          |
+| **OpenCV**           | 4.5.4 (tested)                 |
 
 ### Network Connection Configuration
 
@@ -80,34 +80,7 @@ After powering on the robot, your computer needs to connect to a WiFi hotspot st
 
 ### Installation
 
-#### 1️⃣ Configure DDS Network Interface
-
-⚠️ **Important**: The low-level control layer (DDS) only supports wired network connection. Please ensure you use an Ethernet cable and configure it to the 192.168.5.0/24 subnet. Due to high-frequency data transmission in low-level control (sensor data subscription, motor command publishing, etc.), the latency and stability of wireless connections cannot meet real-time control requirements.
-
-Edit [cyclonedds.xml](cyclonedds.xml), replace `<USER_PORT_INTERFACE>` with your wired network interface name:
-
-```xml
-<CycloneDDS>
-  <Domain>
-    <General>
-      <!-- Replace with your network interface name, e.g., eth0 (wired connection), wlan0 (wireless connection), etc. -->
-      <NetworkInterfaces>"enp2s0"</NetworkInterfaces>
-    </General>
-  </Domain>
-</CycloneDDS>
-```
-
-Replace `enp2s0` with your actual wired network interface name (such as eth0, eno1, etc.).
-
-Set environment variable:
-
-```bash
-cd dobot_quad_sdk
-export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
-cyclonedds ps  # Verify configuration
-```
-
-#### 2️⃣ High-Level Control Layer (gRPC) Configuration
+#### 1️⃣ High-Level Control Layer (gRPC) Configuration
 
 **Python Development:**
 
@@ -131,67 +104,87 @@ cd high_level/cpp && mkdir build && cd build
 cmake .. && make -j
 ```
 
-#### 3️⃣ Low-Level Control Environment (DDS) Configuration
+#### 2️⃣ Low-Level Control Environment (DDS) Configuration
+
+⚠️ **Important**: The low-level control layer (DDS) only supports wired network connection. Please ensure you use an Ethernet cable and configure it to the 192.168.5.0/24 subnet.
+
+**Install DDS Middleware:**
 
 ```bash
-cd ~
-git clone https://github.com/eclipse-cyclonedds/cyclonedds.git -b releases/0.10.x
-cd cyclonedds && mkdir build install && cd build
-cmake -DCMAKE_INSTALL_PREFIX=../install ..
-make -j8 && make install
-export CYCLONEDDS_HOME="~/cyclonedds/install"
+# Install DDS middleware package
+cd dist
+sudo dpkg -i dds-middleware-with-thirdparty*.deb
+export CYCLONEDDS_HOME="/usr/local/"
+```
 
-# System environment installation or virtual environment
-sudo apt install python3 python3-pip
-pip install cyclonedds
+**Python Development Environment:**
 
-# Python dds_middleware 
+```bash
 conda create -n sdk python=3.10 -y
 conda activate sdk
-cd dist && pip3 install dds_middleware_python-*.whl
+cd dist
+pip install dds_middleware_python-*.whl
+pip install cyclonedds opencv-python
+```
 
-# C++ dds_middleware
-cd dist && sudo dpkg -i dds_middleware_project_*_amd64.deb  # x86_64
+**C++ Development Environment:**
+
+```bash
+# Install dependencies
+sudo apt install -y libboost-dev libopencv-dev libyaml-cpp-dev cmake build-essential
+
+# Build project
+cd low_level/cpp && mkdir -p build && cd build
+cmake .. && make -j
+```
+
+**Configure DDS Network Interface:**
+
+Edit [cyclonedds.xml](cyclonedds.xml), replace `enp2s0` with your wired network interface name (such as eth0, eno1, etc.):
+
+```xml
+<NetworkInterfaces>"enp2s0"</NetworkInterfaces>
+```
+
+Set environment variable and verify:
+
+```bash
+cd dobot_quad_sdk
+export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
+cyclonedds ps  # View all available topics
 ```
 
 ---
 
-## Feature Overview
+## Docker Usage (Optional)
 
-### High-Level Control Layer (gRPC)
+If you prefer to use Docker container to run the SDK, you can build and run it as follows:
 
-High-level motion control interface based on gRPC, providing complete state machine management and motion planning capabilities.
+### Build Image
 
-| Feature | Description |
-|---------|-------------|
-| **Get Available Motions** | Query all supported motions and their parameters |
-| **Direct State Switch** | Manually switch robot states following state machine rules |
-| **Auto State Switch** | Automatically find path to target state |
-| **Velocity Sequence Control** | Send velocity command sequences for walking |
-| **Robot State Query** | Get joint, pose, battery and other status information |
-| **Balance Motion Control** | Control posture in balance stand mode |
+```bash
+docker build -t quad_sdk:latest .
+```
 
-📖 **Documentation**: [High-Level Control API Documentation](doc/high_level_api.md)
+### Run Container
 
----
+```bash
+docker run -it --network host quad_sdk:latest
+```
 
-### Low-Level Control Layer (DDS)
+⚠️ **Configuration Inside Container**: After entering the container, you still need to configure the DDS network interface and environment variables:
 
-Low-level hardware communication interface based on CycloneDDS, providing real-time sensor data subscription and actuator control.
+```bash
+# Edit cyclonedds.xml to configure network interface
+cd /root/dobot_quad_sdk
+vim cyclonedds.xml  # Replace with your network interface name
 
-| Feature | Description |
-|---------|-------------|
-| **RGB Image Subscription** | Get camera color images |
-| **Depth Image Subscription** | Get camera depth images |
-| **LED Light Control** | Control robot LED effects |
-| **IMU Data Subscription** | Get raw IMU data |
-| **Motor State Subscription** | Get status of 16 motors |
-| **Battery State Subscription** | Get battery management system status |
-| **Voice Playback** | Play audio files or audio streams |
-| **Voice Capture** | Capture audio from microphone |
-| **Motor Command Publishing** | Directly control motors (requires stopping main program) |
+# Set environment variable
+export CYCLONEDDS_URI=file:///root/dobot_quad_sdk/cyclonedds.xml
 
-📖 **Documentation**: [Low-Level Control API Documentation](doc/low_level_api.md)
+# Verify configuration
+cyclonedds ps
+```
 
 ---
 
@@ -200,6 +193,9 @@ Low-level hardware communication interface based on CycloneDDS, providing real-t
 ### High-Level Control Examples
 
 ```bash
+# Set environment variable (required before each run)
+export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
+
 # Python
 cd high_level/python
 python3 e1_get_available_motions.py    # Get available motions
@@ -214,6 +210,9 @@ cd high_level/cpp/build
 ### Low-Level Control Examples
 
 ```bash
+# Set environment variable (required before each run)
+export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
+
 # Python
 cd low_level/python
 python3 e4_imu_state_sub.py            # IMU data
@@ -225,13 +224,44 @@ cd low_level/cpp/build
 ./e4_imu_state_sub
 ```
 
-### DDS Debugging Tools
+---
 
-```bash
-cyclonedds ps                      # View all published topics
-cyclonedds typeof <topic_name>     # Check topic type information
-cyclonedds sub <topic_name>        # Subscribe to specific topic
-```
+## Feature Overview
+
+### High-Level Control Layer (gRPC)
+
+High-level motion control interface based on gRPC, providing complete state machine management and motion planning capabilities.
+
+| Feature                       | Description                                                |
+| ----------------------------- | ---------------------------------------------------------- |
+| **Get Available Motions**     | Query all supported motions and their parameters           |
+| **Direct State Switch**       | Manually switch robot states following state machine rules |
+| **Auto State Switch**         | Automatically find path to target state                    |
+| **Velocity Sequence Control** | Send velocity command sequences for walking                |
+| **Robot State Query**         | Get joint, pose, battery and other status information      |
+| **Balance Motion Control**    | Control posture in balance stand mode                      |
+
+📖 **Documentation**: [High-Level Control API Documentation](doc/high_level_api.md)
+
+---
+
+### Low-Level Control Layer (DDS)
+
+Low-level hardware communication interface based on CycloneDDS, providing real-time sensor data subscription and actuator control.
+
+| Feature                        | Description                                              |
+| ------------------------------ | -------------------------------------------------------- |
+| **RGB Image Subscription**     | Get camera color images                                  |
+| **Depth Image Subscription**   | Get camera depth images                                  |
+| **LED Light Control**          | Control robot LED effects                                |
+| **IMU Data Subscription**      | Get raw IMU data                                         |
+| **Motor State Subscription**   | Get status of 16 motors                                  |
+| **Battery State Subscription** | Get battery management system status                     |
+| **Voice Playback**             | Play audio files or audio streams                        |
+| **Voice Capture**              | Capture audio from microphone                            |
+| **Motor Command Publishing**   | Directly control motors (requires stopping main program) |
+
+📖 **Documentation**: [Low-Level Control API Documentation](doc/low_level_api.md)
 
 ---
 
