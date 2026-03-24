@@ -1,0 +1,36 @@
+# ── high_level/cpp ───────────────────────────────────────────────
+If:
+  PathMatch: high_level/cpp/.*
+CompileFlags:
+  CompilationDatabase: high_level/cpp/build
+  Remove:
+    - "-fcolor-diagnostics"
+    - "-fno-color-diagnostics"
+
+---
+# ── low_level/cpp ────────────────────────────────────────────────
+If:
+  PathMatch: low_level/cpp/.*
+CompileFlags:
+  CompilationDatabase: low_level/cpp/build
+  Remove:
+    - "-fcolor-diagnostics"
+    - "-fno-color-diagnostics"
+
+---
+# ── 通用设置 ─────────────────────────────────────────────────────
+Completion:
+  AllScopes: true
+  BundleOverloads: true
+
+Diagnostics:
+  UnusedIncludes: Strict
+
+Hover:
+  ShowAKA: true
+
+InlayHints:
+  Enabled: true
+  ParameterHints: true
+  TypeHints: true
+  DeducedTypes: true

@@ -1,0 +1,9 @@
+# Build artifacts
+build/
+dist/
+*.egg-info/
+__pycache__/
+
+# Generated proto files (auto-generated during pip install)
+dobot_quad/proto/grpc_service_pb2.py
+dobot_quad/proto/grpc_service_pb2_grpc.py

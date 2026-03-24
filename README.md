@@ -3,9 +3,9 @@
 <h1>🤖 Dobot Quad SDK</h1>
 
 **Quadruped Robot Development Kit**  
-High-performance robot control framework based on CycloneDDS & gRPC
+High-performance robot control via CycloneDDS & gRPC
 
-[简体中文](README.zh-CN.md) · [English](README.md) · [📖 High-Level Docs](doc/high_level_api.md) · [📖 Low-Level Docs](doc/low_level_api.md)
+[简体中文](README.zh-CN.md) · [English](README.md) · [📖 RobotClient API](doc/robot_client_api.md) · [📖 High-Level Docs](doc/high_level_api.md) · [📖 Low-Level Docs](doc/low_level_api.md)
 
 [![Platform](https://img.shields.io/badge/Platform-Linux-blue?style=flat-square)](https://www.linux.org/)
 [![Architecture](https://img.shields.io/badge/Arch-x86__64%20%7C%20ARM64-green?style=flat-square)](https://github.com)
@@ -16,298 +16,181 @@ High-performance robot control framework based on CycloneDDS & gRPC
 
 ---
 
-## Introduction
-
-Dobot Quad SDK is a software development kit for quadruped robot secondary development. The SDK provides two layers of APIs:
-
-### High-Level Control Layer (gRPC)
-
-**Depends on the robot's main control program.** Provides state machine management and motion planning capabilities:
-- Control robot states (e.g., stand, walk, balance)
-- Send velocity command sequences
-- Query robot state information (position, velocity, acceleration, joint angles, battery status, etc.)
-- Execute predefined motions
-
-### Low-Level Control Layer (DDS)
-
-**Does NOT depend on the robot's main control program.** Provides direct hardware access:
-- Subscribe to sensor data: RGB/depth camera images, IMU data, motor states, battery status
-- Control actuators: LED lights, motor commands, audio playback
-- Capture audio from microphone
-
-⚠️ **Important**: When using low-level motor control, you **MUST** first stop the robot's control processes to avoid conflicts. The SDK provides a `kill_robot` tool for safely shutting down the main control program. See [How to Safely Shutdown Robot Controller](#how-to-safely-shutdown-robot-controller) for details.
-
-Both layers support C++ and Python development.
-
----
-
 ## Quick Start
 
-### System Requirements
+### Prerequisites
 
-| Item                 | Requirement                    |
-| -------------------- | ------------------------------ |
-| **Operating System** | Linux (Ubuntu 22.04) |
-| **CMake**            | 3.16+                          |
-| **Compiler**         | GCC/G++ 9+                     |
-| **Python**           | 3.10+                          |
-| **OpenCV**           | 4.5.4 (tested)                 |
+- **OS**: Ubuntu 22.04
+- **Python**: 3.10+, **CMake**: 3.16+, **Compiler**: GCC/G++ 9+
+- **OpenCV**: 4.5.4 (tested)
 
-### Network Connection Configuration
+### Network Connection
 
-Before running programs from this SDK, you need to configure network connection between your computer and the quadruped robot. Two connection methods are supported:
-
-⚠️ **Important**: **The low-level control layer (DDS) only supports wired network connection**; wireless connection is not available. This is because low-level control involves high-frequency sensor data reading and actuator command transmission (such as IMU, motor states, image data, etc.), requiring a stable low-latency network environment that wireless connections cannot provide. The high-level control layer (gRPC) supports both wired and wireless connections.
-
-#### Method 1: Wired Network Connection
-
-Use an Ethernet cable to connect your computer to the robot:
-
-1. Set your computer's network interface IP address to the `192.168.5.xxx` range (e.g., `192.168.5.100`)
-2. Set the subnet mask to `255.255.255.0`
-3. The robot's IP address is `192.168.5.2`
-
-
-#### Method 2: Wireless Network Connection (WiFi)
-
-After powering on the robot, your computer needs to connect to a WiFi hotspot starting with `Rover-` (e.g., Rover-1RXC1011A01017):
-
-1. Scan and connect to a WiFi network starting with `Rover-`
-2. WiFi password: `12345678`
-3. After connecting, the robot's IP address is `192.168.1.6`
-4. Confirm that your computer is on the same network segment as the robot
-
+| Method | Robot IP | Subnet | Notes |
+|--------|----------|--------|-------|
+| **Wired** (Ethernet) | `192.168.5.2` | Set your PC to `192.168.5.xxx/24` | Required for DDS (low-level) |
+| **WiFi** (`Rover-*`, password `12345678`) | `192.168.1.6` | Auto | gRPC (high-level) only |
 
 ### Installation
 
-#### 1️⃣ High-Level Control Layer (gRPC) Configuration
+#### High-Level Control (gRPC)
 
-**Python Development:**
-
+**Python:**
 ```bash
-conda create -n sdk python=3.10 -y
-conda activate sdk
 cd high_level/python
-pip3 install -r requirements.txt
-# Compile gRPC message types
-./compile_grpc.sh
+pip install .          # or pip install -e . for development
 ```
 
-**C++ Development:**
-
+**C++:**
 ```bash
-# Install gRPC (Ubuntu 22.04)
 sudo apt-get install -y libgrpc++-dev protobuf-compiler-grpc libprotobuf-dev pkg-config
-
-# Build project
-cd high_level/cpp && mkdir build && cd build
+cd high_level/cpp && mkdir -p build && cd build
 cmake .. && make -j
 ```
 
-#### 2️⃣ Low-Level Control Environment (DDS) Configuration
+#### Low-Level Control (DDS)
 
-⚠️ **Important**: The low-level control layer (DDS) only supports wired network connection. Please ensure you use an Ethernet cable and configure it to the 192.168.5.0/24 subnet.
+> ⚠️ DDS only works over **wired** Ethernet (`192.168.5.0/24`).
 
-**Install DDS Middleware:**
-
+**Install DDS middleware:**
 ```bash
-# Install DDS middleware package
 cd dist
 sudo dpkg -i dds-middleware-with-thirdparty*.deb
 export CYCLONEDDS_HOME="/usr/local/"
 ```
 
-**Python Development Environment:**
-
+**Python:**
 ```bash
-conda create -n sdk python=3.10 -y
-conda activate sdk
-cd dist
-pip install dds_middleware_python-*.whl
+cd dist && pip install dds_middleware_python-*.whl
 pip install cyclonedds opencv-python
 ```
 
-**C++ Development Environment:**
-
+**C++:**
 ```bash
-# Install dependencies
 sudo apt install -y libboost-dev libopencv-dev libyaml-cpp-dev cmake build-essential
-
-# Build project
 cd low_level/cpp && mkdir -p build && cd build
 cmake .. && make -j
 ```
 
-**Configure DDS Network Interface:**
-
-Edit [cyclonedds.xml](cyclonedds.xml), replace `enp2s0` with your wired network interface name (such as eth0, eno1, etc.):
-
+**Configure DDS network interface** — edit [cyclonedds.xml](cyclonedds.xml), replace `enp2s0` with your interface name:
 ```xml
 <NetworkInterfaces>"enp2s0"</NetworkInterfaces>
 ```
-
-Set environment variable and verify:
-
 ```bash
-cd dobot_quad_sdk
 export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
-cyclonedds ps  # View all available topics
+cyclonedds ps   # verify
 ```
 
 ---
 
-## Docker Usage (Optional)
+## Running Examples
 
-If you prefer to use Docker container to run the SDK, you can build and run it as follows:
+```bash
+# High-level (Python)
+cd high_level/python
+python3 examples/e1_get_available_motions.py
+python3 examples/e3_auto_state_switch.py
 
-### Build Image
+# High-level (C++)
+cd high_level/cpp/build
+./e1_get_available_motions
+
+# Low-level (requires DDS env configured)
+export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
+cd low_level/python
+python3 e4_imu_state_sub.py
+```
+
+---
+
+## Docker (Optional)
 
 ```bash
 docker build -t quad_sdk:latest .
-```
-
-### Run Container
-
-```bash
 docker run -it --network host quad_sdk:latest
 ```
 
-⚠️ **Configuration Inside Container**: After entering the container, you still need to configure the DDS network interface and environment variables:
-
+Inside the container, configure DDS as above:
 ```bash
-# Edit cyclonedds.xml to configure network interface
 cd /root/dobot_quad_sdk
-vim cyclonedds.xml  # Replace with your network interface name
-
-# Set environment variable
+vim cyclonedds.xml
 export CYCLONEDDS_URI=file:///root/dobot_quad_sdk/cyclonedds.xml
-
-# Verify configuration
-cyclonedds ps
 ```
 
 ---
 
-## Quick Run
+## Architecture
 
-### High-Level Control Examples
+The SDK provides two independent control layers, each supporting C++ and Python:
+
+### High-Level Control (gRPC)
+
+Depends on the robot's main control program. Provides state machine management and motion planning:
+
+| Feature | Description |
+|---------|-------------|
+| Get Available Motions | Query all motions and parameters |
+| State Switch (Manual / Auto) | Follow state machine rules or auto-find path |
+| Velocity Sequence | Send walking velocity commands |
+| Robot State Query | Joints, pose, battery, etc. |
+| Balance Motion Control | Posture control in balance stand |
+
+📖 [RobotClient API Docs](doc/robot_client_api.md) · [High-Level API Docs](doc/high_level_api.md)
+
+### Low-Level Control (DDS)
+
+Does NOT depend on the main control program. Direct hardware access:
+
+| Feature | Description |
+|---------|-------------|
+| Camera (RGB / Depth) | Subscribe to image streams |
+| IMU / Motor / Battery | Real-time sensor data |
+| LED / Voice / Motor Cmd | Actuator control |
+
+📖 [Low-Level API Docs](doc/low_level_api.md)
+
+> ⚠️ Before using direct motor control (E9), you **must** stop the robot's main control program with the `kill_robot` tool. See below.
+
+---
+
+## Safely Shutdown Robot Controller
 
 ```bash
-# Set environment variable (required before each run)
-export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
-
 # Python
 cd high_level/python
-python3 e1_get_available_motions.py    # Get available motions
-python3 e3_auto_state_switch.py        # Auto state switch
-python3 e6_balance_motions.py          # Balance motions
+python3 examples/kill_robot.py 192.168.5.2:50051
 
 # C++
 cd high_level/cpp/build
-./e1_get_available_motions
-```
-
-### Low-Level Control Examples
-
-```bash
-# Set environment variable (required before each run)
-export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
-
-# Python
-cd low_level/python
-python3 e4_imu_state_sub.py            # IMU data
-python3 e5_motor_state_sub.py          # Motor state
-python3 e6_bms_state_sub.py            # Battery state
-
-# C++
-cd low_level/cpp/build
-./e4_imu_state_sub
-```
-
----
-
-## Feature Overview
-
-### High-Level Control Layer (gRPC)
-
-High-level motion control interface based on gRPC, providing complete state machine management and motion planning capabilities.
-
-| Feature                       | Description                                                |
-| ----------------------------- | ---------------------------------------------------------- |
-| **Get Available Motions**     | Query all supported motions and their parameters           |
-| **Direct State Switch**       | Manually switch robot states following state machine rules |
-| **Auto State Switch**         | Automatically find path to target state                    |
-| **Velocity Sequence Control** | Send velocity command sequences for walking                |
-| **Robot State Query**         | Get joint, pose, battery and other status information      |
-| **Balance Motion Control**    | Control posture in balance stand mode                      |
-
-📖 **Documentation**: [High-Level Control API Documentation](doc/high_level_api.md)
-
----
-
-### Low-Level Control Layer (DDS)
-
-Low-level hardware communication interface based on CycloneDDS, providing real-time sensor data subscription and actuator control.
-
-| Feature                        | Description                                              |
-| ------------------------------ | -------------------------------------------------------- |
-| **RGB Image Subscription**     | Get camera color images                                  |
-| **Depth Image Subscription**   | Get camera depth images                                  |
-| **LED Light Control**          | Control robot LED effects                                |
-| **IMU Data Subscription**      | Get raw IMU data                                         |
-| **Motor State Subscription**   | Get status of 16 motors                                  |
-| **Battery State Subscription** | Get battery management system status                     |
-| **Voice Playback**             | Play audio files or audio streams                        |
-| **Voice Capture**              | Capture audio from microphone                            |
-| **Motor Command Publishing**   | Directly control motors (requires stopping main program) |
-
-📖 **Documentation**: [Low-Level Control API Documentation](doc/low_level_api.md)
-
----
-
-## How to Safely Shutdown Robot Controller
-
-Before using certain low-level control features (such as direct motor control, LED control), you need to stop the robot's main control program. The SDK provides a dedicated `kill_robot` tool:
-
-### Python Version
-
-```bash
-cd high_level/python
-python3 kill_robot.py [robot_ip:port]
-
-# Example
-python3 kill_robot.py 192.168.5.2:50051
-```
-
-### C++ Version
-
-```bash
-cd high_level/cpp/build
-./kill_robot [robot_ip:port]
-
-# Example
 ./kill_robot 192.168.5.2:50051
 ```
 
-### What It Does
+This will: switch to PASSIVE state → wait 5 s → terminate controller processes.
 
-The `kill_robot` tool will:
-1. Switch robot to PASSIVE state (motor disable)
-2. Wait 5 seconds to ensure safe shutdown
-3. Terminate all controller processes
+⚠️ Required before low-level motor control (E9). Ensure the robot is in a safe position first.
 
-⚠️ **When to Use**:
-- **MUST** execute before using low-level motor control (E9)
-- Recommended before LED light control
-- When you need to completely shutdown the robot control system
+---
 
-✅ **Safety Note**: Ensure the robot is in a safe position before execution to avoid falls due to sudden motor disable.
+## Project Structure
+
+```
+dobot_quad_sdk/
+├── high_level/          # gRPC-based high-level control
+│   ├── cpp/             # C++ client library + examples
+│   └── python/          # pip-installable dobot_quad package + examples
+├── low_level/           # DDS-based low-level control
+│   ├── cpp/             # C++ subscribers/publishers + examples
+│   └── python/          # Python subscribers/publishers + examples
+├── resources/           # Robot URDF model files
+├── doc/                 # API documentation
+└── utils/               # Utility scripts
+```
 
 ---
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+[MIT License](LICENSE)
 
 <div align="center">
 <sub>Built by Dobot Team</sub>

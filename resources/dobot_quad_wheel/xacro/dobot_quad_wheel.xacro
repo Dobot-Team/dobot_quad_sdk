@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="dobot_quad_wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<mujoco>
+        <compiler
+        meshdir="../meshes/"
+        balanceinertia="true"
+        discardvisual="false" />
+</mujoco>
+<link
+  name="world">
+</link>
+<link name="link_trunk">
+  <inertial>
+    <origin
+      xyz="0.002447 0.00046 0.002851"
+      rpy="0 0 0"/>
+    <mass
+      value="10.249" />
+    <inertia
+      ixx="45881.970E-06"
+      ixy="16.957E-06"
+      ixz="177.574E-06"
+      iyy="247797.819E-06"
+      iyz="41.872E-06"
+      izz="268476.829E-06" />
+  </inertial>
+  <visual>
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <geometry>
+      <mesh
+        filename="package://dobot_quad_wheel/meshes/trunk.STL" scale="1 1 1"/>
+    </geometry>
+    <material name="">
+      <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+    </material>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <geometry>
+      <box size="0.70 0.18 0.12"/>
+    </geometry>
+  </collision>
+</link>
+ <joint
+    name="joint_fixed_world"
+    type="floating">
+    <origin
+      xyz="0 0 0.5"
+      rpy="0 0 0" />
+    <parent
+      link="world" />
+    <child
+      link="link_trunk" />
+  </joint>
+  <xacro:include filename="$(find dobot_quad_wheel)/xacro/leg_dobot_quad_collision_complete.xacro"/>
+  <xacro:leg_dobot_quad name="front_left"  hip_x="0.2525" hip_y="0.07"  x_sign="1" y_sign="1"/>
+  <xacro:leg_dobot_quad name="front_right" hip_x="0.2525" hip_y="-0.07" x_sign="1" y_sign="-1"/>
+  <xacro:leg_dobot_quad name="rear_left"  hip_x="-0.2525" hip_y="0.07" x_sign="-1" y_sign="1"/>
+  <xacro:leg_dobot_quad name="rear_right" hip_x="-0.2525" hip_y="-0.07" x_sign="-1" y_sign="-1"/>
+</robot>

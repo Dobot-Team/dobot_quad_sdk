@@ -3,6 +3,7 @@ project(DDSMiddlewareExamples LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS -pthread)
 
 find_library(DDS_MIDDLEWARE_LIB dds_middleware 

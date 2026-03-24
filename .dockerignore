@@ -1,0 +1,18 @@
+# Build artifacts
+**/build/
+**/__pycache__/
+**/*.egg-info/
+**/.cache
+**/.pytest_cache/
+
+# Generated proto files (will be regenerated during build)
+**/grpc_service_pb2.py
+**/grpc_service_pb2_grpc.py
+
+# IDE
+.vscode/
+.idea/
+
+# Images captured at runtime
+**/depth_images/
+**/rgb_images/

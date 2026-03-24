@@ -1,0 +1,144 @@
+<mujoco model="dobot_quad">
+  <include file="terrain.xml"/>
+  <compiler angle="radian" meshdir="../meshes/" autolimits="true"/>
+
+  <default>
+    <!--tested good param with low sim-to-real gap -->
+    <joint damping="0.02" armature="0.000074" frictionloss="0.02" />
+  </default>
+
+  <asset>
+    <mesh name="trunk" file="trunk.STL"/>
+    <mesh name="hip" file="hip.STL"/>
+    <mesh name="thigh_l" file="thigh_l.STL"/>
+    <mesh name="calf" file="calf.STL"/>
+    <mesh name="thigh_r" file="thigh_r.STL" scale="1 -1 1"/>
+  </asset>
+  <worldbody>
+    <body name="link_trunk" pos="0 0 0.5">
+      <inertial pos="0.002447 0.00046 0.002851" quat="0.000745476 0.707388 0.000686781 0.706824" mass="10.249" diaginertia="0.268477 0.247798 0.0458818"/>
+      <joint name="joint_fixed_world" type="free"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="trunk"/>
+      <geom size="0.35 0.09 0.06" type="box" rgba="0.752941 0.752941 0.752941 1"/>
+      <site name="imu" pos="0 0 0"/>
+      <body name="link_front_left_hip" pos="0.2525 0.07 0">
+        <inertial pos="-0.02418 -0.01744 0" quat="0.57263 0.57263 0.414843 0.414843" mass="0.05576" diaginertia="5.67337e-05 5.003e-05 1.72543e-05"/>
+        <joint name="joint_front_left_abad" pos="0 0 0" axis="1 0 0" range="-0.6632 0.6632"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="hip"/>
+        <geom size="0.048 0.02" pos="0 0.08 0" quat="0.707105 0.707108 0 0" type="cylinder" rgba="0.752941 0.752941 0.752941 1"/>
+        <body name="link_front_left_thigh" pos="0 0.08895 0">
+          <inertial pos="0.00144 -0.04127 -0.0294" quat="0.984046 0.177294 -0.0141639 -0.0044598" mass="1.71551" diaginertia="0.010744 0.00934227 0.00281785"/>
+          <joint name="joint_front_left_thigh_pitch" pos="0 0 0" axis="0 1 0" range="-2.618 2.618"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="thigh_l"/>
+          <geom size="0.1075 0.02 0.03" pos="0 0 -0.1075" quat="0.707105 0 0.707108 0" type="box" rgba="0.752941 0.752941 0.752941 1"/>
+          <body name="link_front_left_calf" pos="0 0 -0.215">
+            <inertial pos="0 0 -0.136513" quat="0.721789 -0.000137053 0.000229259 0.692113" mass="0.328" diaginertia="0.00345496 0.00344386 7.5465e-05"/>
+            <joint name="joint_front_left_calf_pitch" pos="0 0 0" axis="0 1 0" range="-2.53 2.53"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="calf"/>
+            <geom size="0.02 0.125" pos="0 0 -0.12" type="cylinder" rgba="0.752941 0.752941 0.752941 1"/>
+            <geom size="0.032" pos="0 0 -0.24"/>
+          </body>
+        </body>
+      </body>
+      <body name="link_front_right_hip" pos="0.2525 -0.07 0">
+        <inertial pos="-0.02418 0.01744 0" quat="0.414843 0.414843 0.57263 0.57263" mass="0.05576" diaginertia="5.67337e-05 5.003e-05 1.72543e-05"/>
+        <joint name="joint_front_right_abad" pos="0 0 0" axis="1 0 0" range="-0.6632 0.6632"/>
+        <geom quat="0 1 0 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="hip"/>
+        <geom size="0.048 0.02" pos="0 -0.08 0" quat="0.707105 0.707108 0 0" type="cylinder" rgba="0.752941 0.752941 0.752941 1"/>
+        <body name="link_front_right_thigh" pos="0 -0.08895 0">
+          <inertial pos="0.00144 0.04127 -0.0294" quat="0.984046 -0.177294 -0.0141639 0.0044598" mass="1.71551" diaginertia="0.010744 0.00934227 0.00281785"/>
+          <joint name="joint_front_right_thigh_pitch" pos="0 0 0" axis="0 1 0" range="-2.618 2.618"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="thigh_r"/>
+          <geom size="0.1075 0.02 0.03" pos="0 0 -0.1075" quat="0.707105 0 0.707108 0" type="box" rgba="0.752941 0.752941 0.752941 1"/>
+          <body name="link_front_right_calf" pos="0 0 -0.215">
+            <inertial pos="0 0 -0.136513" quat="0.721789 -0.000137053 0.000229259 0.692113" mass="0.328" diaginertia="0.00345496 0.00344386 7.5465e-05"/>
+            <joint name="joint_front_right_calf_pitch" pos="0 0 0" axis="0 1 0" range="-2.53 2.53"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="calf"/>
+            <geom size="0.02 0.125" pos="0 0 -0.12" type="cylinder" rgba="0.752941 0.752941 0.752941 1"/>
+            <geom size="0.032" pos="0 0 -0.24"/>
+          </body>
+        </body>
+      </body>
+      <body name="link_rear_left_hip" pos="-0.2525 0.07 0">
+        <inertial pos="0.02418 -0.01744 0" quat="0.414843 0.414843 0.57263 0.57263" mass="0.05576" diaginertia="5.67337e-05 5.003e-05 1.72543e-05"/>
+        <joint name="joint_rear_left_abad" pos="0 0 0" axis="1 0 0" range="-0.6632 0.6632"/>
+        <geom quat="0 0 1 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="hip"/>
+        <geom size="0.048 0.02" pos="0 0.08 0" quat="0.707105 0.707108 0 0" type="cylinder" rgba="0.752941 0.752941 0.752941 1"/>
+        <body name="link_rear_left_thigh" pos="0 0.08895 0">
+          <inertial pos="-0.00144 -0.04127 -0.0294" quat="0.984046 0.177294 0.0141639 0.0044598" mass="1.71551" diaginertia="0.010744 0.00934227 0.00281785"/>
+          <joint name="joint_rear_left_thigh_pitch" pos="0 0 0" axis="0 1 0" range="-2.618 2.618"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="thigh_l"/>
+          <geom size="0.1075 0.02 0.03" pos="0 0 -0.1075" quat="0.707105 0 0.707108 0" type="box" rgba="0.752941 0.752941 0.752941 1"/>
+          <body name="link_rear_left_calf" pos="0 0 -0.215">
+            <inertial pos="0 0 -0.136513" quat="0.721789 -0.000137053 0.000229259 0.692113" mass="0.328" diaginertia="0.00345496 0.00344386 7.5465e-05"/>
+            <joint name="joint_rear_left_calf_pitch" pos="0 0 0" axis="0 1 0" range="-2.53 2.53"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="calf"/>
+            <geom size="0.02 0.125" pos="0 0 -0.12" type="cylinder" rgba="0.752941 0.752941 0.752941 1"/>
+            <geom size="0.032" pos="0 0 -0.24"/>
+          </body>
+        </body>
+      </body>
+      <body name="link_rear_right_hip" pos="-0.2525 -0.07 0">
+        <inertial pos="0.02418 0.01744 0" quat="0.57263 0.57263 0.414843 0.414843" mass="0.05576" diaginertia="5.67337e-05 5.003e-05 1.72543e-05"/>
+        <joint name="joint_rear_right_abad" pos="0 0 0" axis="1 0 0" range="-0.6632 0.6632"/>
+        <geom quat="0 0 0 -1" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="hip"/>
+        <geom size="0.048 0.02" pos="0 -0.08 0" quat="0.707105 0.707108 0 0" type="cylinder" rgba="0.752941 0.752941 0.752941 1"/>
+        <body name="link_rear_right_thigh" pos="0 -0.08895 0">
+          <inertial pos="-0.00144 0.04127 -0.0294" quat="0.984046 -0.177294 0.0141639 -0.0044598" mass="1.71551" diaginertia="0.010744 0.00934227 0.00281785"/>
+          <joint name="joint_rear_right_thigh_pitch" pos="0 0 0" axis="0 1 0" range="-2.618 2.618"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="thigh_r"/>
+          <geom size="0.1075 0.02 0.03" pos="0 0 -0.1075" quat="0.707105 0 0.707108 0" type="box" rgba="0.752941 0.752941 0.752941 1"/>
+          <body name="link_rear_right_calf" pos="0 0 -0.215">
+            <inertial pos="0 0 -0.136513" quat="0.721789 -0.000137053 0.000229259 0.692113" mass="0.328" diaginertia="0.00345496 0.00344386 7.5465e-05"/>
+            <joint name="joint_rear_right_calf_pitch" pos="0 0 0" axis="0 1 0" range="-2.53 2.53"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="calf"/>
+            <geom size="0.02 0.125" pos="0 0 -0.12" type="cylinder" rgba="0.752941 0.752941 0.752941 1"/>
+            <geom size="0.032" pos="0 0 -0.24"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <motor name="mt00" joint="joint_front_left_abad" ctrlrange="-23 23"/>
+    <motor name="mt01" joint="joint_front_left_thigh_pitch" ctrlrange="-23 23"/>
+    <motor name="mt02" joint="joint_front_left_calf_pitch" ctrlrange="-55 55"/>
+
+    <motor name="mt03" joint="joint_front_right_abad" ctrlrange="-23 23"/>
+    <motor name="mt04" joint="joint_front_right_thigh_pitch" ctrlrange="-23 23"/>
+    <motor name="mt05" joint="joint_front_right_calf_pitch" ctrlrange="-55 55"/>
+
+    <motor name="mt06" joint="joint_rear_left_abad" ctrlrange="-23 23"/>
+    <motor name="mt07" joint="joint_rear_left_thigh_pitch" ctrlrange="-23 23"/>
+    <motor name="mt08" joint="joint_rear_left_calf_pitch" ctrlrange="-55 55"/>
+
+    <motor name="mt09" joint="joint_rear_right_abad" ctrlrange="-23 23"/>
+    <motor name="mt10" joint="joint_rear_right_thigh_pitch" ctrlrange="-23 23"/>
+    <motor name="mt11" joint="joint_rear_right_calf_pitch" ctrlrange="-55 55"/>
+  </actuator>
+
+  <sensor>
+    <!-- <framequat name="Body_Quat" objtype='site' objname="imu"/>
+    <framepos name="Body_Pos" objtype='site' objname="imu"/>
+    <accelerometer name="Body_Acc" site="imu"/>
+    <gyro name="Body_Gyro" site="imu"/> -->
+
+    <framequat     name='orientation' objtype='site' noise='0.001' objname='imu'/>
+    <framepos      name='position' objtype='site' noise='0.001' objname='imu'/>
+    <gyro          name='angular-velocity'    site='imu' noise='0.005' cutoff='34.9'/>
+    <velocimeter   name='linear-velocity'     site='imu' noise='0.001' cutoff='30'/>
+    <accelerometer name='linear-acceleration' site='imu' noise='0.005' cutoff='157'/>
+    <magnetometer  name='magnetometer'        site='imu'/>
+
+    <!-- <framequat     name='orientation' objtype='site' noise='0.0' objname='imu'/>
+    <framepos      name='position' objtype='site' noise='0.0' objname='imu'/>
+    <gyro          name='angular-velocity'    site='imu' noise='0.0' cutoff='34.9'/>
+    <velocimeter   name='linear-velocity'     site='imu' noise='0.0' cutoff='30'/>
+    <accelerometer name='linear-acceleration' site='imu' noise='0.0' cutoff='157'/>
+    <magnetometer  name='magnetometer'        site='imu'/> -->
+
+  </sensor>
+
+
+</mujoco>

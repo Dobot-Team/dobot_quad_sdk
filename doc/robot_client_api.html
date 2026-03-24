@@ -1,0 +1,2566 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Robot Client API — 接口文档 &amp; 示例程序</title>
+    <style>
+      /* ================================================================
+   CSS Reset & Base
+   ================================================================ */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --sidebar-w: 280px;
+        --header-h: 56px;
+        --accent: #0969da;
+        --accent-light: #ddf4ff;
+        --bg: #ffffff;
+        --bg-code: #f6f8fa;
+        --bg-sidebar: #f8f9fb;
+        --border: #d0d7de;
+        --text: #1f2328;
+        --text-muted: #656d76;
+        --success: #1a7f37;
+        --warning: #9a6700;
+        --danger: #cf222e;
+        --header-bg: #24292f;
+        --header-text: #ffffff;
+        --header-subtle: #d0d7de;
+        --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.12);
+        --hover-bg: rgba(0, 0, 0, 0.04);
+        --btn-bg: rgba(255, 255, 255, 0.1);
+        --btn-border: rgba(255, 255, 255, 0.18);
+        --btn-hover: rgba(255, 255, 255, 0.18);
+        --font:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+          sans-serif;
+        --font-mono:
+          "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      }
+      [data-theme="dark"] {
+        --accent: #58a6ff;
+        --accent-light: rgba(56, 139, 253, 0.16);
+        --bg: #0d1117;
+        --bg-code: #161b22;
+        --bg-sidebar: #11161d;
+        --border: #30363d;
+        --text: #e6edf3;
+        --text-muted: #9da7b3;
+        --success: #3fb950;
+        --warning: #d29922;
+        --danger: #f85149;
+        --header-bg: #010409;
+        --header-text: #e6edf3;
+        --header-subtle: #9da7b3;
+        --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.35);
+        --hover-bg: rgba(240, 246, 252, 0.06);
+        --btn-bg: rgba(240, 246, 252, 0.08);
+        --btn-border: rgba(240, 246, 252, 0.16);
+        --btn-hover: rgba(240, 246, 252, 0.14);
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: calc(var(--header-h) + 16px);
+      }
+      body {
+        font-family: var(--font);
+        color: var(--text);
+        line-height: 1.6;
+        background: var(--bg);
+      }
+
+      /* ================================================================
+   Top Header
+   ================================================================ */
+      .top-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        height: var(--header-h);
+        background: var(--header-bg);
+        color: var(--header-text);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        gap: 16px;
+        box-shadow: var(--shadow-soft);
+      }
+      .top-header .logo {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .top-header .logo span {
+        color: #58a6ff;
+      }
+      .top-header .header-controls {
+        display: flex;
+        gap: 10px;
+        margin-left: auto;
+      }
+      .top-header .control-btn {
+        border: 1px solid var(--btn-border);
+        background: var(--btn-bg);
+        color: var(--header-text);
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          border-color 0.15s,
+          transform 0.15s;
+      }
+      .top-header .control-btn:hover {
+        background: var(--btn-hover);
+        border-color: var(--header-subtle);
+      }
+      .top-header .control-btn:active {
+        transform: translateY(1px);
+      }
+
+      /* ================================================================
+   Sidebar
+   ================================================================ */
+      .sidebar {
+        position: fixed;
+        top: var(--header-h);
+        left: 0;
+        bottom: 0;
+        width: var(--sidebar-w);
+        background: var(--bg-sidebar);
+        border-right: 1px solid var(--border);
+        overflow-y: auto;
+        padding: 16px 0;
+        font-size: 14px;
+        z-index: 50;
+      }
+      .sidebar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .sidebar::-webkit-scrollbar-thumb {
+        background: #c8c8c8;
+        border-radius: 4px;
+      }
+      .sidebar .section-label {
+        padding: 6px 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        margin-top: 12px;
+      }
+      .sidebar a {
+        display: block;
+        padding: 5px 20px 5px 28px;
+        color: var(--text);
+        text-decoration: none;
+        border-left: 3px solid transparent;
+        transition: all 0.15s;
+      }
+      .sidebar a:hover {
+        background: var(--hover-bg);
+      }
+      .sidebar a.active {
+        color: var(--accent);
+        border-left-color: var(--accent);
+        background: var(--accent-light);
+        font-weight: 600;
+      }
+      .sidebar a.sub {
+        padding-left: 40px;
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+      .sidebar a.sub:hover {
+        color: var(--text);
+      }
+
+      /* ================================================================
+   Main Content
+   ================================================================ */
+      .main {
+        margin-left: var(--sidebar-w);
+        margin-top: var(--header-h);
+        padding: 32px 48px 80px;
+        max-width: 920px;
+      }
+      .main h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 12px;
+      }
+      .main h2 {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 40px 0 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+      .main h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 28px 0 8px;
+      }
+      .main h4 {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 20px 0 6px;
+        color: var(--text-muted);
+      }
+      .main p,
+      .main li {
+        font-size: 15px;
+        margin-bottom: 8px;
+      }
+      .main ul,
+      .main ol {
+        padding-left: 24px;
+      }
+
+      /* Badges */
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        vertical-align: middle;
+        margin-left: 6px;
+      }
+      .badge-new {
+        background: #dafbe1;
+        color: var(--success);
+      }
+      .badge-changed {
+        background: #fff8c5;
+        color: var(--warning);
+      }
+      .badge-removed {
+        background: #ffebe9;
+        color: var(--danger);
+      }
+
+      /* Tables */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0 20px;
+        font-size: 14px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+      }
+      th {
+        background: var(--bg-code);
+        font-weight: 600;
+      }
+      td code {
+        background: var(--bg-code);
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+
+      /* Code Tabs */
+      .code-tabs {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin: 16px 0;
+        overflow: hidden;
+      }
+      .code-tabs .tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-code);
+      }
+      .code-tabs .tab-btn {
+        padding: 8px 20px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        border-bottom: 2px solid transparent;
+        transition: all 0.15s;
+      }
+      .code-tabs .tab-btn:hover {
+        color: var(--text);
+      }
+      .code-tabs .tab-btn.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+        background: var(--bg);
+      }
+      .code-tabs .tab-content {
+        display: none;
+      }
+      .code-tabs .tab-content.active {
+        display: block;
+      }
+      .code-tabs pre {
+        margin: 0;
+        padding: 16px 20px;
+        background: var(--bg-code);
+        overflow-x: auto;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .code-tabs code {
+        font-family: var(--font-mono);
+      }
+
+      /* Inline Code */
+      code {
+        font-family: var(--font-mono);
+        font-size: 0.9em;
+        background: var(--bg-code);
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+
+      /* Callout */
+      .callout {
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin: 16px 0;
+        font-size: 14px;
+        border-left: 4px solid;
+      }
+      .callout-info {
+        background: #ddf4ff;
+        border-color: var(--accent);
+        color: var(--text);
+      }
+      .callout-warn {
+        background: #fff8c5;
+        border-color: var(--warning);
+        color: var(--text);
+      }
+      .callout-tip {
+        background: #dafbe1;
+        border-color: var(--success);
+        color: var(--text);
+      }
+      [data-theme="dark"] .callout-info {
+        background: rgba(56, 139, 253, 0.15);
+        border-color: var(--accent);
+      }
+      [data-theme="dark"] .callout-warn {
+        background: rgba(210, 153, 34, 0.15);
+        border-color: var(--warning);
+      }
+      [data-theme="dark"] .callout-tip {
+        background: rgba(63, 185, 80, 0.15);
+        border-color: var(--success);
+      }
+
+      /* Signature block */
+      .sig {
+        background: var(--bg-code);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 12px 16px;
+        margin: 10px 0;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        overflow-x: auto;
+      }
+
+      /* Grid for example cards */
+      .example-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 16px;
+        margin: 16px 0;
+      }
+      .example-card {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px;
+        transition: box-shadow 0.2s;
+      }
+      .example-card:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      .example-card h4 {
+        margin: 0 0 4px;
+        font-size: 15px;
+      }
+      .example-card h4 a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .example-card h4 a:hover {
+        text-decoration: underline;
+      }
+      .example-card p {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin: 0;
+      }
+
+      [data-theme="dark"] .example-card:hover {
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+      }
+      [data-theme="dark"] .top-header .logo span {
+        color: #79c0ff;
+      }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        .sidebar {
+          display: none;
+        }
+        .main {
+          margin-left: 0;
+          padding: 24px 16px 60px;
+        }
+      }
+      @media (max-width: 640px) {
+        .top-header {
+          padding: 0 12px;
+          gap: 12px;
+        }
+        .top-header .logo {
+          font-size: 16px;
+        }
+        .top-header .control-btn {
+          padding: 8px 10px;
+          font-size: 12px;
+        }
+      }
+    </style>
+    <script>
+      // ================================================================
+      // Theme & Language Switching
+      // ================================================================
+      (function () {
+        const html = document.documentElement;
+        const themeToggle = document.getElementById("theme-toggle");
+        const langToggle = document.getElementById("lang-toggle");
+
+        // 初始化主题（优先用 localStorage，否则用系统偏好）
+        const initTheme = () => {
+          const saved = localStorage.getItem("theme");
+          if (saved) {
+            html.setAttribute("data-theme", saved);
+          } else {
+            const prefersDark = window.matchMedia(
+              "(prefers-color-scheme: dark)",
+            ).matches;
+            html.setAttribute("data-theme", prefersDark ? "dark" : "light");
+          }
+          updateThemeButton();
+        };
+
+        // 初始化语言
+        const initLang = () => {
+          const saved = localStorage.getItem("lang");
+          if (saved) {
+            html.setAttribute("data-lang", saved);
+          } else {
+            html.setAttribute("data-lang", "zh");
+          }
+          updateLangButton();
+        };
+
+        // 更新主题按钮文本
+        const updateThemeButton = () => {
+          const theme = html.getAttribute("data-theme");
+          themeToggle.textContent = theme === "dark" ? "☀️ 浅色" : "🌙 深色";
+        };
+
+        // 更新语言按钮文本
+        const updateLangButton = () => {
+          const lang = html.getAttribute("data-lang");
+          langToggle.textContent = lang === "zh" ? "EN" : "中文";
+        };
+
+        // 切换主题
+        themeToggle.addEventListener("click", () => {
+          const current = html.getAttribute("data-theme");
+          const next = current === "dark" ? "light" : "dark";
+          html.setAttribute("data-theme", next);
+          localStorage.setItem("theme", next);
+          updateThemeButton();
+        });
+
+        // 切换语言
+        langToggle.addEventListener("click", () => {
+          const current = html.getAttribute("data-lang");
+          const next = current === "zh" ? "en" : "zh";
+          html.setAttribute("data-lang", next);
+          localStorage.setItem("lang", next);
+          updateLangButton();
+          // 这里可以后续扩展为实际的多语言翻译逻辑
+        });
+
+        // 页面加载时初始化
+        initTheme();
+        initLang();
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- ============================== Header ============================== -->
+    <header class="top-header">
+      <div class="logo">&#x1F916; <span>Robot</span> Client SDK</div>
+      <div class="header-controls">
+        <button
+          class="control-btn"
+          id="lang-toggle"
+          type="button"
+          aria-label="切换中英文"
+        >
+          EN
+        </button>
+        <button
+          class="control-btn"
+          id="theme-toggle"
+          type="button"
+          aria-label="切换深色模式"
+        >
+          🌙 深色
+        </button>
+      </div>
+    </header>
+
+    <!-- ============================== Sidebar ============================== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="section-label">快速开始</div>
+      <a href="#overview">概述</a>
+      <a href="#quick-start">快速上手</a>
+
+      <div class="section-label">接口文档</div>
+      <a href="#constructor">1. 构造函数</a>
+      <a href="#query">2. 查询接口</a>
+      <a href="#config">3. 配置接口</a>
+      <a href="#execute">4. 执行引擎</a>
+      <a href="#states">5. 状态切换</a>
+      <a href="#change-mode" class="sub">5.1 change_mode</a>
+      <a href="#velocity">6. 速度序列</a>
+      <a href="#line-walk">7. 直线行走</a>
+      <a href="#walk-shortcuts" class="sub">7.1 方向快捷函数</a>
+      <a href="#rotation">8. 旋转控制</a>
+      <a href="#circle" class="sub">8.1 circle</a>
+      <a href="#rotate-walk" class="sub">8.2 rotate_walk</a>
+      <a href="#balance">9. 平衡动作</a>
+      <a href="#dynamic-pose">10. 复合姿势</a>
+      <a href="#special-motions">11. 特殊动作</a>
+      <a href="#safety">12. 安全处理器</a>
+
+      <div class="section-label">示例程序</div>
+      <a href="#examples">示例总览</a>
+      <a href="#ex1" class="sub">E1: 获取可用动作</a>
+      <a href="#ex2" class="sub">E2: 获取当前状态</a>
+      <a href="#ex3" class="sub">E3: 状态切换</a>
+      <a href="#ex4" class="sub">E4: 速度序列</a>
+      <a href="#ex5" class="sub">E5: 机器人遥测</a>
+      <a href="#ex6" class="sub">E6: 平衡动作</a>
+      <a href="#ex7" class="sub">E7: 直线行走</a>
+      <a href="#ex8" class="sub">E8: 旋转</a>
+      <a href="#ex9" class="sub">E9: 组合序列</a>
+      <a href="#ex10" class="sub">E10: 配置演示</a>
+
+      <div class="section-label">附录</div>
+      <a href="#param-ranges">参数范围速查</a>
+      <a href="#changelog">更新日志</a>
+    </aside>
+
+    <!-- ============================== Main Content ============================== -->
+    <div class="main">
+      <!-- ─────────── Overview ─────────── -->
+      <h1 id="overview">Robot Client API</h1>
+      <p>高层机器人客户端库的公开接口参考与示例程序文档。</p>
+
+      <table>
+        <tr>
+          <th>语言</th>
+          <th>文件</th>
+          <th>类</th>
+        </tr>
+        <tr>
+          <td>Python</td>
+          <td><code>high_level/python/dobot_quad/robot_client.py</code></td>
+          <td><code>RobotClient</code></td>
+        </tr>
+        <tr>
+          <td>C++</td>
+          <td><code>high_level/cpp/robot_client.h</code></td>
+          <td><code>robot::Client</code></td>
+        </tr>
+      </table>
+
+      <div class="callout callout-info" id="transport-note">
+        <strong>传输协议：</strong> <code>grpc_service.proto</code>（<code
+          >grpc_comm</code
+        >
+        包），所有调用均通过 gRPC。
+      </div>
+
+      <!-- ─────────── Quick Start ─────────── -->
+      <h2 id="quick-start">快速上手</h2>
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'qs-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'qs-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="qs-py">
+          <pre><code>from dobot_quad import RobotClient
+
+robot = RobotClient("192.168.5.2:50051")
+
+robot.balance_stand()            # 切换到平衡站立
+robot.walk_forward(2.0)          # 向前走 2 米
+robot.move_left(1.0)             # 向左移动 1 米
+robot.rotate("left", 90)         # 左转 90°
+robot.change_mode()              # 切换腿部构型
+robot.dance()                    # 跳舞
+robot.stand_down()               # 趴下
+</code></pre>
+        </div>
+        <div class="tab-content" id="qs-cpp">
+          <pre><code>#include "robot_client.h"
+
+robot::Client client("192.168.5.2:50051");
+
+client.balance_stand();           // 切换到平衡站立
+client.walk_forward(2.0);         // 向前走 2 米
+client.move_left(1.0);            // 向左移动 1 米
+client.rotate("left", 90);        // 左转 90°
+client.change_mode();              // 切换腿部构型
+client.dance();                   // 跳舞
+client.stand_down();              // 趴下
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ============================================================
+     API REFERENCE
+     ============================================================ -->
+      <h1 id="api-reference">接口文档</h1>
+
+      <!-- ─────────── §1 Constructor ─────────── -->
+      <h2 id="constructor">1. 构造函数 / 连接</h2>
+
+      <div class="sig">
+        <strong>Python:</strong> RobotClient(addr="192.168.5.2:50051")<br />
+        <strong>C++:</strong>&nbsp;&nbsp;&nbsp; Client(addr="192.168.5.2:50051")
+      </div>
+
+      <table>
+        <tr>
+          <th>参数</th>
+          <th>类型</th>
+          <th>默认值</th>
+          <th>说明</th>
+        </tr>
+        <tr>
+          <td><code>addr</code></td>
+          <td>string</td>
+          <td><code>"192.168.5.2:50051"</code></td>
+          <td>gRPC 服务地址</td>
+        </tr>
+      </table>
+
+      <p><strong>构造时行为：</strong></p>
+      <ol>
+        <li>打开到 <code>addr</code> 的 gRPC 通道。</li>
+        <li>通过 <code>get_state()</code> 查询当前速度比并存储到本地。</li>
+        <li>
+          开启避障（<code>set_obstacle_avoidance(true)</code>）并将结果存储到本地。
+        </li>
+      </ol>
+
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'c1-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'c1-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="c1-py">
+          <pre><code># 上下文管理器（推荐）
+with RobotClient("192.168.5.2:50051") as robot:
+    robot.balance_stand()
+# 退出时自动关闭通道
+</code></pre>
+        </div>
+        <div class="tab-content" id="c1-cpp">
+          <pre><code>robot::Client client("192.168.5.2:50051");
+client.balance_stand();
+// 析构时自动清理
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─────────── §2 Query ─────────── -->
+      <h2 id="query">2. 查询接口</h2>
+
+      <h3>2.1 get_state()</h3>
+      <p>返回机器人完整遥测状态快照。</p>
+      <table>
+        <tr>
+          <th>返回字段</th>
+          <th>类型</th>
+          <th>说明</th>
+        </tr>
+        <tr>
+          <td><code>success</code></td>
+          <td>bool</td>
+          <td>RPC 是否成功</td>
+        </tr>
+        <tr>
+          <td><code>current_state</code></td>
+          <td>string</td>
+          <td>当前 FSM 状态名</td>
+        </tr>
+        <tr>
+          <td><code>current_speed_ratio</code></td>
+          <td>int32</td>
+          <td>当前速度比 [10–100]</td>
+        </tr>
+        <tr>
+          <td><code>obstacle_avoidance_enabled</code></td>
+          <td>bool</td>
+          <td>避障是否激活</td>
+        </tr>
+        <tr>
+          <td><code>robot_state</code></td>
+          <td>RobotState</td>
+          <td>关节、机体、接触力遥测</td>
+        </tr>
+      </table>
+
+      <h4>RobotState 消息体</h4>
+      <table>
+        <tr>
+          <th>字段</th>
+          <th>类型</th>
+          <th>说明</th>
+        </tr>
+        <tr>
+          <td><code>jpos_leg / jpos_leg_des</code></td>
+          <td>float[]</td>
+          <td>腿部关节位置 / 期望位置（rad）</td>
+        </tr>
+        <tr>
+          <td><code>jvel_leg / jvel_leg_des</code></td>
+          <td>float[]</td>
+          <td>腿部关节速度 / 期望速度（rad/s）</td>
+        </tr>
+        <tr>
+          <td><code>jtau_leg / jtau_leg_des</code></td>
+          <td>float[]</td>
+          <td>腿部关节力矩 / 期望力矩（Nm）</td>
+        </tr>
+        <tr>
+          <td><code>pos_body</code></td>
+          <td>float[3]</td>
+          <td>机体位置 [x, y, z]（m）</td>
+        </tr>
+        <tr>
+          <td><code>vel_body</code></td>
+          <td>float[3]</td>
+          <td>机体线速度（m/s）</td>
+        </tr>
+        <tr>
+          <td><code>acc_body</code></td>
+          <td>float[3]</td>
+          <td>机体线加速度（m/s²）</td>
+        </tr>
+        <tr>
+          <td><code>omega_body</code></td>
+          <td>float[3]</td>
+          <td>机体角速度（rad/s）</td>
+        </tr>
+        <tr>
+          <td><code>ori_body</code></td>
+          <td>float[3]</td>
+          <td>机体姿态 [roll, pitch, yaw]（rad）</td>
+        </tr>
+        <tr>
+          <td><code>grf_left / grf_right</code></td>
+          <td>float[3]</td>
+          <td>左/右脚地面反力（N）</td>
+        </tr>
+        <tr>
+          <td><code>grf_vertical_filtered</code></td>
+          <td>float[2]</td>
+          <td>滤波后垂直接触力（N）</td>
+        </tr>
+      </table>
+
+      <h3>2.2 get_motions()</h3>
+      <p>返回服务端已注册的动作库列表。</p>
+
+      <h3>2.3 get_current_state_name() → string</h3>
+      <p>获取当前 FSM 状态名。失败时返回空字符串。</p>
+
+      <h3>2.4 get_speed_ratio() → int</h3>
+      <p>
+        返回本地跟踪的速度比。该值在每次调用 <code>set_speed_ratio()</code> 时从
+        RPC 响应中更新。
+      </p>
+
+      <h3>2.5 get_obstacle_avoidance() → bool</h3>
+      <p>
+        返回本地跟踪的避障状态。该值在每次调用
+        <code>set_obstacle_avoidance()</code> 时从 RPC 响应中更新。
+      </p>
+
+      <!-- ─────────── §3 Config ─────────── -->
+      <h2 id="config">3. 配置接口</h2>
+
+      <h3>3.1 set_speed_ratio(ratio)</h3>
+      <p>设置速度比，自动钳位到 <strong>[10, 100]</strong>。</p>
+      <div class="sig">
+        <strong>Python:</strong> set_speed_ratio(ratio: int)<br />
+        <strong>C++:</strong>&nbsp;&nbsp;&nbsp; set_speed_ratio(int ratio)
+      </div>
+
+      <h3>3.2 set_obstacle_avoidance(enable)</h3>
+      <p>
+        启用/禁用避障。接受 <code>bool</code> 或
+        <code>"on"/"off"</code> 字符串。
+      </p>
+      <p>
+        客户端通过 RPC 切换避障时，服务端会同步触发语音提示：<code
+          >avoid_obstacle_on.wav</code
+        >
+        / <code>avoid_obstacle_off.wav</code>。
+      </p>
+
+      <!-- ─────────── §4 Execute ─────────── -->
+      <h2 id="execute">4. 执行引擎</h2>
+
+      <h3>4.1 execute(*motions, loop=False)</h3>
+      <p>执行动作序列并实时流式输出进度。每个参数可以是：</p>
+      <ul>
+        <li><code>str</code> — 动作 ID</li>
+        <li><code>(str, dict)</code> — 动作 ID + 参数字典</li>
+      </ul>
+      <p>按 <kbd>Ctrl+C</kbd> 可随时取消。</p>
+
+      <!-- ─────────── §5 States ─────────── -->
+      <h2 id="states">5. 状态切换</h2>
+
+      <h3>5.1 set_target_state(state_name)</h3>
+      <p>
+        通过名称切换状态（大小写不敏感）。无效名称抛出 <code>ValueError</code>。
+      </p>
+
+      <h4>有效状态 / 函数列表</h4>
+      <table>
+        <tr>
+          <th>#</th>
+          <th>函数</th>
+          <th>说明</th>
+          <th>备注</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td><code>passive()</code></td>
+          <td>被动模式（电机断电）</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><code>emergency()</code></td>
+          <td>紧急停止</td>
+          <td><code>passive()</code> 的别名</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><code>ready()</code></td>
+          <td>缓慢趴下（安全停止）</td>
+          <td><span class="badge badge-new">新增</span></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><code>stand_down()</code></td>
+          <td>趴下</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><code>balance_stand()</code></td>
+          <td>平衡站立</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td><code>walk()</code></td>
+          <td>切换到行走模式</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td><code>flying_trot()</code></td>
+          <td>切换到奔跑模式</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td><code>change_mode()</code></td>
+          <td>行走⇄奔跑平滑切换</td>
+          <td><span class="badge badge-new">新增</span></td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td><code>dance()</code></td>
+          <td>跳舞（别名：dance0）</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td><code>jump()</code></td>
+          <td>跳跃</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td><code>wave_hand()</code></td>
+          <td>打招呼（别名：wave）</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td><code>backflip()</code></td>
+          <td>后空翻</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td><code>recovery()</code></td>
+          <td>恢复/自救</td>
+          <td></td>
+        </tr>
+      </table>
+      <p>
+        <strong>补充：</strong
+        ><code>set_target_state("rl")</code> 仍可用于按名称切换到
+        <code>rl</code> 状态。
+      </p>
+
+      <div class="callout callout-warn" id="state-prefix-note">
+        <strong>注意：</strong> 所有状态切换方法已移除
+        <code>set_</code> 前缀。请使用 <code>robot.balance_stand()</code> 而非
+        <code>robot.set_balance_stand()</code>。
+      </div>
+
+      <h3 id="change-mode">
+        5.2 change_mode() <span class="badge badge-changed">已改</span>
+      </h3>
+      <p>切换腿部构型（平行 ↔ X 型）。无参数，在两种构型之间切换。</p>
+
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'xleg-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'xleg-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="xleg-py">
+          <pre><code>robot.change_mode()    # 切换腿部构型
+robot.change_mode()    # 再次调用切换回另一种
+</code></pre>
+        </div>
+        <div class="tab-content" id="xleg-cpp">
+          <pre><code>client.change_mode();    // 切换腿部构型
+client.change_mode();    // 再次调用切换回另一种
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─────────── §6 Velocity Sequence ─────────── -->
+      <h2 id="velocity">6. 速度序列</h2>
+
+      <h3>
+        6.1 velocity_sequence(vel_seq, gait, speed_ratio, stand_down_after)
+      </h3>
+      <p>
+        执行速度序列。当显式提供
+        <code>speed_ratio</code>
+        时临时设置并执行后恢复；省略时使用当前基础速度比。
+      </p>
+      <table>
+        <tr>
+          <th>参数</th>
+          <th>类型</th>
+          <th>默认</th>
+          <th>说明</th>
+        </tr>
+        <tr>
+          <td><code>vel_seq</code></td>
+          <td>string / list</td>
+          <td>—</td>
+          <td><code>"vx,vy,vyaw,dur;..."</code> 或元组列表</td>
+        </tr>
+        <tr>
+          <td><code>gait</code></td>
+          <td>string</td>
+          <td><code>"walk"</code></td>
+          <td><code>"walk"</code> 或 <code>"flying_trot"</code></td>
+        </tr>
+        <tr>
+          <td><code>speed_ratio</code></td>
+          <td>int</td>
+          <td><code>None/-1</code></td>
+          <td>可选 [10, 100]，省略时使用当前基础值</td>
+        </tr>
+        <tr>
+          <td><code>stand_down_after</code></td>
+          <td>bool</td>
+          <td><code>true</code></td>
+          <td>序列结束后是否趴下</td>
+        </tr>
+      </table>
+
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'vel-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'vel-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="vel-py">
+          <pre><code>steps = [
+    (0.8, 0, 0, 2),   # forward 2s
+    (0, 0, 0, 1),     # stop 1s
+    (-0.8, 0, 0, 2),  # backward 2s
+]
+robot.velocity_sequence(steps, gait="walk", speed_ratio=60)
+</code></pre>
+        </div>
+        <div class="tab-content" id="vel-cpp">
+          <pre><code>std::vector&lt;robot::VelocityStep&gt; steps = {
+    {0.8f, 0, 0, 2},   // forward 2s
+    {0, 0, 0, 1},      // stop 1s
+    {-0.8f, 0, 0, 2},  // backward 2s
+};
+client.velocity_sequence(steps, "walk", 60);
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─────────── §7 Line Walk ─────────── -->
+      <h2 id="line-walk">7. 直线行走</h2>
+
+      <h3>7.1 line_walk(direction, distance, speed_ratio)</h3>
+      <div class="sig">
+        <strong>Python:</strong> line_walk(direction=0, distance=3.0,
+        speed_ratio=None)<br />
+        <strong>C++:</strong>&nbsp;&nbsp;&nbsp; line_walk(int direction=0, float
+        distance=3.0f, int speed_ratio=-1)
+      </div>
+      <p>
+        当显式提供
+        <code>speed_ratio</code>
+        时临时设置并执行后恢复；省略时使用当前基础速度比。
+      </p>
+
+      <table>
+        <tr>
+          <th>参数</th>
+          <th>类型</th>
+          <th>范围</th>
+          <th>说明</th>
+        </tr>
+        <tr>
+          <td><code>direction</code></td>
+          <td>int / string</td>
+          <td>0-3</td>
+          <td>0="forward", 1="backward", 2="left", 3="right"</td>
+        </tr>
+        <tr>
+          <td><code>distance</code></td>
+          <td>float</td>
+          <td><strong>[0, 3] m</strong></td>
+          <td>行走距离（米）<span class="badge badge-changed">已改</span></td>
+        </tr>
+        <tr>
+          <td><code>speed_ratio</code></td>
+          <td>int / None</td>
+          <td>None 或 [10, 100]</td>
+          <td>可选速度比覆盖 <span class="badge badge-changed">已改</span></td>
+        </tr>
+      </table>
+
+      <h3 id="walk-shortcuts">7.2 方向快捷函数</h3>
+      <table>
+        <tr>
+          <th>函数</th>
+          <th>等价调用</th>
+          <th>说明</th>
+        </tr>
+        <tr>
+          <td><code>walk_forward(distance)</code></td>
+          <td><code>line_walk(0, distance)</code></td>
+          <td>向前走</td>
+        </tr>
+        <tr>
+          <td><code>walk_backward(distance)</code></td>
+          <td><code>line_walk(1, distance)</code></td>
+          <td>向后走</td>
+        </tr>
+        <tr>
+          <td><code>move_left(distance)</code></td>
+          <td><code>line_walk(2, distance)</code></td>
+          <td>向左移动 <span class="badge badge-changed">改名</span></td>
+        </tr>
+        <tr>
+          <td><code>move_right(distance)</code></td>
+          <td><code>line_walk(3, distance)</code></td>
+          <td>向右移动 <span class="badge badge-changed">改名</span></td>
+        </tr>
+      </table>
+
+      <div class="callout callout-warn" id="line-walk-breaking-change">
+        <strong>Breaking Change:</strong> <code>walk_left</code> →
+        <code>move_left</code>，<code>walk_right</code> →
+        <code>move_right</code>。距离上限从 10m 改为 <strong>3m</strong>。
+      </div>
+
+      <!-- ─────────── §8 Rotation ─────────── -->
+      <h2 id="rotation">8. 旋转控制</h2>
+
+      <h3>8.1 rotate(direction, angle)</h3>
+      <table>
+        <tr>
+          <th>参数</th>
+          <th>类型</th>
+          <th>范围</th>
+          <th>说明</th>
+        </tr>
+        <tr>
+          <td><code>direction</code></td>
+          <td>string / int</td>
+          <td>"left"/"right" or 0/1</td>
+          <td>旋转方向</td>
+        </tr>
+        <tr>
+          <td><code>angle</code></td>
+          <td>float</td>
+          <td>[0, 360]°</td>
+          <td>旋转角度</td>
+        </tr>
+      </table>
+
+      <p>
+        快捷函数：<code>rotate_left(angle)</code>，<code
+          >rotate_right(angle)</code
+        >
+      </p>
+
+      <h3 id="circle">
+        8.2 circle(direction, turns)
+        <span class="badge badge-changed">已改</span>
+      </h3>
+      <p>旋转指定圈数。</p>
+      <table>
+        <tr>
+          <th>参数</th>
+          <th>范围</th>
+          <th>说明</th>
+        </tr>
+        <tr>
+          <td><code>direction</code></td>
+          <td>"left"/"right"</td>
+          <td>旋转方向</td>
+        </tr>
+        <tr>
+          <td><code>turns</code></td>
+          <td><strong>[1, 10]</strong></td>
+          <td>圈数（原 1–5，现改为 1–10）</td>
+        </tr>
+      </table>
+
+      <h3 id="rotate-walk">
+        8.3 rotate_walk(angle, distance)
+        <span class="badge badge-changed">已改</span>
+      </h3>
+      <p>先旋转到目标角度再前进指定距离。</p>
+      <table>
+        <tr>
+          <th>参数</th>
+          <th>范围</th>
+          <th>说明</th>
+        </tr>
+        <tr>
+          <td><code>angle</code></td>
+          <td><strong>[-180, 180]°</strong></td>
+          <td>目标方向角度。正数=逆时针（左转），负数=顺时针（右转）</td>
+        </tr>
+        <tr>
+          <td><code>distance</code></td>
+          <td><strong>[0, 3] m</strong></td>
+          <td>前进距离（原 0–10m，现改为 0–3m）</td>
+        </tr>
+      </table>
+
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'rot-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'rot-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="rot-py">
+          <pre><code>robot.rotate("left", 90)       # 左转 90°
+robot.rotate_right(45)         # 右转 45°
+robot.circle("left", turns=3)  # 左转 3 圈（最大 10 圈）
+robot.rotate_walk(45, 2.0)     # 朝 45° 方向走 2m
+</code></pre>
+        </div>
+        <div class="tab-content" id="rot-cpp">
+          <pre><code>client.rotate("left", 90);       // 左转 90°
+client.rotate_right(45);         // 右转 45°
+client.circle("left", 3);       // 左转 3 圈（最大 10 圈）
+client.rotate_walk(45, 2.0);    // 朝 45° 方向走 2m
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─────────── §9 Balance ─────────── -->
+      <h2 id="balance">9. 平衡动作</h2>
+
+      <div class="callout callout-info">
+        <strong>两种模式：</strong>
+        <code>"dynamic"</code> — 正弦扫描：0 → 目标值 → 0；
+        <code>"static"</code> — 斜坡至目标值，保持，斜坡回 0。
+      </div>
+
+      <h3>单轴控制</h3>
+      <table>
+        <tr>
+          <th>函数</th>
+          <th>value 范围</th>
+          <th>说明</th>
+        </tr>
+        <tr>
+          <td><code>balance_pitch(value, duration, mode)</code></td>
+          <td>[-15, 15]°</td>
+          <td>俯仰。&gt;0 前倾，&lt;0 后仰</td>
+        </tr>
+        <tr>
+          <td><code>balance_yaw(value, duration, mode)</code></td>
+          <td>[-20, 20]°</td>
+          <td>偏航。&gt;0 左看，&lt;0 右看</td>
+        </tr>
+        <tr>
+          <td><code>balance_roll(value, duration, mode)</code></td>
+          <td>[-30, 30]°</td>
+          <td>横滚。&gt;0 左倾，&lt;0 右倾</td>
+        </tr>
+        <tr>
+          <td><code>balance_height(value, duration, mode)</code></td>
+          <td>[-0.12, 0] m</td>
+          <td>高度。&lt;0 下蹲</td>
+        </tr>
+        <tr>
+          <td><code>balance_neutral(duration)</code></td>
+          <td>—</td>
+          <td>回到中位</td>
+        </tr>
+      </table>
+
+      <table>
+        <tr>
+          <th>参数</th>
+          <th>类型</th>
+          <th>范围</th>
+          <th>说明</th>
+        </tr>
+        <tr>
+          <td><code>value</code></td>
+          <td>float</td>
+          <td>见上表</td>
+          <td>
+            目标偏置值（从初始姿态到目标姿态的变化量），单位：度（rpy）或米（高度）
+          </td>
+        </tr>
+        <tr>
+          <td><code>duration</code></td>
+          <td>float</td>
+          <td>[0.5, 5] s</td>
+          <td>持续时间（秒），默认 2.0</td>
+        </tr>
+        <tr>
+          <td><code>mode</code></td>
+          <td>string</td>
+          <td>"dynamic" / "static"</td>
+          <td>运动模式，默认 "dynamic"</td>
+        </tr>
+      </table>
+
+      <h3>批量执行</h3>
+      <p>
+        <code>balance_sequence(motions)</code> — 在单次 RPC
+        中批量执行多个平衡动作。motions 格式：<code
+          >(motion_id, value, duration, mode)</code
+        >
+      </p>
+
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'bal-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'bal-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="bal-py">
+          <pre><code>robot.balance_sequence([
+    ("balance_pitch",  20.0, 2.0, "dynamic"),   # 前倾 20°
+    ("balance_pitch", -20.0, 2.0, "dynamic"),   # 后仰 20°
+    ("balance_neutral", 0.0, 0.5, "dynamic"),   # 回中位
+])
+</code></pre>
+        </div>
+        <div class="tab-content" id="bal-cpp">
+          <pre><code>client.balance_sequence({
+    {"balance_pitch",   20.0f, 2.0f, "dynamic"},
+    {"balance_pitch",  -20.0f, 2.0f, "dynamic"},
+    {"balance_neutral",  0.0f, 0.5f, "dynamic"},
+});
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─────────── §10 Dynamic Pose / Static Pose ─────────── -->
+      <h2 id="dynamic-pose">10. 复合姿势（dynamic_pose / static_pose）</h2>
+      <p>
+        同时控制 roll、pitch、yaw、height — 所有轴在一个服务端动作中同步执行。
+      </p>
+
+      <div class="sig">
+        dynamic_pose(duration, roll_deg=0, pitch_deg=0, yaw_deg=0,
+        height_m=0)<br />
+        static_pose(duration, roll_deg=0, pitch_deg=0, yaw_deg=0, height_m=0)
+      </div>
+      <table>
+        <tr>
+          <th>参数</th>
+          <th>范围</th>
+          <th>说明</th>
+        </tr>
+        <tr>
+          <td><code>duration</code></td>
+          <td>[1, 5] s</td>
+          <td>持续时间（秒）</td>
+        </tr>
+        <tr>
+          <td><code>roll_deg</code></td>
+          <td>[-30, 30]°</td>
+          <td>横滚角度，0 = 不动</td>
+        </tr>
+        <tr>
+          <td><code>pitch_deg</code></td>
+          <td>[-15, 15]°</td>
+          <td>俯仰角度，0 = 不动</td>
+        </tr>
+        <tr>
+          <td><code>yaw_deg</code></td>
+          <td>[-20, 20]°</td>
+          <td>偏航角度，0 = 不动</td>
+        </tr>
+        <tr>
+          <td><code>height_m</code></td>
+          <td>[-0.12, 0] m</td>
+          <td>高度增量，0 = 不动</td>
+        </tr>
+      </table>
+
+      <div class="callout callout-tip">
+        <strong>区别：</strong>
+        <code>dynamic_pose</code> — 正弦扫描（0 → 目标 → 0）；
+        <code>static_pose</code> — 斜坡到目标，保持，斜坡回 0。
+      </div>
+
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'dp-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'dp-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="dp-py">
+          <pre><code># 正弦扫描：同时控制多轴
+robot.dynamic_pose(3.0, roll_deg=10, pitch_deg=10, yaw_deg=15, height_m=-0.05)
+
+# 保持姿势：斜坡到目标，持续 5 秒
+robot.static_pose(5.0, pitch_deg=15, height_m=-0.03)
+
+# 回中位
+robot.balance_neutral()
+</code></pre>
+        </div>
+        <div class="tab-content" id="dp-cpp">
+          <pre><code>// 正弦扫描：同时控制多轴
+client.dynamic_pose(3.0f, 10.0f, 10.0f, 15.0f, -0.05f);
+
+// 保持姿势：斜坡到目标，持续 5 秒
+client.static_pose(5.0f, 0.0f, 15.0f, 0.0f, -0.03f);
+
+// 回中位
+client.balance_neutral();
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─────────── §11 Special Motions ─────────── -->
+      <h2 id="special-motions">11. 特殊动作</h2>
+      <table>
+        <tr>
+          <th>函数</th>
+          <th>说明</th>
+        </tr>
+        <tr>
+          <td><code>dance()</code></td>
+          <td>跳舞（内部调用 <code>dance0</code>）</td>
+        </tr>
+        <tr>
+          <td><code>jump()</code></td>
+          <td>跳跃</td>
+        </tr>
+        <tr>
+          <td><code>wave_hand()</code></td>
+          <td>打招呼（内部调用 <code>wave</code>）</td>
+        </tr>
+        <tr>
+          <td><code>backflip()</code></td>
+          <td>后空翻</td>
+        </tr>
+      </table>
+
+      <!-- ─────────── §12 Safety ─────────── -->
+      <h2 id="safety">12. 安全处理器</h2>
+      <h3>enable_safety_ready()</h3>
+      <p>
+        注册 Ctrl+C 处理器。当按下 Ctrl+C 时，取消当前动作并在进程退出前切换到
+        <code>ready</code> 状态。
+      </p>
+      <div class="sig">
+        <strong>Python:</strong> robot.enable_safety_ready()<br />
+        <strong>C++:</strong>&nbsp;&nbsp;&nbsp;
+        robot::enable_safety_ready(client)
+      </div>
+      <div class="callout callout-warn">
+        <strong>注意：</strong>处理器仅在
+        Ctrl+C（SIGINT）时触发。程序正常退出<strong>不会</strong>调用
+        <code>ready()</code>。
+      </div>
+
+      <!-- ============================================================
+     EXAMPLES
+     ============================================================ -->
+      <h1 id="examples">示例程序</h1>
+      <p>
+        所有示例均提供 Python 和 C++ 两个版本，位于
+        <code>high_level/python/examples/</code> 和
+        <code>high_level/cpp/</code> 目录下。
+      </p>
+
+      <div class="example-grid">
+        <div class="example-card">
+          <h4><a href="#ex1">E1: 获取可用动作</a></h4>
+          <p>列出服务端所有已注册的动作及其参数</p>
+        </div>
+        <div class="example-card">
+          <h4><a href="#ex2">E2: 获取当前状态</a></h4>
+          <p>查询当前 FSM 状态名</p>
+        </div>
+        <div class="example-card">
+          <h4><a href="#ex3">E3: 状态切换</a></h4>
+          <p>交互式或命令行切换机器人状态</p>
+        </div>
+        <div class="example-card">
+          <h4><a href="#ex4">E4: 速度序列</a></h4>
+          <p>Walk / Flying Trot 速度控制演示</p>
+        </div>
+        <div class="example-card">
+          <h4><a href="#ex5">E5: 机器人遥测</a></h4>
+          <p>获取完整的关节、机体、接触力数据</p>
+        </div>
+        <div class="example-card">
+          <h4><a href="#ex6">E6: 平衡动作</a></h4>
+          <p>Pitch/Yaw/Roll/Height 动作序列</p>
+        </div>
+        <div class="example-card">
+          <h4><a href="#ex7">E7: 直线行走</a></h4>
+          <p>前/后/左/右方向直线行走</p>
+        </div>
+        <div class="example-card">
+          <h4><a href="#ex8">E8: 旋转</a></h4>
+          <p>原地左转/右转</p>
+        </div>
+        <div class="example-card">
+          <h4><a href="#ex9">E9: 组合序列</a></h4>
+          <p>Arduino 风格的顺序调用组合</p>
+        </div>
+        <div class="example-card">
+          <h4><a href="#ex10">E10: 配置演示</a></h4>
+          <p>速度比 &amp; 避障开关配置</p>
+        </div>
+      </div>
+
+      <!-- ─── E1 ─── -->
+      <h2 id="ex1">E1: 获取可用动作</h2>
+      <p>列出服务端所有可用动作及其参数。</p>
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'e1-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'e1-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="e1-py">
+          <pre><code>from dobot_quad import RobotClient
+
+robot = RobotClient("192.168.5.2:50051")
+res = robot.get_motions()
+
+for m in res.motions:
+    print(f"  [{m.motion_id}]")
+    for p in m.parameters:
+        print(f"      {p.key}: {p.float_value or p.int_value or p.string_value}")
+</code></pre>
+        </div>
+        <div class="tab-content" id="e1-cpp">
+          <pre><code>#include "robot_client.h"
+
+robot::Client client("192.168.5.2:50051");
+auto res = client.get_motions();
+
+for (const auto&amp; m : res.motions())
+    std::cout &lt;&lt; "  [" &lt;&lt; m.motion_id() &lt;&lt; "]" &lt;&lt; std::endl;
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─── E2 ─── -->
+      <h2 id="ex2">E2: 获取当前状态</h2>
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'e2-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'e2-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="e2-py">
+          <pre><code>robot = RobotClient("192.168.5.2:50051")
+state = robot.get_current_state_name()
+print(f"Current state: {state}")
+</code></pre>
+        </div>
+        <div class="tab-content" id="e2-cpp">
+          <pre><code>robot::Client client("192.168.5.2:50051");
+auto state = client.get_current_state_name();
+std::cout &lt;&lt; "Current state: " &lt;&lt; state &lt;&lt; std::endl;
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─── E3 ─── -->
+      <h2 id="ex3">E3: 状态切换</h2>
+      <p>
+        支持命令行参数或交互式选择。<span class="badge badge-removed"
+          >已移除 rl</span
+        >
+      </p>
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'e3-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'e3-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="e3-py">
+          <pre><code># 可通过 CLI 或交互菜单选择（包含 change_mode）
+robot.set_target_state("balance_stand")
+robot.walk()
+robot.flying_trot()
+
+# 新增：change_mode 作为独立动作可直接选择
+robot.change_mode()
+</code></pre>
+        </div>
+        <div class="tab-content" id="e3-cpp">
+          <pre><code>// 直接调用（无 set_ 前缀）
+client.balance_stand();
+client.walk();
+client.flying_trot();
+
+// 新增：change_mode 作为独立动作可直接选择
+client.change_mode();
+
+// 或按名称
+client.set_target_state("balance_stand");
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─── E4 ─── -->
+      <h2 id="ex4">E4: 速度序列</h2>
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'e4-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'e4-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="e4-py">
+          <pre><code>steps = [
+    (0.8, 0, 0, 2),   # forward 2s
+    (0, 0, 0, 1),     # stop 1s
+    (-0.8, 0, 0, 2),  # backward 2s
+    (0, 0, 0, 1),     # stop 1s
+]
+robot.velocity_sequence(steps, gait="walk", speed_ratio=60)
+# 也支持 flying_trot:
+robot.velocity_sequence(steps, gait="flying_trot")
+</code></pre>
+        </div>
+        <div class="tab-content" id="e4-cpp">
+          <pre><code>std::vector&lt;robot::VelocityStep&gt; steps = {
+    {0.8f, 0, 0, 2},   // forward 2s
+    {0, 0, 0, 1},      // stop 1s
+    {-0.8f, 0, 0, 2},  // backward 2s
+    {0, 0, 0, 1},      // stop 1s
+};
+client.velocity_sequence(steps, "walk", 60);
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─── E5 ─── -->
+      <h2 id="ex5">E5: 机器人遥测</h2>
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'e5-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'e5-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="e5-py">
+          <pre><code>res = robot.get_state()
+print(f"Current state: {res.current_state}")
+print(f"Speed ratio:   {res.current_speed_ratio}")
+
+s = res.robot_state
+print(f"Body pos: {list(s.pos_body)}")
+print(f"Leg torques: {list(s.jtau_leg)}")
+</code></pre>
+        </div>
+        <div class="tab-content" id="e5-cpp">
+          <pre><code>auto res = client.get_state();
+std::cout &lt;&lt; "Current state: " &lt;&lt; res.current_state() &lt;&lt; std::endl;
+const auto&amp; s = res.robot_state();
+// s.pos_body(), s.jtau_leg(), etc.
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─── E6 ─── -->
+      <h2 id="ex6">E6: 平衡动作</h2>
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'e6-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'e6-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="e6-py">
+          <pre><code># 单轴函数（dynamic）
+robot.balance_pitch(15.0, 2.0, "dynamic")
+robot.balance_yaw(20.0, 2.0, "dynamic")
+robot.balance_roll(-15.0, 2.0, "dynamic")
+robot.balance_height(-0.05, 2.0, "dynamic")
+
+# 单轴函数（static）
+robot.balance_pitch(-15.0, 2.5, "static")
+robot.balance_yaw(-20.0, 2.5, "static")
+robot.balance_roll(15.0, 2.5, "static")
+robot.balance_height(-0.08, 2.5, "static")
+
+# balance_sequence
+robot.balance_sequence([
+    ("balance_pitch", 15.0, 2.0, "dynamic"),
+    ("balance_yaw", 20.0, 2.0, "dynamic"),
+    ("balance_roll", -15.0, 2.0, "dynamic"),
+    ("balance_height", -0.05, 2.0, "dynamic"),
+    ("balance_neutral", 0.0, 0.5, "dynamic"),
+])
+
+# 两个复合姿势
+robot.dynamic_pose(3.0, roll_deg=10, pitch_deg=10, yaw_deg=15, height_m=-0.05)
+robot.static_pose(3.0, roll_deg=10, pitch_deg=10, yaw_deg=15, height_m=-0.05)
+robot.balance_neutral()
+</code></pre>
+        </div>
+        <div class="tab-content" id="e6-cpp">
+          <pre><code>// 单轴函数（dynamic）
+client.balance_pitch(15.0f, 2.0f, "dynamic");
+client.balance_yaw(20.0f, 2.0f, "dynamic");
+client.balance_roll(-15.0f, 2.0f, "dynamic");
+client.balance_height(-0.05f, 2.0f, "dynamic");
+
+// 单轴函数（static）
+client.balance_pitch(-15.0f, 2.5f, "static");
+client.balance_yaw(-20.0f, 2.5f, "static");
+client.balance_roll(15.0f, 2.5f, "static");
+client.balance_height(-0.08f, 2.5f, "static");
+
+// balance_sequence
+client.balance_sequence({
+    {"balance_pitch", 15.0f, 2.0f, "dynamic"},
+    {"balance_yaw", 20.0f, 2.0f, "dynamic"},
+    {"balance_roll", -15.0f, 2.0f, "dynamic"},
+    {"balance_height", -0.05f, 2.0f, "dynamic"},
+    {"balance_neutral", 0.0f, 0.5f, "dynamic"},
+});
+
+// 两个复合姿势
+client.dynamic_pose(3.0f, 10.0f, 10.0f, 15.0f, -0.05f);
+client.static_pose(3.0f, 10.0f, 10.0f, 15.0f, -0.05f);
+client.balance_neutral();
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─── E7 ─── -->
+      <h2 id="ex7">E7: 直线行走</h2>
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'e7-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'e7-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="e7-py">
+          <pre><code>robot.walk_forward(2.0)       # 向前 2m（最大 3m）
+robot.walk_backward(1.5)      # 向后 1.5m
+robot.move_left(1.0)          # 向左 1m（原 walk_left）
+robot.move_right(1.0)         # 向右 1m（原 walk_right）
+
+# 使用通用接口:
+robot.line_walk("forward", 2.0)
+robot.line_walk(2, 1.0)       # direction=2 (left)
+</code></pre>
+        </div>
+        <div class="tab-content" id="e7-cpp">
+          <pre><code>client.walk_forward(2.0);       // 向前 2m（最大 3m）
+client.walk_backward(1.5);      // 向后 1.5m
+client.move_left(1.0);          // 向左 1m（原 walk_left）
+client.move_right(1.0);         // 向右 1m（原 walk_right）
+
+// 使用通用接口:
+client.line_walk(0, 2.0);       // direction=0 (forward)
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─── E8 ─── -->
+      <h2 id="ex8">E8: 旋转</h2>
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'e8-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'e8-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="e8-py">
+          <pre><code>robot.rotate("left", 90)         # 左转 90°
+robot.rotate_right(45)           # 右转 45°
+robot.circle("left", turns=3)    # 左转 3 圈（最大 10 圈）
+robot.rotate_walk(45, 2.0)       # 朝 45° 方向走 2m
+</code></pre>
+        </div>
+        <div class="tab-content" id="e8-cpp">
+          <pre><code>client.rotate("left", 90);       // 左转 90°
+client.rotate_right(45);         // 右转 45°
+client.circle("left", 3);       // 左转 3 圈（最大 10 圈）
+client.rotate_walk(45, 2.0);    // 朝 45° 方向走 2m
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─── E9 ─── -->
+      <h2 id="ex9">E9: 组合序列</h2>
+      <p>Arduino 风格的顺序阻塞调用 — 每个函数会阻塞直到动作完成。</p>
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'e9-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'e9-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="e9-py">
+          <pre><code># 全流程：状态切换 + change_mode + 运动 + 平衡
+robot.passive(); robot.ready(); robot.balance_stand()
+robot.walk(); robot.change_mode(); robot.change_mode()
+
+robot.walk_forward(1.0); robot.walk_backward(1.0)
+robot.move_left(1.0); robot.move_right(1.0)
+
+robot.rotate_left(90); robot.rotate_left(180)
+robot.rotate_right(90); robot.rotate_right(180)
+robot.circle("left", 1)
+
+robot.balance_pitch(15.0, 2.0, "dynamic"); robot.balance_pitch(-15.0, 2.5, "static")
+robot.balance_yaw(20.0, 2.0, "dynamic");   robot.balance_yaw(-20.0, 2.5, "static")
+robot.balance_roll(15.0, 2.0, "dynamic");  robot.balance_roll(-15.0, 2.5, "static")
+robot.balance_height(-0.05, 2.0, "dynamic"); robot.balance_height(-0.08, 2.5, "static")
+
+robot.dynamic_pose(3.0, roll_deg=10, pitch_deg=10, yaw_deg=15, height_m=-0.05)
+robot.static_pose(3.0, roll_deg=10, pitch_deg=10, yaw_deg=15, height_m=-0.05)
+robot.balance_neutral()
+
+robot.wave(); robot.dance(); robot.recovery()
+robot.stand_down()
+</code></pre>
+        </div>
+        <div class="tab-content" id="e9-cpp">
+          <pre><code>// 全流程：状态切换 + change_mode + 运动 + 平衡
+client.passive(); client.ready(); client.balance_stand();
+client.walk(); client.change_mode(); client.change_mode();
+
+client.walk_forward(1.0f); client.walk_backward(1.0f);
+client.move_left(1.0f); client.move_right(1.0f);
+
+client.rotate_left(90.0f); client.rotate_left(180.0f);
+client.rotate_right(90.0f); client.rotate_right(180.0f);
+client.circle("left", 1);
+
+client.balance_pitch(15.0f, 2.0f, "dynamic"); client.balance_pitch(-15.0f, 2.5f, "static");
+client.balance_yaw(20.0f, 2.0f, "dynamic");   client.balance_yaw(-20.0f, 2.5f, "static");
+client.balance_roll(15.0f, 2.0f, "dynamic");  client.balance_roll(-15.0f, 2.5f, "static");
+client.balance_height(-0.05f, 2.0f, "dynamic"); client.balance_height(-0.08f, 2.5f, "static");
+
+client.dynamic_pose(3.0f, 10.0f, 10.0f, 15.0f, -0.05f);
+client.static_pose(3.0f, 10.0f, 10.0f, 15.0f, -0.05f);
+client.balance_neutral();
+
+client.wave(); client.dance(); client.recovery();
+client.stand_down();
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ─── E10 ─── -->
+      <h2 id="ex10">E10: 配置演示</h2>
+      <div class="code-tabs">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(event, 'e10-py')">
+            Python
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'e10-cpp')">
+            C++
+          </button>
+        </div>
+        <div class="tab-content active" id="e10-py">
+          <pre><code># 查询当前速度比（返回本地跟踪值）
+sr = robot.get_speed_ratio()
+print(f"Speed ratio: {sr}")
+
+# 设置基础速度比
+robot.set_speed_ratio(30)
+
+# 不指定 speed_ratio，使用当前基础值 (30)
+robot.walk_forward(2.0)
+
+# 显式指定 speed_ratio=100，临时覆盖，执行后恢复为 30
+robot.walk_forward(2.0, speed_ratio=100)
+
+# 避障开关
+robot.set_obstacle_avoidance(True)    # 或 "on"
+robot.set_obstacle_avoidance(False)   # 或 "off"
+</code></pre>
+        </div>
+        <div class="tab-content" id="e10-cpp">
+          <pre><code>// 查询当前速度比（返回本地跟踪值）
+int sr = client.get_speed_ratio();
+std::cout &lt;&lt; "Speed ratio: " &lt;&lt; sr &lt;&lt; std::endl;
+
+// 设置基础速度比
+client.set_speed_ratio(30);
+
+// 不指定 speed_ratio，使用当前基础值 (30)
+client.walk_forward(2.0);
+
+// 显式指定 speed_ratio=100，临时覆盖，执行后恢复为 30
+client.walk_forward(2.0, 100);
+
+// 避障开关
+client.set_obstacle_avoidance(true);
+client.set_obstacle_avoidance("off");
+</code></pre>
+        </div>
+      </div>
+
+      <!-- ============================================================
+     Parameter Quick Reference
+     ============================================================ -->
+      <h2 id="param-ranges">参数范围速查表</h2>
+      <table>
+        <tr>
+          <th>参数</th>
+          <th>范围</th>
+          <th>涉及函数</th>
+        </tr>
+        <tr>
+          <td>speed_ratio</td>
+          <td>[10, 100]</td>
+          <td>
+            set_speed_ratio; 可选覆盖: line_walk, velocity_sequence, rotate_walk
+          </td>
+        </tr>
+        <tr>
+          <td>distance</td>
+          <td><strong>[0, 3] m</strong></td>
+          <td>
+            walk_forward, walk_backward, move_left, move_right, rotate_walk
+          </td>
+        </tr>
+        <tr>
+          <td>angle (rotate)</td>
+          <td>[0, 360]°</td>
+          <td>rotate, rotate_left, rotate_right</td>
+        </tr>
+        <tr>
+          <td>angle (rotate_walk)</td>
+          <td><strong>[-180, 180]°</strong></td>
+          <td>rotate_walk</td>
+        </tr>
+        <tr>
+          <td>turns</td>
+          <td><strong>[1, 10]</strong></td>
+          <td>circle</td>
+        </tr>
+        <tr>
+          <td>balance value (rpy)</td>
+          <td>roll: [-30, 30]°, pitch: [-15, 15]°, yaw: [-20, 20]°</td>
+          <td>balance_pitch/yaw/roll, balance_sequence</td>
+        </tr>
+        <tr>
+          <td>balance value (height)</td>
+          <td>[-0.12, 0] m</td>
+          <td>balance_height, balance_sequence</td>
+        </tr>
+        <tr>
+          <td>balance duration</td>
+          <td>[0.5, 5] s</td>
+          <td>所有 balance_* 函数</td>
+        </tr>
+        <tr>
+          <td>dynamic_pose / static_pose 角度</td>
+          <td>roll: [-30, 30]°, pitch: [-15, 15]°, yaw: [-20, 20]°</td>
+          <td>dynamic_pose, static_pose</td>
+        </tr>
+        <tr>
+          <td>dynamic_pose / static_pose 高度</td>
+          <td>[-0.12, 0] m</td>
+          <td>dynamic_pose, static_pose</td>
+        </tr>
+        <tr>
+          <td>dynamic_pose / static_pose 时长</td>
+          <td>[1, 5] s</td>
+          <td>dynamic_pose, static_pose</td>
+        </tr>
+        <tr>
+          <td>obstacle_avoidance</td>
+          <td>bool / "on" / "off"</td>
+          <td>set_obstacle_avoidance</td>
+        </tr>
+      </table>
+
+      <!-- ============================================================
+     Changelog
+     ============================================================ -->
+      <h2 id="changelog">更新日志</h2>
+
+      <h3>v2.0.0 — 平衡参数重构 & 复合姿势 & 安全处理器</h3>
+      <ul>
+        <li>
+          <span class="badge badge-new">新增</span>
+          <code
+            >dynamic_pose(duration, roll_deg, pitch_deg, yaw_deg,
+            height_m)</code
+          >
+          — 复合正弦姿势
+        </li>
+        <li>
+          <span class="badge badge-new">新增</span>
+          <code
+            >static_pose(duration, roll_deg, pitch_deg, yaw_deg, height_m)</code
+          >
+          — 复合保持姿势
+        </li>
+        <li>
+          <span class="badge badge-new">新增</span> <code>ready()</code> —
+          缓慢趴下（安全停止）状态
+        </li>
+        <li>
+          <span class="badge badge-new">新增</span> <code>emergency()</code> —
+          <code>passive()</code> 的别名
+        </li>
+        <li>
+          <span class="badge badge-new">新增</span> <code>change_mode()</code> —
+          行走⇄奔跑平滑切换
+        </li>
+        <li>
+          <span class="badge badge-new">新增</span>
+          <code>enable_safety_ready()</code> — Ctrl+C 时自动
+          <code>ready()</code>
+        </li>
+        <li>
+          <span class="badge badge-changed">改值</span> 平衡动作参数：<code
+            >amplitude/beats</code
+          >
+          →
+          <code
+            >value（度/米）, duration（秒）, mode（"dynamic"/"static"）</code
+          >
+        </li>
+        <li>
+          <span class="badge badge-removed">移除</span> <code>set_bpm()</code> /
+          <code>bpm()</code> — BPM 不再使用，计时基于秒
+        </li>
+        <li>
+          <span class="badge badge-removed">移除</span> 构造函数和
+          <code>execute()</code> 中的 <code>bpm</code> 参数
+        </li>
+      </ul>
+
+      <h3>v2.1 — 速度比本地跟踪 & 可选覆盖</h3>
+      <ul>
+        <li>
+          <span class="badge badge-changed">改值</span>
+          <code>speed_ratio</code> 参数默认值从 <code>80</code> 改为
+          <code>None</code> (Python) /
+          <code>-1</code> (C++)，省略时使用当前基础值
+        </li>
+        <li>
+          <span class="badge badge-changed">改值</span>
+          <code>get_speed_ratio()</code> 和
+          <code>get_obstacle_avoidance()</code>
+          现在返回本地跟踪值，不再查询服务端
+        </li>
+        <li>
+          <span class="badge badge-changed">改值</span> 构造函数通过
+          <code>get_state()</code> 获取初始速度比，本地存储
+        </li>
+      </ul>
+
+      <h3>v2.0 — 需求端接口规范对齐</h3>
+      <ul>
+        <li>
+          <span class="badge badge-changed">改名</span>
+          <code>walk_left()</code> → <code>move_left()</code>
+        </li>
+        <li>
+          <span class="badge badge-changed">改名</span>
+          <code>walk_right()</code> → <code>move_right()</code>
+        </li>
+        <li>
+          <span class="badge badge-changed">改值</span> 行走距离上限 10m →
+          <strong>3m</strong>
+        </li>
+        <li>
+          <span class="badge badge-changed">改值</span> circle 圈数上限 5 →
+          <strong>10</strong>
+        </li>
+        <li>
+          <span class="badge badge-changed">改值</span> rotate_walk 距离上限 10m
+          → <strong>3m</strong>
+        </li>
+        <li>
+          <span class="badge badge-new">新增</span>
+          <code>x_leg("std"/"x")</code> 腿部构型切换
+        </li>
+        <li>
+          <span class="badge badge-new">新增</span>
+          可复用参数校验工具函数（<code>clamp_distance</code>,
+          <code>clamp_angle</code> 等）
+        </li>
+        <li>
+          <span class="badge badge-removed">移除</span> C++
+          <code>set_</code> 前缀（<code>set_balance_stand()</code> →
+          <code>balance_stand()</code>）
+        </li>
+        <li>
+          <span class="badge badge-removed">移除</span> <code>rl</code> 步态
+        </li>
+        <li>
+          <span class="badge badge-removed">移除</span> C++ 构造函数中
+          <code>set_speed_ratio(0)</code> 改为 <code>get_speed_ratio()</code>
+        </li>
+      </ul>
+
+      <h3>v1.0 — 初始版本</h3>
+      <ul>
+        <li>Python <code>set_</code> 前缀移除、<code>rl</code> 步态移除</li>
+        <li>参数范围校验、方向字符串支持</li>
+        <li>ARM 字段移除</li>
+        <li>完整测试套件（230 tests）</li>
+      </ul>
+    </div>
+    <!-- .main -->
+
+    <!-- ============================== JavaScript ============================== -->
+    <script>
+      // Tab switching
+      function switchTab(e, targetId) {
+        const container = e.target.closest(".code-tabs");
+        container
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        container
+          .querySelectorAll(".tab-content")
+          .forEach((c) => c.classList.remove("active"));
+        e.target.classList.add("active");
+        document.getElementById(targetId).classList.add("active");
+      }
+
+      const THEME_KEY = "robot-client-doc-theme";
+      const LANG_KEY = "robot-client-doc-lang";
+
+      const i18n = {
+        zh: {
+          title: "Robot Client API — 接口文档 & 示例程序",
+          lang: "zh-CN",
+          themeButton: "🌙 深色",
+          themeButtonDark: "☀️ 浅色",
+          langButton: "EN",
+          texts: {
+            ".sidebar .section-label:nth-of-type(1)": "快速开始",
+            ".sidebar .section-label:nth-of-type(2)": "接口文档",
+            ".sidebar .section-label:nth-of-type(3)": "示例程序",
+            ".sidebar .section-label:nth-of-type(4)": "附录",
+            '.sidebar a[href="#overview"]': "概述",
+            '.sidebar a[href="#quick-start"]': "快速上手",
+            '.sidebar a[href="#constructor"]': "1. 构造函数",
+            '.sidebar a[href="#query"]': "2. 查询接口",
+            '.sidebar a[href="#config"]': "3. 配置接口",
+            '.sidebar a[href="#execute"]': "4. 执行引擎",
+            '.sidebar a[href="#states"]': "5. 状态切换",
+            '.sidebar a[href="#change-mode"]': "5.1 change_mode",
+            '.sidebar a[href="#velocity"]': "6. 速度序列",
+            '.sidebar a[href="#line-walk"]': "7. 直线行走",
+            '.sidebar a[href="#walk-shortcuts"]': "7.1 方向快捷函数",
+            '.sidebar a[href="#rotation"]': "8. 旋转控制",
+            '.sidebar a[href="#circle"]': "8.1 circle",
+            '.sidebar a[href="#rotate-walk"]': "8.2 rotate_walk",
+            '.sidebar a[href="#balance"]': "9. 平衡动作",
+            '.sidebar a[href="#dynamic-pose"]': "10. 复合姿势",
+            '.sidebar a[href="#special-motions"]': "11. 特殊动作",
+            '.sidebar a[href="#safety"]': "12. 安全处理器",
+            '.sidebar a[href="#examples"]': "示例总览",
+            '.sidebar a[href="#ex1"]': "E1: 获取可用动作",
+            '.sidebar a[href="#ex2"]': "E2: 获取当前状态",
+            '.sidebar a[href="#ex3"]': "E3: 状态切换",
+            '.sidebar a[href="#ex4"]': "E4: 速度序列",
+            '.sidebar a[href="#ex5"]': "E5: 机器人遥测",
+            '.sidebar a[href="#ex6"]': "E6: 平衡动作",
+            '.sidebar a[href="#ex7"]': "E7: 直线行走",
+            '.sidebar a[href="#ex8"]': "E8: 旋转",
+            '.sidebar a[href="#ex9"]': "E9: 组合序列",
+            '.sidebar a[href="#ex10"]': "E10: 配置演示",
+            '.sidebar a[href="#param-ranges"]': "参数范围速查",
+            '.sidebar a[href="#changelog"]': "更新日志",
+            "h1#overview": "Robot Client API",
+            "h1#api-reference": "接口文档",
+            "h1#examples": "示例程序",
+            "h2#quick-start": "快速上手",
+            ".main > p": "高层机器人客户端库的公开接口参考与示例程序文档。",
+            "#transport-note":
+              "<strong>传输协议：</strong> <code>grpc_service.proto</code>（<code>grpc_comm</code> 包），所有调用均通过 gRPC。",
+            "h2#constructor": "1. 构造函数 / 连接",
+            "h2#query": "2. 查询接口",
+            "h2#config": "3. 配置接口",
+            "h2#execute": "4. 执行引擎",
+            "h2#states": "5. 状态切换",
+            "h2#velocity": "6. 速度序列",
+            "h2#line-walk": "7. 直线行走",
+            "h2#rotation": "8. 旋转控制",
+            "h2#balance": "9. 平衡动作",
+            "h2#dynamic-pose": "10. 复合姿势（dynamic_pose / static_pose）",
+            "h2#special-motions": "11. 特殊动作",
+            "h2#safety": "12. 安全处理器",
+            "h2#param-ranges": "参数范围速查表",
+            "h2#changelog": "更新日志",
+            "p + table + .callout.callout-info":
+              "<strong>传输协议：</strong> <code>grpc_service.proto</code>（<code>grpc_comm</code> 包），所有调用均通过 gRPC。",
+            ".example-grid + h2#ex1 + p": "列出服务端所有可用动作及其参数。",
+            "h2#ex1": "E1: 获取可用动作",
+            "h2#ex2": "E2: 获取当前状态",
+            "h2#ex3": "E3: 状态切换",
+            "h2#ex4": "E4: 速度序列",
+            "h2#ex5": "E5: 机器人遥测",
+            "h2#ex6": "E6: 平衡动作",
+            "h2#ex7": "E7: 直线行走",
+            "h2#ex8": "E8: 旋转",
+            "h2#ex9": "E9: 组合序列",
+            "h2#ex10": "E10: 配置演示",
+            "#examples + p":
+              "所有示例均提供 Python 和 C++ 两个版本，位于 <code>high_level/python/examples/</code> 和 <code>high_level/cpp/</code> 目录下。",
+            ".example-card:nth-child(1) h4 a": "E1: 获取可用动作",
+            ".example-card:nth-child(1) p":
+              "列出服务端所有已注册的动作及其参数",
+            ".example-card:nth-child(2) h4 a": "E2: 获取当前状态",
+            ".example-card:nth-child(2) p": "查询当前 FSM 状态名",
+            ".example-card:nth-child(3) h4 a": "E3: 状态切换",
+            ".example-card:nth-child(3) p": "交互式或命令行切换机器人状态",
+            ".example-card:nth-child(4) h4 a": "E4: 速度序列",
+            ".example-card:nth-child(4) p": "Walk / Flying Trot 速度控制演示",
+            ".example-card:nth-child(5) h4 a": "E5: 机器人遥测",
+            ".example-card:nth-child(5) p": "获取完整的关节、机体、接触力数据",
+            ".example-card:nth-child(6) h4 a": "E6: 平衡动作",
+            ".example-card:nth-child(6) p": "Pitch/Yaw/Roll/Height 动作序列",
+            ".example-card:nth-child(7) h4 a": "E7: 直线行走",
+            ".example-card:nth-child(7) p": "前/后/左/右方向直线行走",
+            ".example-card:nth-child(8) h4 a": "E8: 旋转",
+            ".example-card:nth-child(8) p": "原地左转/右转",
+            ".example-card:nth-child(9) h4 a": "E9: 组合序列",
+            ".example-card:nth-child(9) p": "Arduino 风格的顺序调用组合",
+            ".example-card:nth-child(10) h4 a": "E10: 配置演示",
+            ".example-card:nth-child(10) p": "速度比 &amp; 避障开关配置",
+            "#ex3 + p":
+              '支持命令行参数或交互式选择。<span class="badge badge-removed">已移除 rl</span>',
+            "#ex9 + p":
+              "Arduino 风格的顺序阻塞调用 — 每个函数会阻塞直到动作完成。",
+            "#state-prefix-note":
+              "<strong>注意：</strong> 所有状态切换方法已移除 <code>set_</code> 前缀。请使用 <code>robot.balance_stand()</code> 而非 <code>robot.set_balance_stand()</code>。",
+            "#line-walk-breaking-change":
+              "<strong>Breaking Change:</strong> <code>walk_left</code> → <code>move_left</code>，<code>walk_right</code> → <code>move_right</code>。距离上限从 10m 改为 <strong>3m</strong>。",
+          },
+          nodeTexts: {
+            语言: "语言",
+            文件: "文件",
+            类: "类",
+            参数: "参数",
+            类型: "类型",
+            默认值: "默认值",
+            返回字段: "返回字段",
+            "构造时行为：": "构造时行为：",
+            "查询当前速度比（使用 get_speed_ratio）":
+              "查询当前速度比（使用 get_speed_ratio）",
+            设置速度比: "设置速度比",
+            避障开关: "避障开关",
+            "启用/禁用避障。接受 ": "启用/禁用避障。接受 ",
+            "快捷函数：": "快捷函数：",
+            单轴控制: "单轴控制",
+            批量执行: "批量执行",
+            函数: "函数",
+            范围: "范围",
+            说明: "说明",
+            默认: "默认",
+            涉及函数: "涉及函数",
+            更新日志: "更新日志",
+            新增: "新增",
+            已改: "已改",
+            "已移除 rl": "已移除 rl",
+          },
+        },
+        en: {
+          title: "Robot Client API — Reference & Example Programs",
+          lang: "en",
+          themeButton: "🌙 Dark",
+          themeButtonDark: "☀️ Light",
+          langButton: "中文",
+          texts: {
+            ".sidebar .section-label:nth-of-type(1)": "Quick Start",
+            ".sidebar .section-label:nth-of-type(2)": "API Reference",
+            ".sidebar .section-label:nth-of-type(3)": "Examples",
+            ".sidebar .section-label:nth-of-type(4)": "Appendix",
+            '.sidebar a[href="#overview"]': "Overview",
+            '.sidebar a[href="#quick-start"]': "Getting Started",
+            '.sidebar a[href="#constructor"]': "1. Constructor",
+            '.sidebar a[href="#query"]': "2. Query APIs",
+            '.sidebar a[href="#config"]': "3. Config APIs",
+            '.sidebar a[href="#execute"]': "4. Execution Engine",
+            '.sidebar a[href="#states"]': "5. State Switching",
+            '.sidebar a[href="#change-mode"]': "5.1 change_mode",
+            '.sidebar a[href="#velocity"]': "6. Velocity Sequence",
+            '.sidebar a[href="#line-walk"]': "7. Line Walk",
+            '.sidebar a[href="#walk-shortcuts"]': "7.1 Direction Shortcuts",
+            '.sidebar a[href="#rotation"]': "8. Rotation",
+            '.sidebar a[href="#circle"]': "8.1 circle",
+            '.sidebar a[href="#rotate-walk"]': "8.2 rotate_walk",
+            '.sidebar a[href="#balance"]': "9. Balance Motions",
+            '.sidebar a[href="#dynamic-pose"]': "10. Composite Poses",
+            '.sidebar a[href="#special-motions"]': "11. Special Motions",
+            '.sidebar a[href="#safety"]': "12. Safety Handler",
+            '.sidebar a[href="#examples"]': "Examples Overview",
+            '.sidebar a[href="#ex1"]': "E1: Available Motions",
+            '.sidebar a[href="#ex2"]': "E2: Current State",
+            '.sidebar a[href="#ex3"]': "E3: State Switching",
+            '.sidebar a[href="#ex4"]': "E4: Velocity Sequence",
+            '.sidebar a[href="#ex5"]': "E5: Robot Telemetry",
+            '.sidebar a[href="#ex6"]': "E6: Balance Motions",
+            '.sidebar a[href="#ex7"]': "E7: Line Walk",
+            '.sidebar a[href="#ex8"]': "E8: Rotation",
+            '.sidebar a[href="#ex9"]': "E9: Combo Sequence",
+            '.sidebar a[href="#ex10"]': "E10: Config Demo",
+            '.sidebar a[href="#param-ranges"]': "Parameter Ranges",
+            '.sidebar a[href="#changelog"]': "Changelog",
+            "h1#overview": "Robot Client API",
+            "h1#api-reference": "API Reference",
+            "h1#examples": "Example Programs",
+            "h2#quick-start": "Getting Started",
+            ".main > p":
+              "Public API reference and example program guide for the high-level robot client libraries.",
+            "#transport-note":
+              "<strong>Transport:</strong> <code>grpc_service.proto</code> (<code>grpc_comm</code> package), with all calls routed through gRPC.",
+            "h2#constructor": "1. Constructor / Connection",
+            "h2#query": "2. Query APIs",
+            "h2#config": "3. Configuration APIs",
+            "h2#execute": "4. Execution Engine",
+            "h2#states": "5. State Switching",
+            "h2#velocity": "6. Velocity Sequence",
+            "h2#line-walk": "7. Line Walk",
+            "h2#rotation": "8. Rotation Control",
+            "h2#balance": "9. Balance Motions",
+            "h2#dynamic-pose":
+              "10. Composite Poses (dynamic_pose / static_pose)",
+            "h2#special-motions": "11. Special Motions",
+            "h2#safety": "12. Safety Handler",
+            "h2#param-ranges": "Parameter Quick Reference",
+            "h2#changelog": "Changelog",
+            ".example-grid + h2#ex1 + p":
+              "List all motions registered on the server together with their parameters.",
+            "h2#ex1": "E1: Available Motions",
+            "h2#ex2": "E2: Current State",
+            "h2#ex3": "E3: State Switching",
+            "h2#ex4": "E4: Velocity Sequence",
+            "h2#ex5": "E5: Robot Telemetry",
+            "h2#ex6": "E6: Balance Motions",
+            "h2#ex7": "E7: Line Walk",
+            "h2#ex8": "E8: Rotation",
+            "h2#ex9": "E9: Combo Sequence",
+            "h2#ex10": "E10: Config Demo",
+            "#examples + p":
+              "Every example is available in both Python and C++, under <code>high_level/python/examples/</code> and <code>high_level/cpp/</code>.",
+            ".example-card:nth-child(1) h4 a": "E1: Available Motions",
+            ".example-card:nth-child(1) p":
+              "List all motions registered on the server and their parameters",
+            ".example-card:nth-child(2) h4 a": "E2: Current State",
+            ".example-card:nth-child(2) p": "Query the current FSM state name",
+            ".example-card:nth-child(3) h4 a": "E3: State Switching",
+            ".example-card:nth-child(3) p":
+              "Switch robot states via CLI arguments or interactive mode",
+            ".example-card:nth-child(4) h4 a": "E4: Velocity Sequence",
+            ".example-card:nth-child(4) p":
+              "Velocity control demo for Walk / Flying Trot",
+            ".example-card:nth-child(5) h4 a": "E5: Robot Telemetry",
+            ".example-card:nth-child(5) p":
+              "Read full joint, body, and contact-force telemetry",
+            ".example-card:nth-child(6) h4 a": "E6: Balance Motions",
+            ".example-card:nth-child(6) p":
+              "Pitch / Yaw / Roll / Height motion sequences",
+            ".example-card:nth-child(7) h4 a": "E7: Line Walk",
+            ".example-card:nth-child(7) p":
+              "Straight walking in forward/backward/left/right directions",
+            ".example-card:nth-child(8) h4 a": "E8: Rotation",
+            ".example-card:nth-child(8) p":
+              "Rotate in place to the left or right",
+            ".example-card:nth-child(9) h4 a": "E9: Combo Sequence",
+            ".example-card:nth-child(9) p":
+              "Arduino-style sequential blocking calls",
+            ".example-card:nth-child(10) h4 a": "E10: Config Demo",
+            ".example-card:nth-child(10) p":
+              "Speed ratio and obstacle avoidance configuration",
+            "#ex3 + p":
+              'Supports command-line arguments or interactive selection. <span class="badge badge-removed">rl removed</span>',
+            "#ex9 + p":
+              "Arduino-style blocking sequence calls — each function blocks until the motion finishes.",
+            "#state-prefix-note":
+              "<strong>Note:</strong> All state-switching methods now use names without the <code>set_</code> prefix. Use <code>robot.balance_stand()</code> instead of <code>robot.set_balance_stand()</code>.",
+            "#line-walk-breaking-change":
+              "<strong>Breaking Change:</strong> <code>walk_left</code> → <code>move_left</code>, <code>walk_right</code> → <code>move_right</code>. The distance upper limit is now <strong>3m</strong> instead of 10m.",
+          },
+          nodeTexts: {
+            语言: "Language",
+            文件: "File",
+            类: "Class",
+            参数: "Parameters",
+            类型: "Type",
+            默认值: "Default",
+            返回字段: "Response Field",
+            "构造时行为：": "Constructor behavior:",
+            "查询当前速度比（使用 get_speed_ratio）":
+              "Query current speed ratio (using get_speed_ratio)",
+            设置速度比: "Set speed ratio",
+            避障开关: "Obstacle avoidance",
+            "启用/禁用避障。接受 ":
+              "Enable or disable obstacle avoidance. Accepts ",
+            "快捷函数：": "Shortcut methods:",
+            单轴控制: "Single-axis control",
+            批量执行: "Batch execution",
+            函数: "Function",
+            范围: "Range",
+            说明: "Description",
+            默认: "Default",
+            涉及函数: "Used By",
+            更新日志: "Changelog",
+            新增: "New",
+            已改: "Changed",
+            "已移除 rl": "rl removed",
+          },
+        },
+      };
+
+      function applyTextNodeTranslations(lang) {
+        const replacements = i18n[lang].nodeTexts || {};
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+          {
+            acceptNode(node) {
+              const parent = node.parentElement;
+              if (!parent) return NodeFilter.FILTER_REJECT;
+              if (["SCRIPT", "STYLE", "CODE", "PRE"].includes(parent.tagName))
+                return NodeFilter.FILTER_REJECT;
+              const trimmed = node.nodeValue.trim();
+              if (!trimmed) return NodeFilter.FILTER_REJECT;
+              return replacements[trimmed]
+                ? NodeFilter.FILTER_ACCEPT
+                : NodeFilter.FILTER_REJECT;
+            },
+          },
+        );
+
+        const nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        nodes.forEach((node) => {
+          const trimmed = node.nodeValue.trim();
+          node.nodeValue = node.nodeValue.replace(
+            trimmed,
+            replacements[trimmed],
+          );
+        });
+      }
+
+      function applyTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem(THEME_KEY, theme);
+        const themeButton = document.getElementById("theme-toggle");
+        const lang = localStorage.getItem(LANG_KEY) || "zh";
+        themeButton.textContent =
+          theme === "dark"
+            ? i18n[lang].themeButtonDark
+            : i18n[lang].themeButton;
+      }
+
+      function applyLanguage(lang) {
+        const config = i18n[lang] || i18n.zh;
+        document.documentElement.lang = config.lang;
+        document.title = config.title;
+        localStorage.setItem(LANG_KEY, lang);
+        Object.entries(config.texts).forEach(([selector, value]) => {
+          const el = document.querySelector(selector);
+          if (el) {
+            if (value.includes("<")) {
+              el.innerHTML = value;
+            } else {
+              el.textContent = value;
+            }
+          }
+        });
+        applyTextNodeTranslations(lang);
+        document.getElementById("lang-toggle").textContent = config.langButton;
+        const currentTheme =
+          document.documentElement.getAttribute("data-theme") || "light";
+        document.getElementById("theme-toggle").textContent =
+          currentTheme === "dark" ? config.themeButtonDark : config.themeButton;
+      }
+
+      // Sidebar active tracking
+      const sidebar = document.getElementById("sidebar");
+      const links = sidebar.querySelectorAll('a[href^="#"]');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              links.forEach((l) => l.classList.remove("active"));
+              const active = sidebar.querySelector(
+                'a[href="#' + entry.target.id + '"]',
+              );
+              if (active) active.classList.add("active");
+            }
+          });
+        },
+        { rootMargin: "-80px 0px -70% 0px" },
+      );
+
+      document
+        .querySelectorAll("h1[id], h2[id], h3[id]")
+        .forEach((el) => observer.observe(el));
+
+      document.getElementById("theme-toggle").addEventListener("click", () => {
+        const current =
+          document.documentElement.getAttribute("data-theme") || "light";
+        applyTheme(current === "dark" ? "light" : "dark");
+      });
+
+      document.getElementById("lang-toggle").addEventListener("click", () => {
+        const current = localStorage.getItem(LANG_KEY) || "zh";
+        applyLanguage(current === "zh" ? "en" : "zh");
+      });
+
+      applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+      applyLanguage(localStorage.getItem(LANG_KEY) || "zh");
+    </script>
+  </body>
+</html>

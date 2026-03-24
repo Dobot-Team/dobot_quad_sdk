@@ -10,14 +10,22 @@ This document provides detailed information about the Dobot Quad SDK's high-leve
 
 - [Overview](#overview)
 - [State Machine Introduction](#state-machine-introduction)
+- [Speed Ratio & Velocity System](#speed-ratio--velocity-system)
+- [Obstacle Avoidance](#obstacle-avoidance)
 - [Kill Robot Tool](#kill-robot-tool)
 - [Example Programs](#example-programs)
   - [E1: Get Available Motions](#e1-get-available-motions)
-  - [E2: Direct State Switch](#e2-direct-state-switch)
+  - [E2: Get Current State](#e2-get-current-state)
   - [E3: Auto State Switch](#e3-auto-state-switch)
   - [E4: Velocity Sequence Control](#e4-velocity-sequence-control)
   - [E5: Robot State Query](#e5-robot-state-query)
   - [E6: Balance Motion Control](#e6-balance-motion-control)
+  - [E7: Line Walk](#e7-line-walk)
+  - [E8: Rotation](#e8-rotation)
+  - [E9: Combo Sequence](#e9-combo-sequence)
+  - [E10: Speed Ratio & Obstacle Avoidance](#e10-speed-ratio--obstacle-avoidance)
+- [RPC Reference](#rpc-reference)
+- [FAQ](#faq)
 
 ---
 
@@ -26,9 +34,10 @@ This document provides detailed information about the Dobot Quad SDK's high-leve
 The high-level control layer is implemented using the gRPC protocol and provides the following core features:
 
 - **State Machine Management**: Control transitions between different motion states
-- **Motion Planning**: Execute predefined motion sequences
-- **State Query**: Real-time retrieval of robot status data
-- **Parameter Configuration**: Dynamic adjustment of motion parameters
+- **Motion Planning**: Execute predefined motion sequences with real-time progress streaming
+- **State Query**: Real-time retrieval of robot status data (joints, body, FSM state)
+- **Parameter Configuration**: Dynamic adjustment of speed ratio and obstacle avoidance
+- **Velocity Control**: Direct velocity commands in physical units (m/s, rad/s)
 
 ### Connection
 
@@ -36,11 +45,24 @@ Default gRPC service address is `192.168.5.2:50051` (robot host port).
 
 ```python
 import grpc
-from proto import grpc_service_pb2_grpc
+from dobot_quad.proto import grpc_service_pb2_grpc
 
 channel = grpc.insecure_channel("192.168.5.2:50051")
 stub = grpc_service_pb2_grpc.gRPCServiceStub(channel)
 ```
+
+### Client Libraries
+
+Two ready-to-use client libraries are provided:
+
+| Language | File | Class |
+|----------|------|-------|
+| Python | `high_level/python/dobot_quad/robot_client.py` | `RobotClient` |
+| C++ | `high_level/cpp/robot_client.h` | `robot::Client` |
+
+Both wrap all RPC calls with progress display, error handling, and Ctrl+C cancellation support.
+
+For Python, running `pip install .` inside `high_level/python` installs the `dobot_quad` package and auto-generates gRPC bindings. Examples live in the `examples/` subdirectory.
 
 ---
 
@@ -73,9 +95,120 @@ Use the `path_to_state` motion to automatically find transition paths.
 
 ---
 
+## Speed Ratio & Velocity System
+
+### Speed Ratio
+
+The **speed ratio** controls the overall speed scaling of the robot. It can be set via the `SetSpeedRatio` RPC.
+
+| Property | Value |
+|----------|-------|
+| Range | 10 – 100 |
+| Step | 10 |
+| Default | 50 |
+
+When you set speed ratio to 0, the RPC returns the current value without modifying it (query mode).
+
+The speed ratio affects the **real speed scale** used in the velocity pipeline:
+
+```
+realSpeedScale = (1 - k_lower) × speedRatio / 100 + k_lower
+```
+
+where `k_lower` is the minimum speed fraction (varies per gait, see table below).
+
+### Gait Velocity Bounds
+
+Each gait mode has its own velocity limits. The maximum achievable velocity depends on both the gait bounds and the current speed ratio:
+
+```
+v_max = bound × realSpeedScale
+```
+
+| Gait | Direction | Bound | k_lower | Max @ ratio=50 | Max @ ratio=100 |
+|------|-----------|-------|---------|-----------------|-----------------|
+| **WALK** | vx (forward) | 1.2 m/s | 0.4 | 0.84 m/s | 1.20 m/s |
+| | vx (backward) | 0.8 m/s | 0.4 | 0.56 m/s | 0.80 m/s |
+| | vy (strafe) | 0.45 m/s | 0.4 | 0.315 m/s | 0.45 m/s |
+| | vyaw (turn) | 1.8 rad/s | 0.4 | 1.26 rad/s | 1.80 rad/s |
+| **FLYING_TROT** | vx (forward) | 2.0 m/s | 0.2 | 1.20 m/s | 2.00 m/s |
+| | vx (backward) | 1.0 m/s | 0.2 | 0.60 m/s | 1.00 m/s |
+| | vy (strafe) | 0.55 m/s | 0.2 | 0.33 m/s | 0.55 m/s |
+| | vyaw (turn) | 1.4 rad/s | 0.2 | 0.84 rad/s | 1.40 rad/s |
+| **RL** | vx (forward) | 0.8 m/s | 0.3 | 0.52 m/s | 0.80 m/s |
+| | vx (backward) | 0.6 m/s | 0.3 | 0.39 m/s | 0.60 m/s |
+| | vy (strafe) | 0.45 m/s | 0.3 | 0.293 m/s | 0.45 m/s |
+| | vyaw (turn) | 1.2 rad/s | 0.3 | 0.78 rad/s | 1.20 rad/s |
+
+> **Note**: When a requested velocity exceeds the achievable maximum, it is internally clamped to the bound. For best results, keep your velocity values within the "Max @ ratio=N" limits.
+
+### Setting Speed Ratio
+
+```python
+from dobot_quad import RobotClient
+
+robot = RobotClient("192.168.5.2:50051")
+
+# Query current speed ratio (returns locally tracked value)
+current = robot.get_speed_ratio()
+print(f"Current speed ratio: {current}")
+
+# Set speed ratio to 80
+robot.set_speed_ratio(80)
+```
+
+```cpp
+robot::Client client("192.168.5.2:50051");
+
+// Query current speed ratio (returns locally tracked value)
+int current = client.get_speed_ratio();
+std::cout << "Current: " << current << std::endl;
+
+// Set speed ratio to 80
+client.set_speed_ratio(80);
+```
+
+> **Note:** `get_speed_ratio()` and `get_obstacle_avoidance()` return locally tracked values updated from `set_*()` RPC responses, rather than querying the server each time. This avoids stale reads from the eventually-consistent `GetRobotState` RPC.
+
+---
+
+## Obstacle Avoidance
+
+The robot has a built-in obstacle avoidance system that uses sensors to detect obstacles and modifies velocity commands to prevent collisions. When enabled, the obstacle avoidance system may **override the forward velocity (vx)** to zero if an obstacle is detected ahead.
+
+> **Important**: Obstacle avoidance primarily affects the forward direction (vx). Lateral (vy) and rotational (vyaw) velocities are not modified by the obstacle avoidance system.
+
+### Enable/Disable Obstacle Avoidance
+
+Use the `SetObstacleAvoidance` RPC to toggle the obstacle avoidance system:
+
+```python
+robot = RobotClient("192.168.5.2:50051")
+
+# Disable obstacle avoidance
+robot.set_obstacle_avoidance(False)
+
+# Enable obstacle avoidance
+robot.set_obstacle_avoidance(True)
+```
+
+```cpp
+robot::Client client("192.168.5.2:50051");
+
+// Disable obstacle avoidance
+client.set_obstacle_avoidance(false);
+
+// Enable obstacle avoidance
+client.set_obstacle_avoidance(true);
+```
+
+> **Tip**: If you notice the robot not moving forward while vy/vyaw work correctly, it is likely because obstacle avoidance is blocking vx. Try disabling it to test.
+
+---
+
 ## Kill Robot Tool
 
-**Files**: `high_level/python/kill_robot.py` / `high_level/cpp/kill_robot.cpp`
+**Files**: `high_level/python/examples/kill_robot.py` / `high_level/cpp/kill_robot.cpp`
 
 ### Description
 
@@ -95,10 +228,10 @@ The tool executes the `kill_robot` motion command via gRPC interface. The server
 
 ```bash
 cd high_level/python
-python3 kill_robot.py [server_address:port]
+python3 examples/kill_robot.py [server_address:port]
 
 # Example
-python3 kill_robot.py 192.168.5.2:50051
+python3 examples/kill_robot.py 192.168.5.2:50051
 ```
 
 #### C++ Version
@@ -131,7 +264,7 @@ Since the `kill_robot` command shuts down the server process, the client may rec
 Kill robot command executed successfully (server shut down as expected).
 ```
 
-### ⚠️ Important Notes
+### Important Notes
 
 - **When to Use**: Must execute before using low-level motor control (low_level E9) or LED control (low_level E3)
 - **Safety Reminder**: Before execution, ensure the robot is in a safe position (flat ground, away from obstacles) to avoid falls from sudden motor disable
@@ -142,7 +275,7 @@ Kill robot command executed successfully (server shut down as expected).
 
 ### E1: Get Available Motions
 
-**File**: `high_level/python/e1_get_available_motions.py`
+**Files**: `high_level/python/examples/e1_get_available_motions.py` / `high_level/cpp/e1_get_available_motions.cpp`
 
 #### Description
 
@@ -159,11 +292,13 @@ Through the `GetAvailableMotions` RPC call, the server returns information about
 #### Running
 
 ```bash
+# Python
 cd high_level/python
-python3 e1_get_available_motions.py [server_address]
+python3 examples/e1_get_available_motions.py [server_address]
 
-# Example
-python3 e1_get_available_motions.py 192.168.5.2:50051
+# C++
+cd high_level/cpp/build
+./e1_get_available_motions [server_address]
 ```
 
 #### Sample Output
@@ -180,102 +315,72 @@ Found 15 motions:
   [stand_up]
     Description: Trigger FSM to STAND_UP once
 
-  [walk]
-    Description: Trigger FSM to WALK with velocity sequence support
+  [walk_velocity_seq]
+    Description: Walk with velocity sequence control
     Parameters (default values):
       - velocity_sequence: "" (string)
 
   [balance_pitch]
-    Description: Control robot pitch angle in balance stand with sinusoidal motion
+    Description: Control robot pitch angle in balance stand
     Parameters (default values):
-      - beats: 1.0 (float)
-      - amplitude: 1.0 (float)
+      - value: 0.0 (float)
+      - duration: 2.0 (float)
+      - mode: "dynamic" (string)
 
   ......
 ```
 
 #### Motion Parameter Reference
 
-| Motion Type | Parameters | Description |
-|-------------|------------|-------------|
-| State switch motions | None | `passive`, `stand_down`, `stand_up`, `balance_stand`, etc. |
-| Walking motions | `velocity_sequence` | Velocity sequence string, see E4 for format |
-| Balance motions | `beats`, `amplitude` | Beat count and amplitude |
-| Auto pathfinding | `target_state` | Target state name |
+| Motion Type | Motion ID | Parameters | Description |
+|-------------|-----------|------------|-------------|
+| State switch | `passive`, `stand_down`, `stand_up`, `balance_stand`, etc. | None | Single state transition |
+| Auto pathfinding | `path_to_state` | `target_state` | Automatically navigate to target state |
+| Velocity sequence | `walk_velocity_seq`, `flying_trot_velocity_seq` | `velocity_sequence` | Velocity control in m/s and rad/s (see E4) |
+| Balance motions | `balance_pitch`, `balance_yaw`, `balance_roll`, `balance_height`, `balance_neutral` | `value`, `duration`, `mode` | Posture control in BALANCE_STAND (see E6) |
+| Line walk | `line_walk` | `direction`, `distance` | Walk straight for a given distance (see E7) |
+| Rotation | `rotation` | `direction`, `angle` | Rotate in place by a given angle (see E8) |
+| Special | `kill_robot` | None | Safely shut down the controller |
 
 ---
 
-### E2: Direct State Switch
+### E2: Get Current State
 
-**File**: `high_level/python/e2_direct_state_switch.py`
+**Files**: `high_level/python/examples/e2_get_current_state.py` / `high_level/cpp/e2_get_current_state.cpp`
 
 #### Description
 
-Manually switch robot states following state machine rules. Users need to know which states can be transitioned to from the current state and specify the transition path in order.
-
-#### Difference from Auto Switch
-
-| Feature | Direct Switch (E2) | Auto Switch (E3) |
-|---------|-------------------|------------------|
-| Path Planning | User-specified | System automatic |
-| Use Case | Precise control over transition process | Quick navigation to target state |
-| Error Handling | Invalid path will fail | Automatically finds valid path |
+Query the robot's current FSM state and basic telemetry data. Useful for checking the robot's current mode before issuing commands.
 
 #### Principle
 
-Multiple state switch motions are composed into a `MotionSequence` and executed in order. Each motion triggers one state transition.
-
-#### Sample Code
-
-```python
-# Create motion sequence
-sequence = grpc_service_pb2.MotionSequence(
-    sequence_id="demo_state_switch",
-    sequence_name="Direct State Switch Demo",
-    loop=False
-)
-
-# Add state switch motions in order
-motion_ids = ["passive", "stand_down", "stand_up", "balance_stand"]
-for motion_id in motion_ids:
-    motion = sequence.motions.add()
-    motion.motion_id = motion_id
-
-# Execute sequence
-request = grpc_service_pb2.ExecuteSequenceRequest(
-    sequence=sequence,
-    immediate_start=True
-)
-response = stub.ExecuteSequence(request)
-```
+Through the `GetRobotState` RPC call, returns the current FSM state name along with sensor data.
 
 #### Running
 
 ```bash
+# Python
 cd high_level/python
-python3 e2_direct_state_switch.py [server_address]
+python3 examples/e2_get_current_state.py [server_address]
+
+# C++
+cd high_level/cpp/build
+./e2_get_current_state [server_address]
 ```
 
 #### Sample Output
 
 ```
-✓ Connected to server: 192.168.5.2:50051
-example 2: Direct State Switching Demo
-STAND_DOWN -> STAND_UP -> BALANCE_STAND -> DANCE0
+Connected to server: 192.168.5.2:50051
 
-Sequence is running... Press Ctrl+C to stop.
-
-State switching demo executed successfully
-  Execution ID: exec_12345
-  Message: Sequence completed
-  Number of motions: 5
+Current state: STAND_DOWN
 ```
 
 ---
 
 ### E3: Auto State Switch
 
-**File**: `high_level/python/e3_auto_state_switch.py`
+**Files**: `high_level/python/examples/e3_auto_state_switch.py` / `high_level/cpp/e3_auto_state_switch.cpp`
 
 #### Description
 
@@ -293,21 +398,15 @@ Uses the `path_to_state` motion, which internally calls the `StateRoute` compone
 #### Sample Code
 
 ```python
-sequence = grpc_service_pb2.MotionSequence(
-    sequence_id="path_to_state",
-    sequence_name="Auto State Switch Demo",
-    loop=False
-)
+from dobot_quad import RobotClient
 
-# Use path_to_state motion
-motion = sequence.motions.add()
-motion.motion_id = "path_to_state"
-motion.parameters.add(key="target_state", string_value="BALANCE_STAND")
+robot = RobotClient("192.168.5.2:50051")
 
-request = grpc_service_pb2.ExecuteSequenceRequest(
-    sequence=sequence,
-    immediate_start=True
-)
+# Navigate to BALANCE_STAND from any state
+robot.execute("balance_stand")
+
+# Navigate to WALK
+robot.execute(("path_to_state", {"target_state": "WALK"}))
 ```
 
 #### Supported Target States
@@ -331,8 +430,13 @@ state_list = [
 #### Running
 
 ```bash
+# Python (interactive menu)
 cd high_level/python
-python3 e3_auto_state_switch.py [server_address]
+python3 examples/e3_auto_state_switch.py [server_address]
+
+# C++
+cd high_level/cpp/build
+./e3_auto_state_switch [server_address]
 ```
 
 The program provides an interactive menu to select the target state.
@@ -341,11 +445,20 @@ The program provides an interactive menu to select the target state.
 
 ### E4: Velocity Sequence Control
 
-**File**: `high_level/python/e4_velocity_sequence.py`
+**Files**: `high_level/python/examples/e4_velocity_sequence.py` / `high_level/cpp/e4_velocity_sequence.cpp`
 
 #### Description
 
-Control the robot's motion trajectory through velocity sequences in `WALK` or `FLYING_TROT` state.
+Control the robot's motion trajectory through velocity sequences in `WALK` or `FLYING_TROT` state. Velocities are specified in **physical units** (m/s and rad/s) and internally converted to controller commands using the velocity bounds and current speed ratio.
+
+#### Motion IDs
+
+| Motion ID | Target Gait |
+|-----------|-------------|
+| `walk_velocity_seq` | WALK |
+| `flying_trot_velocity_seq` | FLYING_TROT |
+
+Each motion automatically switches to the required gait state before executing the velocity sequence.
 
 #### Velocity Sequence Format
 
@@ -362,76 +475,112 @@ Control the robot's motion trajectory through velocity sequences in `WALK` or `F
 
 #### Velocity Direction Reference
 
-- **vx > 0**: Move forward
-- **vx < 0**: Move backward
-- **vy > 0**: Strafe left
-- **vy < 0**: Strafe right
-- **vyaw > 0**: Counter-clockwise rotation (turn left)
-- **vyaw < 0**: Clockwise rotation (turn right)
+| Direction | Condition | Description |
+|-----------|-----------|-------------|
+| Forward | vx > 0 | Move forward |
+| Backward | vx < 0 | Move backward |
+| Strafe left | vy > 0 | Move to the left |
+| Strafe right | vy < 0 | Move to the right |
+| Turn left (CCW) | vyaw > 0 | Counter-clockwise rotation |
+| Turn right (CW) | vyaw < 0 | Clockwise rotation |
+
+#### Recommended Velocity Ranges
+
+See the Gait Velocity Bounds section for detailed maximum velocities per gait and speed ratio. Common safe values at the default speed ratio (50):
+
+| Gait | vx | vy | vyaw |
+|------|----|----|------|
+| WALK | +/-0.5 m/s | +/-0.2 m/s | +/-0.8 rad/s |
+| FLYING_TROT | +/-0.8 m/s | +/-0.3 m/s | +/-0.6 rad/s |
 
 #### Sample Code
 
 ```python
-# Velocity sequence example: in-place rotation test
-velocity_sequence = (
-    "0.0,0.0,0.2,2.5;"   # Turn right in place for 2.5s
-    "0.0,0.0,-0.2,2.5;"  # Turn left in place for 2.5s
-    "0.0,0.0,0.0,1.0"    # Stop for 1s
+from dobot_quad import RobotClient
+
+robot = RobotClient("192.168.5.2:50051")
+
+# Walk demo: forward, backward, strafe, turn
+robot.execute(
+    (
+        "walk_velocity_seq",
+        {
+            "velocity_sequence":
+            "0.5,0.0,0.0,2.0;"   # forward  0.5 m/s for 2s
+            "0.0,0.0,0.0,1.0;"   # stop for 1s
+            "-0.4,0.0,0.0,2.0;"  # backward 0.4 m/s for 2s
+            "0.0,0.0,0.0,1.0;"   # stop
+            "0.0,0.2,0.0,2.0;"   # strafe left  0.2 m/s
+            "0.0,0.0,0.0,1.0;"   # stop
+            "0.0,-0.2,0.0,2.0;"  # strafe right 0.2 m/s
+            "0.0,0.0,0.0,1.0;"   # stop
+            "0.0,0.0,0.5,2.0;"   # turn left  0.5 rad/s
+            "0.0,0.0,0.0,1.0;"   # stop
+            "0.0,0.0,-0.5,2.0;"  # turn right 0.5 rad/s
+            "0.0,0.0,0.0,1.0;"   # stop
+        },
+    ),
+    "stand_down",
 )
-
-# Create motion sequence
-sequence = grpc_service_pb2.MotionSequence(
-    sequence_id="demo_walk_velocity",
-    sequence_name="Walk Velocity Demo",
-    loop=False
-)
-
-# First switch to WALK state
-motion1 = sequence.motions.add()
-motion1.motion_id = "path_to_state"
-motion1.parameters.add(key="target_state", string_value="WALK")
-
-# Execute velocity sequence
-motion2 = sequence.motions.add()
-motion2.motion_id = "walk"  # or "flying_trot", "rl"
-motion2.parameters.add(key="velocity_sequence", string_value=velocity_sequence)
 ```
 
-#### Complex Motion Example
-
 ```python
-# Forward, turning, strafing combination
-velocity_sequence = (
-    "0.0,0.5,0.0,2.0;"    # Forward for 2s
-    "0.0,0.5,0.3,2.0;"    # Forward + turn right for 2s
-    "0.4,0.0,0.0,1.5;"    # Strafe right for 1.5s
-    "0.0,-0.3,-0.3,2.0;"  # Backward + turn left for 2s
-    "0.0,0.0,-0.5,1.5;"   # Turn left in place for 1.5s
-    "0.0,0.0,0.0,1.0"     # Stop
+# Flying trot demo: faster speeds
+robot.execute(
+    (
+        "flying_trot_velocity_seq",
+        {
+            "velocity_sequence":
+            "0.8,0.0,0.0,2.0;"  # sprint forward 0.8 m/s
+            "0.0,0.0,0.0,1.0;"  # stop
+            "0.0,0.0,0.6,2.0;"  # turn left 0.6 rad/s
+            "0.0,0.0,0.0,1.0;"  # stop
+        },
+    ),
+    "stand_down",
 )
 ```
 
 #### Running
 
 ```bash
+# Python (1=walk demo, 2=flying trot demo)
 cd high_level/python
-python3 e4_velocity_sequence.py [server_address]
+python3 examples/e4_velocity_sequence.py [server_address] [1|2]
+
+# C++
+cd high_level/cpp/build
+./e4_velocity_sequence [server_address] [1|2]
+```
+
+#### Progress Streaming
+
+During execution, the server streams real-time progress updates. For velocity sequences, messages include the current segment index and velocity values:
+
+```
+Running... (Ctrl+C to stop)
+  [1/2] walk_velocity_seq | state: WALK (VelSeg 1/12: vx=0.50 vy=0.00 vyaw=0.00)
+  [1/2] walk_velocity_seq | state: WALK (VelSeg 2/12: vx=0.00 vy=0.00 vyaw=0.00)
+  ...
+  [1/2] walk_velocity_seq | state: WALK (VelSeg 12/12: vx=0.00 vy=0.00 vyaw=0.00)
+Done.
 ```
 
 ---
 
 ### E5: Robot State Query
 
-**File**: `high_level/python/e5_robot_state.py`
+**Files**: `high_level/python/examples/e5_robot_state.py` / `high_level/cpp/e5_robot_state.cpp`
 
 #### Description
 
 Real-time retrieval of robot status data, including:
 
-- Joint positions, velocities, torques
-- Body position and orientation
+- Joint positions, velocities, torques (actual and desired)
+- Body position, velocity, acceleration, orientation, angular velocity
 - Contact force information
 - Battery voltage
+- Current FSM state name
 
 #### Principle
 
@@ -447,168 +596,316 @@ Retrieves `RobotState` message through the `GetRobotState` RPC call.
 | Leg Joints (Desired) | `jpos_leg_des` | rad | Desired joint positions |
 | | `jvel_leg_des` | rad/s | Desired joint velocities |
 | | `jtau_leg_des` | Nm | Desired joint torques |
-| Body State | `pos_body (not yet available)` | m | Body position [x, y, z] |
-| | `vel_body (not yet available)` | m/s | Body velocity [vx, vy, vz] |
-| | `acc_body` | m/s² | Body acceleration [ax, ay, az] |
+| Body State | `pos_body` *(not yet available)* | m | Body position [x, y, z] |
+| | `vel_body` *(not yet available)* | m/s | Body velocity [vx, vy, vz] |
+| | `acc_body` | m/s2 | Body acceleration [ax, ay, az] |
 | | `ori_body` | rad | Body orientation [roll, pitch, yaw] |
-| | `omega_body` | rad/s | Body angular velocity [ωx, ωy, ωz] |
-| Contact Forces (Raw) | `grf_left (not yet available)` | N | Left foot forces [fx, fy, fz] |
-| | `grf_right (not yet available)` | N | Right foot forces [fx, fy, fz] |
-| Contact Forces (Filtered) | `grf_vertical_filtered (not yet available)` | N | Filtered vertical contact force [left, right] |
+| | `omega_body` | rad/s | Body angular velocity |
+| Contact Forces (Raw) | `grf_left` *(not yet available)* | N | Left foot forces [fx, fy, fz] |
+| | `grf_right` *(not yet available)* | N | Right foot forces [fx, fy, fz] |
 | Contact Force Statistics | `temp[0]` | N | Total contact force of left foot |
 | | `temp[1]` | N | Total contact force of right foot |
 | | `temp[2]` | N | Total contact force of both feet |
 | | `temp[3]` | N | Total ground reaction force in X direction |
 | Power Status | `temp[8]` | V | Battery 1 voltage |
 | | `temp[9]` | V | Battery 2 voltage |
+| FSM State | `current_state` | -- | Current FSM state name (e.g. "WALK") |
 
 > **Note**: `temp[4]` to `temp[7]` are reserved fields and not currently used.
 
 #### Running
 
 ```bash
+# Python
 cd high_level/python
-python3 e5_robot_state.py [server_address]
-```
+python3 examples/e5_robot_state.py [server_address]
 
-#### Sample Output
-
-```
-Connected to server: 192.168.5.2:50051
-
-Fetching robot state...
-
-Robot state retrieved successfully
-  Message: State retrieved
-
-Robot State Data:
-
-Leg Joints [rad] / [rad/s] / [Nm]:
-  Positions [rad]: ['-0.05', '0.85', '-1.70', ...]
-  Velocities [rad/s]: ['0.00', '0.01', '-0.02', ...]
-  Torques [Nm]: ['0.12', '5.43', '-8.21', ...]
-
-Body State:
-  Position (x,y,z) [m]: ['0.00', '0.00', '0.32']
-  Velocity [m/s]: ['0.00', '0.00', '0.00']
-  Orientation (roll,pitch,yaw) [rad]: ['0.01', '-0.02', '0.00']
-
-Contact Forces [N]:
-  Left Foot [N]: ['0.00', '0.00', '45.23', '0.00', '0.00', '48.12']
-  Right Foot [N]: ['0.00', '0.00', '44.89', '0.00', '0.00', '47.56']
-
-Additional Data:
-  Battery Voltage 1 [V]: 25.20
-  Battery Voltage 2 [V]: 25.18
+# C++
+cd high_level/cpp/build
+./e5_robot_state [server_address]
 ```
 
 ---
 
 ### E6: Balance Motion Control
 
-**File**: `high_level/python/e6_balance_motions.py`
+**Files**: `high_level/python/examples/e6_balance_motions.py` / `high_level/cpp/e6_balance_motions.cpp`
 
 #### Description
 
 Control robot posture in `BALANCE_STAND` state, executing four basic motions:
 
-- **Pitch**: Nodding motion
-- **Yaw**: Head shaking motion
-- **Roll**: Side-to-side swaying
-- **Height**: Squat/stand tall
+- **Pitch**: Nodding motion (look up / look down)
+- **Yaw**: Head shaking motion (turn left / turn right)
+- **Roll**: Side-to-side swaying (lean left / lean right)
+- **Height**: Squat / stand tall
 
 #### Motion Parameters
 
 | Parameter | Description | Range |
 |-----------|-------------|-------|
-| `beats` | Duration in beats | > 0 |
-| `amplitude` | Motion amplitude | -1.0 ~ 1.0 |
-| `bpm` | Beats per minute (set at sequence level) | > 0 |
-
-#### Duration Calculation
-
-```
-Actual duration = beats × 60 / bpm
-```
-
-Example: `beats=1.0`, `bpm=120` → duration = 0.5 seconds
-
-#### Amplitude Reference
-
-| Motion | amplitude > 0 | amplitude < 0 |
-|--------|---------------|---------------|
-| `balance_pitch` | Look up | Look down |
-| `balance_yaw` | Turn head right | Turn head left |
-| `balance_roll` | Lean right | Lean left |
-| `balance_height` | - | Squat (lower height) |
-
-> Note: `balance_height` amplitude typically uses negative values (-1.0 ~ 0.0)
+| `value` | Target offset value (degrees for rpy, meters for height) | roll: `[-30, 30]`, pitch: `[-15, 15]`, yaw: `[-20, 20]`, height: `[-0.12, 0]` |
+| `duration` | Motion duration (seconds) | single-axis/balance-sequence: `[0.5, 5]`; composite pose (`dynamic_pose`/`static_pose`): `[1, 5]` |
+| `mode` | Motion mode | `"dynamic"` / `"static"` |
 
 #### Sample Code
 
 ```python
-sequence = grpc_service_pb2.MotionSequence(
-    sequence_id="demo_balance_motions",
-    sequence_name="Balance Motions Demo",
-    bpm=120.0,  # Set BPM
-    loop=False
-)
+from dobot_quad import RobotClient
 
-# First switch to BALANCE_STAND state
-motion = sequence.motions.add()
-motion.motion_id = "path_to_state"
-motion.parameters.add(key="target_state", string_value="BALANCE_STAND")
+robot = RobotClient("192.168.5.2:50051")
 
-# Nod motion
-motion = sequence.motions.add()
-motion.motion_id = "balance_pitch"
-motion.parameters.add(key="beats", float_value=1.0)
-motion.parameters.add(key="amplitude", float_value=0.8)  # Look up
+# Single-axis APIs
+robot.balance_pitch(15.0, 2.0, "dynamic")
+robot.balance_yaw(20.0, 2.0, "dynamic")
+robot.balance_roll(-15.0, 2.0, "dynamic")
+robot.balance_height(-0.05, 2.0, "dynamic")
 
-motion = sequence.motions.add()
-motion.motion_id = "balance_pitch"
-motion.parameters.add(key="beats", float_value=1.0)
-motion.parameters.add(key="amplitude", float_value=-0.8)  # Look down
+# Batch API
+robot.balance_sequence([
+  ("balance_pitch", 15.0, 2.0, "dynamic"),
+  ("balance_yaw", 20.0, 2.0, "dynamic"),
+  ("balance_roll", -15.0, 2.0, "dynamic"),
+  ("balance_height", -0.05, 2.0, "dynamic"),
+  ("balance_neutral", 0.0, 0.5, "dynamic"),
+])
 
-# Head shake motion
-motion = sequence.motions.add()
-motion.motion_id = "balance_yaw"
-motion.parameters.add(key="beats", float_value=1.0)
-motion.parameters.add(key="amplitude", float_value=0.8)  # Turn right
-
-# Squat motion
-motion = sequence.motions.add()
-motion.motion_id = "balance_height"
-motion.parameters.add(key="beats", float_value=2.0)
-motion.parameters.add(key="amplitude", float_value=-0.8)  # Squat
-
-# Return to neutral position
-motion = sequence.motions.add()
-motion.motion_id = "balance_neutral"
-motion.parameters.add(key="beats", float_value=1.0)
+# Composite pose APIs
+robot.dynamic_pose(3.0, roll_deg=10, pitch_deg=10, yaw_deg=15, height_m=-0.05)
+robot.static_pose(3.0, roll_deg=10, pitch_deg=10, yaw_deg=15, height_m=-0.05)
+robot.balance_neutral()
 ```
 
 #### Running
 
 ```bash
+# Python
 cd high_level/python
-python3 e6_balance_motions.py [server_address] [bpm]
+python3 examples/e6_balance_motions.py [server_address]
 
-# Example: using 120 BPM
-python3 e6_balance_motions.py 192.168.5.2:50051 120
+# C++
+cd high_level/cpp/build
+./e6_balance_motions [server_address]
 ```
 
-#### Sample Output
+---
+
+### E7: Line Walk
+
+**Files**: `high_level/python/examples/e7_line_walk.py` / `high_level/cpp/e7_line_walk.cpp`
+
+#### Description
+
+Command the robot to walk in a straight line for a specified distance. The robot must be in `BALANCE_STAND` state (or the motion will auto-navigate there). The system automatically calculates the appropriate velocity and duration based on the requested distance.
+
+#### Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `direction` | int | 0 | Direction: 0=forward, 1=backward, 2=left, 3=right |
+| `distance` | float | 1.0 | Distance in meters |
+
+#### Sample Code
+
+```python
+from dobot_quad import RobotClient
+
+robot = RobotClient("192.168.5.2:50051")
+
+# Walk then rotate-walk
+robot.line_walk(0, 1.0)
+robot.rotate_walk(angle=45, distance=1.0, speed_ratio=10)
+```
+
+#### Running
+
+```bash
+# Python
+cd high_level/python
+python3 examples/e7_line_walk.py [server_address] [direction] [distance]
+
+# Example
+python3 examples/e7_line_walk.py 192.168.5.2:50051 0 1.0
+
+# C++
+cd high_level/cpp/build
+./e7_line_walk [server_address] [direction] [distance]
+```
+
+---
+
+### E8: Rotation
+
+**Files**: `high_level/python/examples/e8_rotation.py` / `high_level/cpp/e8_rotation.cpp`
+
+#### Description
+
+Command the robot to rotate in place by a specified angle. The robot must be in `BALANCE_STAND` state (or the motion will auto-navigate there). The system automatically calculates the appropriate angular velocity and duration.
+
+#### Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `direction` | int | 0 | Direction: 0=left/CCW (counter-clockwise), 1=right/CW (clockwise) |
+| `angle` | float | 90.0 | Rotation angle in degrees |
+
+#### Sample Code
+
+```python
+from dobot_quad import RobotClient
+
+robot = RobotClient("192.168.5.2:50051")
+
+# Current demo in script
+# robot.rotate(direction, angle)
+robot.circle(direction="right", turns=3)
+```
+
+#### Running
+
+```bash
+# Python
+cd high_level/python
+python3 examples/e8_rotation.py [server_address] [direction] [angle]
+
+# Example
+python3 examples/e8_rotation.py 192.168.5.2:50051 0 90
+
+# C++
+cd high_level/cpp/build
+./e8_rotation [server_address] [direction] [angle]
+```
+
+---
+
+### E9: Combo Sequence
+
+**Files**: `high_level/python/examples/e9_combo_sequence.py` / `high_level/cpp/e9_combo_sequence.cpp`
+
+#### Description
+
+Demonstrates an Arduino-style blocking combo flow by chaining high-level APIs in sequence:
+
+- state switching (`passive`, `ready`, `balance_stand`, `walk`, `change_mode`)
+- 1m cardinal moves and rotation commands
+- single-axis balance (`dynamic` / `static`)
+- composite poses (`dynamic_pose`, `static_pose`)
+- basic action states (`wave`, `dance`, `recovery`, `stand_down`)
+
+#### Running
+
+```bash
+# Python
+cd high_level/python
+python3 examples/e9_combo_sequence.py [server_address]
+
+# C++
+cd high_level/cpp/build
+./e9_combo_sequence [server_address]
+```
+
+---
+
+### E10: Speed Ratio & Obstacle Avoidance
+
+**Files**: `high_level/python/examples/e10_config_demo.py` / `high_level/cpp/e10_config_demo.cpp`
+
+#### Description
+
+Demonstrates how to query and configure the speed ratio and obstacle avoidance settings:
+
+- **Speed Ratio**: Query the current value with `get_speed_ratio()`, set a persistent base value with `set_speed_ratio()`, and use the optional `speed_ratio` parameter in walk functions for temporary overrides.
+- **Obstacle Avoidance**: Toggle on/off with `set_obstacle_avoidance()`, query with `get_obstacle_avoidance()`.
+
+#### Key Concepts
+
+- `get_speed_ratio()` returns the **locally tracked** value (updated from `set_speed_ratio()` RPC responses). It does not query the server each time.
+- When `walk_forward(dist, speed_ratio=N)` is called with an explicit `speed_ratio`, the value is temporarily applied and restored after execution. When omitted, the current base speed ratio is used.
+- `get_obstacle_avoidance()` similarly returns the locally tracked state.
+
+#### Sample Code
+
+```python
+from dobot_quad import RobotClient
+
+robot = RobotClient("192.168.5.2:50051")
+
+# Query current speed ratio
+print(f"Speed ratio: {robot.get_speed_ratio()}")
+
+# Set base speed ratio to 10 (slow)
+robot.set_speed_ratio(10)
+robot.walk_forward(1.0)              # uses base speed ratio (10)
+
+# Temporary override: walk at speed_ratio=100, then restore to 10
+robot.walk_forward(1.0, speed_ratio=100)
+print(f"Speed ratio after: {robot.get_speed_ratio()}")  # still 10
+
+# Toggle obstacle avoidance
+robot.set_obstacle_avoidance(False)  # or "off"
+print(f"OA enabled: {robot.get_obstacle_avoidance()}")  # False
+robot.set_obstacle_avoidance(True)   # or "on"
+print(f"OA enabled: {robot.get_obstacle_avoidance()}")  # True
+```
+
+#### Running
+
+```bash
+# Python
+cd high_level/python
+python3 examples/e10_config_demo.py [server_address]
+
+# C++
+cd high_level/cpp/build
+./e10_config_demo [server_address]
+```
+
+---
+
+## RPC Reference
+
+### Service: gRPCService
+
+| RPC | Request | Response | Type | Description |
+|-----|---------|----------|------|-------------|
+| `GetAvailableMotions` | `GetMotionsRequest` | `GetMotionsResponse` | Unary | List all available motions and parameters |
+| `ExecuteSequence` | `ExecuteSequenceRequest` | stream `SequenceProgress` | Server-streaming | Execute a motion sequence with real-time progress |
+| `GetRobotState` | `GetRobotStateRequest` | `GetRobotStateResponse` | Unary | Get robot state (joints, body, FSM state) |
+| `SetSpeedRatio` | `SetSpeedRatioRequest` | `SetSpeedRatioResponse` | Unary | Set/query speed ratio [10-100] |
+| `SetObstacleAvoidance` | `SetObstacleAvoidanceRequest` | `SetObstacleAvoidanceResponse` | Unary | Enable/disable obstacle avoidance |
+| `GetSensorList` | `GetSensorListRequest` | `GetSensorListResponse` | Unary | List available sensors |
+| `GetLidarData` | `GetLidarDataRequest` | `GetLidarDataResponse` | Unary | Get single lidar scan |
+| `StreamLidarData` | `GetLidarDataRequest` | stream `GetLidarDataResponse` | Server-streaming | Stream lidar data |
+| `GetCameraData` | `GetCameraDataRequest` | `GetCameraDataResponse` | Unary | Get single camera image |
+| `StreamCameraData` | `GetCameraDataRequest` | stream `GetCameraDataResponse` | Server-streaming | Stream camera images |
+| `GetDepthData` | `GetDepthDataRequest` | `GetDepthDataResponse` | Unary | Get depth camera data |
+
+### SetSpeedRatio
 
 ```
-Connected to server: 192.168.5.2:50051
+SetSpeedRatioRequest {
+  int32 speed_ratio = 1;  // [10-100], step 10. Pass 0 to query without change.
+}
 
-Example 6: Balance Motions Demo
+SetSpeedRatioResponse {
+  bool success = 1;
+  string message = 2;
+  int32 current_speed_ratio = 3;  // Current value after operation
+}
+```
 
-Sequence is running... Press Ctrl+C to stop.
+### SetObstacleAvoidance
 
-Balance motions demo executed successfully
-  Execution ID: exec_67890
+```
+SetObstacleAvoidanceRequest {
+  bool enable = 1;  // true = enable, false = disable
+}
+
+SetObstacleAvoidanceResponse {
+  bool success = 1;
+  string message = 2;
+  bool current_enabled = 3;  // Current state after operation
+}
 ```
 
 ---
@@ -617,16 +914,38 @@ Balance motions demo executed successfully
 
 ### Q: How to interrupt a running motion sequence?
 
-Press `Ctrl+C` to cancel the current executing sequence.
+Press `Ctrl+C` to cancel the current executing sequence. The client library handles graceful cancellation.
 
 ### Q: What if state switching fails?
 
 1. Check if the current state supports the target transition
-2. Use `path_to_state` for automatic pathfinding
+2. Use `path_to_state` for automatic pathfinding (recommended)
 3. Ensure the robot is in a safe position
+
+### Q: Why does the robot not move forward with velocity commands?
+
+This is usually caused by the obstacle avoidance system blocking the forward velocity (vx). Try:
+1. Disable obstacle avoidance: `robot.set_obstacle_avoidance(False)`
+2. Ensure there are no obstacles in front of the robot
+3. Note that vy (strafe) and vyaw (turn) are not affected by obstacle avoidance
+
+### Q: How to make the robot move faster or slower?
+
+Adjust the speed ratio: `robot.set_speed_ratio(80)` for faster, `robot.set_speed_ratio(30)` for slower. The default value is 50. See the velocity bounds table for maximum achievable velocities at different speed ratios.
+
+### Q: What is the difference between E4 velocity sequence and E7/E8?
+
+- **E4** (`walk_velocity_seq`, etc.): Full control over velocity profile. You specify exact velocities and durations for each segment.
+- **E7** (`line_walk`): Simplified distance-based interface. Specify direction and distance; the system calculates velocity and duration.
+- **E8** (`rotation`): Simplified angle-based interface. Specify direction and angle; the system calculates angular velocity and duration.
+
+### Q: What is the difference between `set_speed_ratio` and `speed_ratio` parameter in walk functions?
+
+- `set_speed_ratio(N)`: Sets the **base** speed ratio persistently. All subsequent operations use this value.
+- `walk_forward(dist, speed_ratio=N)`: **Temporarily** overrides the speed ratio for that single operation, then restores the base value. If `speed_ratio` is omitted (default `None`/`-1`), the current base is used without any override.
 
 ---
 
 ## Back to README
 
-[← Back to README](../README.md)
+[<- Back to README](../README.md)
