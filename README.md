@@ -26,22 +26,24 @@ High-performance robot control via CycloneDDS & gRPC
 
 ### Network Connection
 
-| Method | Robot IP | Subnet | Notes |
-|--------|----------|--------|-------|
-| **Wired** (Ethernet) | `192.168.5.2` | Set your PC to `192.168.5.xxx/24` | Required for DDS (low-level) |
-| **WiFi** (`Rover-*`, password `12345678`) | `192.168.1.6` | Auto | gRPC (high-level) only |
+| Method                                    | Robot IP      | Subnet                            | Notes                        |
+| ----------------------------------------- | ------------- | --------------------------------- | ---------------------------- |
+| **Wired** (Ethernet)                      | `192.168.5.2` | Set your PC to `192.168.5.xxx/24` | Required for DDS (low-level) |
+| **WiFi** (`Rover-*`, password `12345678`) | `192.168.1.6` | Auto                              | gRPC (high-level) only       |
 
 ### Installation
 
 #### High-Level Control (gRPC)
 
 **Python:**
+
 ```bash
 cd high_level/python
 pip install .          # or pip install -e . for development
 ```
 
 **C++:**
+
 ```bash
 sudo apt-get install -y libgrpc++-dev protobuf-compiler-grpc libprotobuf-dev pkg-config
 cd high_level/cpp && mkdir -p build && cd build
@@ -53,6 +55,7 @@ cmake .. && make -j
 > ⚠️ DDS only works over **wired** Ethernet (`192.168.5.0/24`).
 
 **Install DDS middleware:**
+
 ```bash
 cd dist
 sudo dpkg -i dds-middleware-with-thirdparty*.deb
@@ -60,22 +63,26 @@ export CYCLONEDDS_HOME="/usr/local/"
 ```
 
 **Python:**
+
 ```bash
 cd dist && pip install dds_middleware_python-*.whl
 pip install cyclonedds opencv-python
 ```
 
 **C++:**
+
 ```bash
 sudo apt install -y libboost-dev libopencv-dev libyaml-cpp-dev cmake build-essential
 cd low_level/cpp && mkdir -p build && cd build
 cmake .. && make -j
 ```
 
-**Configure DDS network interface** — edit [cyclonedds.xml](cyclonedds.xml), replace `enp2s0` with your interface name:
+**Configure DDS network interface** — edit [cyclonedds.xml](cyclonedds.xml), replace `<USER_PORT_INTERFACE>` with your interface name such as `enp2s0`:
+
 ```xml
 <NetworkInterfaces>"enp2s0"</NetworkInterfaces>
 ```
+
 ```bash
 export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
 cyclonedds ps   # verify
@@ -111,6 +118,7 @@ docker run -it --network host quad_sdk:latest
 ```
 
 Inside the container, configure DDS as above:
+
 ```bash
 cd /root/dobot_quad_sdk
 vim cyclonedds.xml
@@ -127,13 +135,13 @@ The SDK provides two independent control layers, each supporting C++ and Python:
 
 Depends on the robot's main control program. Provides state machine management and motion planning:
 
-| Feature | Description |
-|---------|-------------|
-| Get Available Motions | Query all motions and parameters |
+| Feature                      | Description                                  |
+| ---------------------------- | -------------------------------------------- |
+| Get Available Motions        | Query all motions and parameters             |
 | State Switch (Manual / Auto) | Follow state machine rules or auto-find path |
-| Velocity Sequence | Send walking velocity commands |
-| Robot State Query | Joints, pose, battery, etc. |
-| Balance Motion Control | Posture control in balance stand |
+| Velocity Sequence            | Send walking velocity commands               |
+| Robot State Query            | Joints, pose, battery, etc.                  |
+| Balance Motion Control       | Posture control in balance stand             |
 
 📖 [RobotClient API Docs](doc/robot_client_api.md) · [High-Level API Docs](doc/high_level_api.md)
 
@@ -141,11 +149,11 @@ Depends on the robot's main control program. Provides state machine management a
 
 Does NOT depend on the main control program. Direct hardware access:
 
-| Feature | Description |
-|---------|-------------|
-| Camera (RGB / Depth) | Subscribe to image streams |
-| IMU / Motor / Battery | Real-time sensor data |
-| LED / Voice / Motor Cmd | Actuator control |
+| Feature                 | Description                |
+| ----------------------- | -------------------------- |
+| Camera (RGB / Depth)    | Subscribe to image streams |
+| IMU / Motor / Battery   | Real-time sensor data      |
+| LED / Voice / Motor Cmd | Actuator control           |
 
 📖 [Low-Level API Docs](doc/low_level_api.md)
 

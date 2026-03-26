@@ -26,22 +26,24 @@
 
 ### 网络连接
 
-| 方式 | 机器人 IP | 子网配置 | 说明 |
-|------|----------|----------|------|
-| **有线** (网线) | `192.168.5.2` | PC 设为 `192.168.5.xxx/24` | DDS（底层）必须用有线 |
-| **WiFi** (`Rover-*`，密码 `12345678`) | `192.168.1.6` | 自动 | 仅 gRPC（高层）可用 |
+| 方式                                  | 机器人 IP     | 子网配置                   | 说明                  |
+| ------------------------------------- | ------------- | -------------------------- | --------------------- |
+| **有线** (网线)                       | `192.168.5.2` | PC 设为 `192.168.5.xxx/24` | DDS（底层）必须用有线 |
+| **WiFi** (`Rover-*`，密码 `12345678`) | `192.168.1.6` | 自动                       | 仅 gRPC（高层）可用   |
 
 ### 安装
 
 #### 高层 (gRPC)
 
 **Python：**
+
 ```bash
 cd high_level/python
 pip install .          # 开发模式: pip install -e .
 ```
 
 **C++：**
+
 ```bash
 sudo apt-get install -y libgrpc++-dev protobuf-compiler-grpc libprotobuf-dev pkg-config
 cd high_level/cpp && mkdir -p build && cd build
@@ -53,6 +55,7 @@ cmake .. && make -j
 > ⚠️ DDS 仅支持**有线**网络连接（`192.168.5.0/24`）。
 
 **安装 DDS 中间件：**
+
 ```bash
 cd dist
 sudo dpkg -i dds-middleware-with-thirdparty*.deb
@@ -60,22 +63,26 @@ export CYCLONEDDS_HOME="/usr/local/"
 ```
 
 **Python：**
+
 ```bash
 cd dist && pip install dds_middleware_python-*.whl
 pip install cyclonedds opencv-python
 ```
 
 **C++：**
+
 ```bash
 sudo apt install -y libboost-dev libopencv-dev libyaml-cpp-dev cmake build-essential
 cd low_level/cpp && mkdir -p build && cd build
 cmake .. && make -j
 ```
 
-**配置 DDS 网络接口** — 编辑 [cyclonedds.xml](cyclonedds.xml)，将 `enp2s0` 替换为你的网卡名：
+**配置 DDS 网络接口** — 编辑 [cyclonedds.xml](cyclonedds.xml)，将 `<USER_PORT_INTERFACE>` 替换为你的网卡名：
+
 ```xml
 <NetworkInterfaces>"enp2s0"</NetworkInterfaces>
 ```
+
 ```bash
 export CYCLONEDDS_URI=file://$(pwd)/cyclonedds.xml
 cyclonedds ps   # 验证
@@ -111,6 +118,7 @@ docker run -it --network host quad_sdk:latest
 ```
 
 容器内配置 DDS：
+
 ```bash
 cd /root/dobot_quad_sdk
 vim cyclonedds.xml
@@ -127,13 +135,13 @@ SDK 提供两层独立的控制接口，均支持 C++ 和 Python：
 
 依赖机器人主控程序，提供状态机管理和运动规划：
 
-| 功能 | 说明 |
-|------|------|
-| 获取可用动作 | 查询所有动作及参数 |
+| 功能                  | 说明                       |
+| --------------------- | -------------------------- |
+| 获取可用动作          | 查询所有动作及参数         |
 | 状态切换（手动/自动） | 按状态机规则切换或自动寻路 |
-| 速度序列控制 | 发送行走速度指令 |
-| 机器人状态查询 | 关节、姿态、电池等 |
-| 平衡动作控制 | 平衡站立模式下的姿态控制 |
+| 速度序列控制          | 发送行走速度指令           |
+| 机器人状态查询        | 关节、姿态、电池等         |
+| 平衡动作控制          | 平衡站立模式下的姿态控制   |
 
 📖 [RobotClient 接口文档](doc/robot_client_api.zh-CN.md) · [高层控制 API 文档](doc/high_level_api.zh-CN.md)
 
@@ -141,11 +149,11 @@ SDK 提供两层独立的控制接口，均支持 C++ 和 Python：
 
 不依赖主控程序，直接访问硬件：
 
-| 功能 | 说明 |
-|------|------|
-| 相机（RGB / 深度） | 订阅图像流 |
-| IMU / 电机 / 电池 | 实时传感器数据 |
-| LED / 语音 / 电机指令 | 执行器控制 |
+| 功能                  | 说明           |
+| --------------------- | -------------- |
+| 相机（RGB / 深度）    | 订阅图像流     |
+| IMU / 电机 / 电池     | 实时传感器数据 |
+| LED / 语音 / 电机指令 | 执行器控制     |
 
 📖 [底层控制 API 文档](doc/low_level_api.zh-CN.md)
 
