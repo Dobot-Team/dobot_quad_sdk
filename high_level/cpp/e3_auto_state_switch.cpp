@@ -29,7 +29,7 @@ int main(int argc, char** argv)
     }
 
     // Interactive mode
-    const char* states[] = {"emergency", "ready", "stand_down", "balance_stand", "walk", "flying_trot", "wave",
+    const char* states[] = {"emergency", "ready", "stand_down", "balance_stand", "walk", "rl", "flying_trot", "wave",
         "dance0", "jump", "recovery", "change_mode"};
     constexpr int n = sizeof(states) / sizeof(states[0]);
 

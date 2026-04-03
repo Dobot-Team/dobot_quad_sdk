@@ -416,6 +416,8 @@ public:
     bool balance_stand(bool sp = true) { return set_target_state_with_delay_("balance_stand", 2, sp); }
     bool set_walk(bool sp = true) { return set_target_state_with_delay_("walk", 2, sp); }
     bool walk(bool sp = true) { return set_target_state_with_delay_("walk", 2, sp); }
+    bool set_rl(bool sp = true) { return set_target_state_with_delay_("rl", 2, sp); }
+    bool rl(bool sp = true) { return set_target_state_with_delay_("rl", 2, sp); }
     bool set_flying_trot(bool sp = true) { return set_target_state_with_delay_("flying_trot", 2, sp); }
     bool flying_trot(bool sp = true) { return set_target_state_with_delay_("flying_trot", 2, sp); }
     bool set_dance0(bool sp = true) { return dance0(sp); }
@@ -446,7 +448,8 @@ public:
         std::this_thread::sleep_for(std::chrono::seconds(2));
         return true;
     }
-    bool wave_hand(bool sp = true) { return wave(sp); }
+    bool wave_hand(bool sp = true) { return wave(5, sp); }
+    bool wave_hand(int duration_sec, bool sp = true) { return wave(duration_sec, sp); }
     bool set_jump(bool sp = true) { return set_target_state_with_delay_("jump", 3, sp); }
     bool jump(bool sp = true) { return set_target_state_with_delay_("jump", 3, sp); }
     bool set_backflip(bool sp = true) { return set_target_state_with_delay_("backflip", 2, sp); }
@@ -520,7 +523,7 @@ public:
     {
         return balance_motion_("balance_pitch", value, duration, mode, show_progress);
     }
-    /// Yaw control. value>0 → look left, <0 → look right. (degrees)
+    /// Yaw control. value>0 → look right, <0 → look left. (degrees)
     bool balance_yaw(float value, float duration = 2.0f, const std::string& mode = "dynamic", bool show_progress = true)
     {
         return balance_motion_("balance_yaw", value, duration, mode, show_progress);
@@ -568,6 +571,8 @@ public:
                 axis = "neutral";
 
             float value = (bm.motion_id == "balance_neutral") ? 0.0f : clamp_balance_value(bm.value, axis);
+            if (axis == "yaw")
+                value = -value;
             float duration = clamp_balance_duration(bm.duration);
 
             auto* m = seq->add_motions();
@@ -753,6 +758,8 @@ private:
             axis = "neutral";
 
         value = (motion_id == "balance_neutral") ? 0.0f : clamp_balance_value(value, axis);
+        if (axis == "yaw")
+            value = -value;
         duration = clamp_balance_duration(duration);
 
         auto req = make_request("balance");
@@ -773,6 +780,7 @@ private:
         roll_deg = clamp_balance_value(roll_deg, "roll");
         pitch_deg = clamp_balance_value(pitch_deg, "pitch");
         yaw_deg = clamp_balance_value(yaw_deg, "yaw");
+        yaw_deg = -yaw_deg;
         height_m = clamp_balance_value(height_m, "height");
         auto req = make_request("pose");
         auto* seq = req.mutable_sequence();

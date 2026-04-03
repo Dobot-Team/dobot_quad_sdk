@@ -17,6 +17,7 @@ int main(int argc, char** argv)
     client.ready();
     client.balance_stand();
     client.walk();
+    client.rl();
     client.change_mode();
     client.change_mode();
 

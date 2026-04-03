@@ -423,6 +423,10 @@ class RobotClient:
         """切换到行走状态。"""
         return self._set_state_with_delay("walk", DEFAULT_STATE_POST_SLEEP_SECONDS, show_progress)
 
+    def rl(self, show_progress=True):
+        """切换到 RL 状态。"""
+        return self._set_state_with_delay("rl", DEFAULT_STATE_POST_SLEEP_SECONDS, show_progress)
+
     def flying_trot(self, show_progress=True):
         """切换到奔跑状态。"""
         return self._set_state_with_delay(
@@ -451,9 +455,9 @@ class RobotClient:
         time.sleep(FIXED_WAVE_TAIL_SECONDS)
         return second
 
-    def wave_hand(self, show_progress=True):
+    def wave_hand(self, duration=DEFAULT_WAVE_SECONDS, show_progress=True):
         """积木块别名：打招呼。"""
-        return self.wave(show_progress)
+        return self.wave(duration=duration, show_progress=show_progress)
 
     def jump(self, show_progress=True):
         """积木块别名：跳跃。"""
@@ -538,6 +542,8 @@ class RobotClient:
         validate_balance_motion(motion_id)
         axis = motion_id.replace("balance_", "")
         value = clamp_balance_value(value, axis)
+        if axis == "yaw":
+            value = -value
         duration = clamp_balance_duration(duration)
         return self.execute(
             "balance_stand",
@@ -557,7 +563,7 @@ class RobotClient:
         return self._balance_motion("balance_pitch", value, duration, mode, show_progress)
 
     def balance_yaw(self, value, duration=2.0, mode="dynamic", show_progress=True):
-        """Yaw (look). value in degrees, >0: left, <0: right. [-20, 20]"""
+        """Yaw (look). value in degrees, >0: right, <0: left. [-20, 20]"""
         return self._balance_motion("balance_yaw", value, duration, mode, show_progress)
 
     def balance_roll(self, value, duration=2.0, mode="dynamic", show_progress=True):
@@ -586,6 +592,8 @@ class RobotClient:
             validate_balance_motion(motion_id)
             axis = motion_id.replace("balance_", "")
             value = clamp_balance_value(value, axis)
+            if axis == "yaw":
+                value = -value
             duration = clamp_balance_duration(duration)
             items.append((motion_id, {"value": value, "duration": duration, "mode": mode}))
         return self.execute(*items, show_progress=show_progress)
@@ -709,7 +717,7 @@ class RobotClient:
             duration: 持续时间（秒），钳位到 [1, 5]。
             roll_deg:   横滚角度（度）[-30, 30]，0 不动。
             pitch_deg:  俯仰角度（度）[-15, 15]，0 不动。
-            yaw_deg:    偏航角度（度）[-20, 20]，0 不动。
+            yaw_deg:    偏航角度（度）[-20, 20]，>0 向右，<0 向左，0 不动。
             height_m:   高度偏移（米）[-0.12, 0.0]，0 不动。
         """
         return self._pose_motion(
@@ -731,7 +739,7 @@ class RobotClient:
             duration: 保持时间（秒），钳位到 [1, 5]。
             roll_deg:   横滚角度（度）[-30, 30]，0 不动。
             pitch_deg:  俯仰角度（度）[-15, 15]，0 不动。
-            yaw_deg:    偏航角度（度）[-20, 20]，0 不动。
+            yaw_deg:    偏航角度（度）[-20, 20]，>0 向右，<0 向左，0 不动。
             height_m:   高度偏移（米）[-0.12, 0.0]，0 不动。
         """
         return self._pose_motion(
@@ -755,6 +763,7 @@ class RobotClient:
         roll_deg = clamp_balance_value(roll_deg, "roll")
         pitch_deg = clamp_balance_value(pitch_deg, "pitch")
         yaw_deg = clamp_balance_value(yaw_deg, "yaw")
+        yaw_deg = -yaw_deg
         height_m = clamp_balance_value(height_m, "height")
         return self.execute(
             "balance_stand",

@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61", "wheel", "grpcio-tools>=1.76.0"]
+requires = ["setuptools>=61", "wheel", "grpcio-tools==1.78.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,7 +8,7 @@ version = "2.0.0"
 description = "Dobot Quad high-level Python SDK — gRPC client for quadruped robot control"
 requires-python = ">=3.10"
 license = {text = "MIT"}
-dependencies = ["grpcio-tools>=1.76.0", "grpcio>=1.76.0", "protobuf>=4.25.0"]
+dependencies = ["grpcio-tools==1.78.0", "grpcio==1.78.0", "protobuf>=4.25.0"]
 
 [tool.setuptools.packages.find]
 include = ["dobot_quad*"]
