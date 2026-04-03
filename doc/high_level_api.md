@@ -873,12 +873,6 @@ cd high_level/cpp/build
 | `GetRobotState` | `GetRobotStateRequest` | `GetRobotStateResponse` | Unary | Get robot state (joints, body, FSM state) |
 | `SetSpeedRatio` | `SetSpeedRatioRequest` | `SetSpeedRatioResponse` | Unary | Set/query speed ratio [10-100] |
 | `SetObstacleAvoidance` | `SetObstacleAvoidanceRequest` | `SetObstacleAvoidanceResponse` | Unary | Enable/disable obstacle avoidance |
-| `GetSensorList` | `GetSensorListRequest` | `GetSensorListResponse` | Unary | List available sensors |
-| `GetLidarData` | `GetLidarDataRequest` | `GetLidarDataResponse` | Unary | Get single lidar scan |
-| `StreamLidarData` | `GetLidarDataRequest` | stream `GetLidarDataResponse` | Server-streaming | Stream lidar data |
-| `GetCameraData` | `GetCameraDataRequest` | `GetCameraDataResponse` | Unary | Get single camera image |
-| `StreamCameraData` | `GetCameraDataRequest` | stream `GetCameraDataResponse` | Server-streaming | Stream camera images |
-| `GetDepthData` | `GetDepthDataRequest` | `GetDepthDataResponse` | Unary | Get depth camera data |
 
 ### SetSpeedRatio
 

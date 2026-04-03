@@ -246,6 +246,7 @@ Methods use clean names (no `set_` prefix).
 | `stand_down()`    | `stand_down`    | —             | Lie down                                       |
 | `balance_stand()` | `balance_stand` | —             | Balance stand (prerequisite for many motions)  |
 | `walk()`          | `walk`          | —             | Walk state                                     |
+| `rl()`            | `rl`            | —             | RL state                                       |
 | `flying_trot()`   | `flying_trot`   | —             | Running gait                                   |
 | `dance0()`        | `dance0`        | `dance()`     | Dance action                                   |
 | `wave()`          | `wave`          | `wave_hand()` | Greeting action                                |
@@ -359,7 +360,7 @@ All balance methods require `balance_stand` state as a prerequisite (handled int
 | Method            | Python Signature                                      | C++ Signature                                                                         | Description                                        |
 | ----------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------- |
 | `balance_pitch`   | `balance_pitch(value, duration=2.0, mode="dynamic")`  | `balance_pitch(float value, float duration=2.0f, const std::string& mode="dynamic")`  | Pitch (nod). `>0` forward, `<0` backward. Degrees. |
-| `balance_yaw`     | `balance_yaw(value, duration=2.0, mode="dynamic")`    | `balance_yaw(float value, float duration=2.0f, const std::string& mode="dynamic")`    | Yaw (look). `>0` left, `<0` right. Degrees.        |
+| `balance_yaw`     | `balance_yaw(value, duration=2.0, mode="dynamic")`    | `balance_yaw(float value, float duration=2.0f, const std::string& mode="dynamic")`    | Yaw (look). `>0` right, `<0` left. Degrees.        |
 | `balance_roll`    | `balance_roll(value, duration=2.0, mode="dynamic")`   | `balance_roll(float value, float duration=2.0f, const std::string& mode="dynamic")`   | Roll (lean). `>0` left, `<0` right. Degrees.       |
 | `balance_height`  | `balance_height(value, duration=2.0, mode="dynamic")` | `balance_height(float value, float duration=2.0f, const std::string& mode="dynamic")` | Height delta. `<0` squat down. Meters.             |
 | `balance_neutral` | `balance_neutral(duration=0.5)`                       | `balance_neutral(float duration=0.5f)`                                                | Return all axes to neutral                         |
@@ -403,13 +404,13 @@ Control roll, pitch, yaw, and height **simultaneously** in a single server-side 
 |               | `static_pose(duration=2.0, roll_deg=0, pitch_deg=0, yaw_deg=0, height_m=0)`  | `static_pose(float duration, float roll_deg=0, float pitch_deg=0, float yaw_deg=0, float height_m=0)`  |
 | **Returns**   | `SequenceProgress` / `None`                                                  | `bool`                                                                                                 |
 
-| Parameter   | Type    | Range                    | Description                    |
-| ----------- | ------- | ------------------------ | ------------------------------ |
-| `duration`  | `float` | `[1, 5]` s (clamped)     | Duration in seconds            |
-| `roll_deg`  | `float` | `[-30, 30]°` (clamped)   | Roll angle. `0` = no motion.   |
-| `pitch_deg` | `float` | `[-15, 15]°` (clamped)   | Pitch angle. `0` = no motion.  |
-| `yaw_deg`   | `float` | `[-20, 20]°` (clamped)   | Yaw angle. `0` = no motion.    |
-| `height_m`  | `float` | `[-0.12, 0]` m (clamped) | Height delta. `0` = no motion. |
+| Parameter   | Type    | Range                    | Description                                        |
+| ----------- | ------- | ------------------------ | -------------------------------------------------- |
+| `duration`  | `float` | `[1, 5]` s (clamped)     | Duration in seconds                                |
+| `roll_deg`  | `float` | `[-30, 30]°` (clamped)   | Roll angle. `0` = no motion.                       |
+| `pitch_deg` | `float` | `[-15, 15]°` (clamped)   | Pitch angle. `0` = no motion.                      |
+| `yaw_deg`   | `float` | `[-20, 20]°` (clamped)   | Yaw angle. `>0` right, `<0` left, `0` = no motion. |
+| `height_m`  | `float` | `[-0.12, 0]` m (clamped) | Height delta. `0` = no motion.                     |
 
 ---
 
@@ -472,6 +473,7 @@ Registers a Ctrl+C handler. When Ctrl+C is pressed, the current motion is cancel
 | stand_down             | `stand_down()`                          | `stand_down()`                          |
 | balance_stand          | `balance_stand()`                       | `balance_stand()`                       |
 | walk                   | `walk()`                                | `walk()`                                |
+| rl                     | `rl()`                                  | `rl()`                                  |
 | flying_trot            | `flying_trot()`                         | `flying_trot()`                         |
 | change_mode            | `change_mode()`                         | `change_mode()`                         |
 | change_mode            | `change_mode()`                         | `change_mode()`                         |
@@ -495,7 +497,7 @@ Registers a Ctrl+C handler. When Ctrl+C is pressed, the current motion is cancel
 | balance_neutral        | `balance_neutral(duration)`             | `balance_neutral(duration)`             |
 | dance                  | `dance()`                               | `dance()`                               |
 | jump                   | `jump()`                                | `jump()`                                |
-| wave_hand              | `wave_hand()`                           | `wave_hand()`                           |
+| wave_hand              | `wave_hand(duration=5.0)`               | `wave_hand(int duration_sec=5)`         |
 | backflip               | `backflip()`                            | `backflip()`                            |
 | enable_safety_ready    | `robot.enable_safety_ready()`           | `robot::enable_safety_ready(client)`    |
 

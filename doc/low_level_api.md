@@ -53,32 +53,32 @@ DDS QoS (Quality of Service) configuration determines the reliability and perfor
 
 Configuration file located at `low_level/python/config/dds_config.yaml`:
 
-| Configuration | Writer Default | Reader Default | Description |
-|---------------|----------------|----------------|-------------|
-| `domain_id` | 0 | 0 | DDS domain ID |
-| `reliability` | `reliable` | `best_effort` | Reliability policy |
-| `history_kind` | `keep_last` | `keep_last` | History type |
-| `history_depth` | 10 | 10 | History depth |
-| `durability` | `volatile` | `volatile` | Durability policy |
-| `liveliness` | `automatic` | `automatic` | Liveliness policy |
-| `deadline` | `infinite` | `infinite` | Deadline |
+| Configuration   | Writer Default | Reader Default | Description        |
+| --------------- | -------------- | -------------- | ------------------ |
+| `domain_id`     | 0              | 0              | DDS domain ID      |
+| `reliability`   | `reliable`     | `best_effort`  | Reliability policy |
+| `history_kind`  | `keep_last`    | `keep_last`    | History type       |
+| `history_depth` | 10             | 10             | History depth      |
+| `durability`    | `volatile`     | `volatile`     | Durability policy  |
+| `liveliness`    | `automatic`    | `automatic`    | Liveliness policy  |
+| `deadline`      | `infinite`     | `infinite`     | Deadline           |
 
 ### QoS Parameter Reference
 
-| Parameter | Values | Description |
-|-----------|--------|-------------|
-| `reliability` | `reliable` / `best_effort` | reliable guarantees delivery, best_effort allows packet loss |
-| `history_kind` | `keep_last` / `keep_all` | keep_last retains only latest N, keep_all retains all |
-| `history_depth` | integer | Number of historical messages to retain |
-| `durability` | `volatile` / `transient_local` | volatile doesn't save history, transient_local saves for late subscribers |
+| Parameter       | Values                         | Description                                                               |
+| --------------- | ------------------------------ | ------------------------------------------------------------------------- |
+| `reliability`   | `reliable` / `best_effort`     | reliable guarantees delivery, best_effort allows packet loss              |
+| `history_kind`  | `keep_last` / `keep_all`       | keep_last retains only latest N, keep_all retains all                     |
+| `history_depth` | integer                        | Number of historical messages to retain                                   |
+| `durability`    | `volatile` / `transient_local` | volatile doesn't save history, transient_local saves for late subscribers |
 
 ### Recommended Configurations
 
-| Scenario | Reliability | History Depth | Description |
-|----------|-------------|---------------|-------------|
-| Real-time sensor data | best_effort | 1-5 | Low latency, allows packet loss |
-| Control commands | reliable | 1-5 | Guaranteed delivery |
-| Image data | best_effort | 1-5 | Large data, prioritize low latency |
+| Scenario              | Reliability | History Depth | Description                        |
+| --------------------- | ----------- | ------------- | ---------------------------------- |
+| Real-time sensor data | best_effort | 1-5           | Low latency, allows packet loss    |
+| Control commands      | reliable    | 1-5           | Guaranteed delivery                |
+| Image data            | best_effort | 1-5           | Large data, prioritize low latency |
 
 ---
 
@@ -104,8 +104,8 @@ Subscribe to compressed RGB color image data from the robot camera.
 
 #### Topic
 
-| Topic Name | Message Type | Description |
-|------------|--------------|-------------|
+| Topic Name                           | Message Type      | Description          |
+| ------------------------------------ | ----------------- | -------------------- |
 | `rt/camera/camera2/image_compressed` | `CompressedImage` | Compressed RGB image |
 
 #### Image Saving
@@ -113,11 +113,13 @@ Subscribe to compressed RGB color image data from the robot camera.
 The example automatically saves received images to the `rgb_images/` directory:
 
 **Python Version:**
+
 - Uses OpenCV (`cv2.imdecode`) to decode compressed JPEG data into raw image format
 - Saves as lossless PNG format for better quality
 - Filename format: `rgb_{timestamp_sec}_{timestamp_nanosec}.png`
 
 **C++ Version:**
+
 - Uses `cv::imdecode` to decode compressed data into `cv::Mat`
 - Saves as PNG format using `cv::imwrite`
 - Same filename format as Python version
@@ -136,11 +138,11 @@ def image_callback(data):
     print(f"  Frame ID: {data.header().frame_id()}")
     print(f"  Format: {data.format()}")
     print(f"  Data size: {len(data.data())} bytes")
-    
+
     # Decode compressed image
     np_arr = np.array(data.data(), dtype=np.uint8)
     image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-    
+
     if image is not None:
         filename = f"rgb_images/rgb_{data.header().stamp().sec()}_{data.header().stamp().nanosec()}.png"
         cv2.imwrite(filename, image)
@@ -194,25 +196,28 @@ qos_config = {
 
 #### Topic
 
-| Topic Name | Message Type | Description |
-|------------|--------------|-------------|
-| `rt/camera/camera2/image_depth` | `Image` | Raw depth image |
+| Topic Name                      | Message Type | Description     |
+| ------------------------------- | ------------ | --------------- |
+| `rt/camera/camera2/image_depth` | `Image`      | Raw depth image |
 
 #### Depth Image Visualization
 
 The example processes and saves depth images to the `depth_images/` directory:
 
 **Visualization processing:**
+
 1. **Normalization**: Use `cv2.normalize` to stretch depth values to 0-255 range
 2. **Pseudo-color**: Apply Jet colormap (red/warm = near, blue/cold = far)
 3. **Save**: Save processed visualization as PNG file
 
 **Python Version:**
+
 - Converts raw bytes to numpy array with `view(np.uint16)`
 - Applies normalization and colormap using OpenCV
 - Filename format: `depth_{timestamp_sec}_{timestamp_nanosec}.png`
 
 **C++ Version:**
+
 - Creates `cv::Mat` directly from raw data pointer
 - Uses `cv::normalize` and `cv::applyColorMap` for visualization
 - Same filename format as Python version
@@ -231,16 +236,16 @@ def depth_image_callback(depth_msg):
     print(f"  Frame ID: {depth_msg.header().frame_id()}")
     print(f"  Encoding: {depth_msg.encoding()}")
     print(f"  Data size: {len(depth_msg.data())} bytes")
-    
+
     if "16UC1" in depth_msg.encoding():
         # Convert to 16-bit depth map
         raw_data = np.array(depth_msg.data(), dtype=np.uint8)
         depth_img = raw_data.view(np.uint16).reshape((depth_msg.height(), depth_msg.width()))
-        
+
         # Normalize and apply colormap
         depth_vis = cv2.normalize(depth_img, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
         depth_color = cv2.applyColorMap(depth_vis, cv2.COLORMAP_JET)
-        
+
         filename = f"depth_images/depth_{depth_msg.header().stamp().sec()}_{depth_msg.header().stamp().nanosec()}.png"
         cv2.imwrite(filename, depth_color)
         print(f"Saved visibility depth map to {filename}")
@@ -317,21 +322,21 @@ qos_config = {
 
 #### Topic
 
-| Topic Name | Message Type | Description |
-|------------|--------------|-------------|
-| `rt/leds/cmd` | `LedsCmd` | LED control command |
+| Topic Name    | Message Type | Description         |
+| ------------- | ------------ | ------------------- |
+| `rt/leds/cmd` | `LedsCmd`    | LED control command |
 
 #### LED Names
 
-| LED Name | Location | Description |
-|----------|----------|-------------|
-| `leg_light1` | Leg light 1 | - |
-| `leg_light2` | Leg light 2 | - |
-| `leg_light3` | Leg light 3 | - |
-| `leg_light4` | Leg light 4 | - |
-| `fill_light1` | Front light | Illumination light at the front of the robot |
-| `fill_light2` | Fill light 2 | Currently unavailable |
-| `fill_light3` | Rear light | Illumination light at the rear of the robot |
+| LED Name      | Location     | Description                                  |
+| ------------- | ------------ | -------------------------------------------- |
+| `leg_light1`  | Leg light 1  | -                                            |
+| `leg_light2`  | Leg light 2  | -                                            |
+| `leg_light3`  | Leg light 3  | -                                            |
+| `leg_light4`  | Leg light 4  | -                                            |
+| `fill_light1` | Front light  | Illumination light at the front of the robot |
+| `fill_light2` | Fill light 2 | Currently unavailable                        |
+| `fill_light3` | Rear light   | Illumination light at the rear of the robot  |
 
 #### Sample Code
 
@@ -408,18 +413,18 @@ Get raw IMU (Inertial Measurement Unit) data directly from the low level, includ
 
 #### Topic
 
-| Topic Name | Message Type | Description |
-|------------|--------------|-------------|
+| Topic Name       | Message Type | Description                           |
+| ---------------- | ------------ | ------------------------------------- |
 | `rt/lower/state` | `LowerState` | Lower-level state (includes IMU data) |
 
 #### Data Fields
 
-| Field | Type | Unit | Description |
-|-------|------|------|-------------|
-| `quaternion` | float[4] | - | Orientation quaternion [w, x, y, z] |
-| `gyroscope` | float[3] | rad/s | Gyroscope angular velocity [x, y, z] |
-| `accelerometer` | float[3] | m/s² | Accelerometer [x, y, z] |
-| `rpy` | float[3] | rad | Euler angles [roll, pitch, yaw] |
+| Field           | Type     | Unit  | Description                          |
+| --------------- | -------- | ----- | ------------------------------------ |
+| `quaternion`    | float[4] | -     | Orientation quaternion [w, x, y, z]  |
+| `gyroscope`     | float[3] | rad/s | Gyroscope angular velocity [x, y, z] |
+| `accelerometer` | float[3] | m/s²  | Accelerometer [x, y, z]              |
+| `rpy`           | float[3] | rad   | Euler angles [roll, pitch, yaw]      |
 
 #### Sample Code
 
@@ -479,34 +484,34 @@ Get status data for all 16 motors directly from the low level, including positio
 
 #### Topic
 
-| Topic Name | Message Type | Description |
-|------------|--------------|-------------|
+| Topic Name       | Message Type | Description                             |
+| ---------------- | ------------ | --------------------------------------- |
 | `rt/lower/state` | `LowerState` | Lower-level state (includes motor data) |
 
 #### Motor Data Fields
 
-| Field | Type | Unit | Description |
-|-------|------|------|-------------|
-| `mode` | uint8 | - | Mode: 0-disabled, 1-error, 2-offline, 3-enabled, 4-controlled, 5-homing |
-| `q` | float | rad | Angular position |
-| `dq` | float | rad/s | Angular velocity |
-| `ddq` | float | rad/s² | Angular acceleration |
-| `tau_est` | float | Nm | Estimated torque |
-| `q_raw` | float | rad | Raw angular position |
-| `dq_raw` | float | rad/s | Raw angular velocity |
-| `ddq_raw` | float | rad/s² | Raw angular acceleration |
-| `motor_temp` | uint8 | °C | Motor temperature |
+| Field        | Type  | Unit   | Description                                                             |
+| ------------ | ----- | ------ | ----------------------------------------------------------------------- |
+| `mode`       | uint8 | -      | Mode: 0-disabled, 1-error, 2-offline, 3-enabled, 4-controlled, 5-homing |
+| `q`          | float | rad    | Angular position                                                        |
+| `dq`         | float | rad/s  | Angular velocity                                                        |
+| `ddq`        | float | rad/s² | Angular acceleration                                                    |
+| `tau_est`    | float | Nm     | Estimated torque                                                        |
+| `q_raw`      | float | rad    | Raw angular position                                                    |
+| `dq_raw`     | float | rad/s  | Raw angular velocity                                                    |
+| `ddq_raw`    | float | rad/s² | Raw angular acceleration                                                |
+| `motor_temp` | uint8 | °C     | Motor temperature                                                       |
 
 #### Motor Numbering
 
 The robot has 16 motors, numbered 0-15, distributed across four legs:
 
-| Leg | Motor IDs |
-|-----|-----------|
-| Front Left | 0, 1, 2, 3 |
-| Front Right | 4, 5, 6, 7 |
-| Rear Left | 8, 9, 10, 11 |
-| Rear Right | 12, 13, 14, 15 |
+| Leg         | Motor IDs      |
+| ----------- | -------------- |
+| Front Left  | 0, 1, 2, 3     |
+| Front Right | 4, 5, 6, 7     |
+| Rear Left   | 8, 9, 10, 11   |
+| Rear Right  | 12, 13, 14, 15 |
 
 #### Sample Code
 
@@ -568,8 +573,8 @@ Get Battery Management System (BMS) status information.
 
 #### Topic
 
-| Topic Name | Message Type | Description |
-|------------|--------------|-------------|
+| Topic Name       | Message Type | Description                           |
+| ---------------- | ------------ | ------------------------------------- |
 | `rt/lower/state` | `LowerState` | Lower-level state (includes BMS data) |
 
 #### Sample Code
@@ -626,9 +631,9 @@ qos_config = {
 
 #### Topic
 
-| Topic Name | Message Type | Description |
-|------------|--------------|-------------|
-| `rt/voice/cmd` | `VoiceCmd` | Voice command |
+| Topic Name     | Message Type | Description   |
+| -------------- | ------------ | ------------- |
+| `rt/voice/cmd` | `VoiceCmd`   | Voice command |
 
 #### File Mode
 
@@ -668,6 +673,7 @@ middleware.publishVoiceCmd(voice_cmd)
 ```
 
 Supported audio formats:
+
 - WAV
 - FLAC
 - MP3
@@ -677,6 +683,7 @@ Supported audio formats:
 Send real-time audio stream data, suitable for TTS or real-time audio transmission scenarios.
 
 Audio requirements:
+
 - Sample rate: 24kHz
 - Bit depth: 16bit
 - Channels: Mono
@@ -714,6 +721,7 @@ python3 e7_voice_pub.py streaming
 Subscribe to audio stream data from the robot microphone.
 
 Audio specifications:
+
 - Sample rate: 24kHz
 - Bit depth: 16bit
 - Channels: Mono
@@ -731,8 +739,8 @@ qos_config = {
 
 #### Topic
 
-| Topic Name | Message Type | Description |
-|------------|--------------|-------------|
+| Topic Name       | Message Type | Description              |
+| ---------------- | ------------ | ------------------------ |
 | `rt/voice/state` | `VoiceState` | Voice state/audio stream |
 
 #### Sample Code
@@ -781,6 +789,7 @@ Send control commands directly to motors. This example demonstrates sinusoidal p
 **You MUST stop the robot's main control program before running this program!**
 
 Directly controlling motors without stopping the main program **WILL CAUSE SERIOUS SAFETY HAZARDS**, potentially resulting in:
+
 - ⚠️ **Control Conflicts**: Main program and your code sending conflicting commands simultaneously
 - 🤖 **Robot Out of Control**: Unpredictable and dangerous movements
 - 🔥 **Hardware Damage**: Motor overload, overheating, mechanical collisions
@@ -801,6 +810,7 @@ cd high_level/cpp/build
 ```
 
 The `kill_robot` tool will safely:
+
 1. ✅ Switch robot to **PASSIVE** state (motors disabled)
 2. ⏱️ Wait **5 seconds** to ensure safe shutdown
 3. 🚫 Terminate all controller processes
@@ -819,21 +829,21 @@ Before running motor control programs, confirm:
 
 #### Publish/Subscribe Topics
 
-| Topic Name | Type | Message Type | Description |
-|------------|------|--------------|-------------|
-| `rt/lower/cmd` | Publish | `LowerCmd` | Motor control command |
-| `rt/lower/state` | Subscribe | `LowerState` | Motor state feedback |
+| Topic Name       | Type      | Message Type | Description           |
+| ---------------- | --------- | ------------ | --------------------- |
+| `rt/lower/cmd`   | Publish   | `LowerCmd`   | Motor control command |
+| `rt/lower/state` | Subscribe | `LowerState` | Motor state feedback  |
 
 #### Motor Command Parameters
 
-| Parameter | Type | Unit | Description |
-|-----------|------|------|-------------|
-| `mode` | uint8 | - | Control mode |
-| `q` | float | rad | Target position |
-| `dq` | float | rad/s | Target velocity |
-| `tau` | float | Nm | Feedforward torque |
-| `kp` | float | - | Position gain |
-| `kd` | float | - | Velocity gain |
+| Parameter | Type  | Unit  | Description        |
+| --------- | ----- | ----- | ------------------ |
+| `mode`    | uint8 | -     | Control mode       |
+| `q`       | float | rad   | Target position    |
+| `dq`      | float | rad/s | Target velocity    |
+| `tau`     | float | Nm    | Feedforward torque |
+| `kp`      | float | -     | Position gain      |
+| `kd`      | float | -     | Velocity gain      |
 
 #### Control Formula
 
@@ -842,11 +852,38 @@ Before running motor control programs, confirm:
 ```
 
 Where:
+
 - `τ` - Final output torque
 - `q_des`, `dq_des` - Desired position and velocity
 - `q`, `dq` - Actual position and velocity
 - `τ_ff` - Feedforward torque
 - `kp`, `kd` - Gain parameters
+
+#### Motor Offset (from E9 motor control example)
+
+The E9 example uses a fixed motor-zero offset table to convert between hardware angle and logical joint angle.
+
+- Hardware index mapping used by the 12 actuated joints:
+
+```python
+ABS2HW = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]
+```
+
+- Offset table (length 16, indexed by hardware motor ID):
+
+```python
+MOTOR_OFFSET = [
+    -0.05, -0.5, 1.17, 0.0,
+    0.05, -0.5, 1.17, 0.0,
+    -0.05, 0.5, -1.17, 0.0,
+    0.05, 0.5, -1.17, 0.0,
+]
+```
+
+Usage in control loop:
+
+- Read side (hardware -> logical): `q_real = q_hw - MOTOR_OFFSET[hw]`
+- Command side (logical -> hardware): `q_cmd = q_target + MOTOR_OFFSET[hw]`
 
 #### Sample Code
 
@@ -858,7 +895,7 @@ import math
 NUM_MOTORS = 12
 ABS2HW = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]
 MOTOR_OFFSET = [
-    -0.05, -0.5, 1.17, 0.0, 0.05, -0.5, 1.17, 0.0, 
+    -0.05, -0.5, 1.17, 0.0, 0.05, -0.5, 1.17, 0.0,
     -0.05, 0.5, -1.17, 0.0, 0.05, 0.5, -1.17, 0.0
 ]
 

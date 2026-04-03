@@ -55,10 +55,10 @@ stub = grpc_service_pb2_grpc.gRPCServiceStub(channel)
 
 提供两种即用的客户端库：
 
-| 语言 | 文件 | 类名 |
-|------|------|------|
-| Python | `high_level/python/dobot_quad/robot_client.py` | `RobotClient` |
-| C++ | `high_level/cpp/robot_client.h` | `robot::Client` |
+| 语言   | 文件                                           | 类名            |
+| ------ | ---------------------------------------------- | --------------- |
+| Python | `high_level/python/dobot_quad/robot_client.py` | `RobotClient`   |
+| C++    | `high_level/cpp/robot_client.h`                | `robot::Client` |
 
 两者均封装了所有 RPC 调用，内置进度显示、错误处理和 Ctrl+C 取消支持。
 
@@ -70,19 +70,19 @@ stub = grpc_service_pb2_grpc.gRPCServiceStub(channel)
 
 机器人采用有限状态机（FSM）管理运动状态。主要状态包括：
 
-| 状态名称 | 说明 |
-|----------|------|
-| `PASSIVE` | 被动模式，电机失能 |
-| `STAND_DOWN` | 趴下状态 |
-| `STAND_UP` | 站立状态 |
+| 状态名称        | 说明                   |
+| --------------- | ---------------------- |
+| `PASSIVE`       | 被动模式，电机失能     |
+| `STAND_DOWN`    | 趴下状态               |
+| `STAND_UP`      | 站立状态               |
 | `BALANCE_STAND` | 平衡站立，支持姿态调整 |
-| `WALK` | 步行模式 |
-| `FLYING_TROT` | 飞步小跑（跑步步态） |
-| `RL` | 强化学习控制模式 |
-| `WAVE` | 挥手动作 |
-| `DANCE0` | 舞蹈动作 |
-| `JUMP` | 跳跃动作 |
-| `BACKFLIP` | 后空翻动作 |
+| `WALK`          | 步行模式               |
+| `FLYING_TROT`   | 飞步小跑（跑步步态）   |
+| `RL`            | 强化学习控制模式       |
+| `WAVE`          | 挥手动作               |
+| `DANCE0`        | 舞蹈动作               |
+| `JUMP`          | 跳跃动作               |
+| `BACKFLIP`      | 后空翻动作             |
 
 ### 状态转换规则
 
@@ -101,11 +101,11 @@ stub = grpc_service_pb2_grpc.gRPCServiceStub(channel)
 
 **速度比**控制机器人的整体速度缩放。可通过 `SetSpeedRatio` RPC 接口进行设置。
 
-| 属性 | 值 |
-|------|------|
-| 范围 | 10 – 100 |
-| 步长 | 10 |
-| 默认值 | 50 |
+| 属性   | 值       |
+| ------ | -------- |
+| 范围   | 10 – 100 |
+| 步长   | 10       |
+| 默认值 | 50       |
 
 设置为 0 时，RPC 仅返回当前值而不修改（查询模式）。
 
@@ -125,20 +125,20 @@ realSpeedScale = (1 - k_lower) × speedRatio / 100 + k_lower
 v_max = bound × realSpeedScale
 ```
 
-| 步态 | 方向 | 上限 | k_lower | 最大值 @ ratio=50 | 最大值 @ ratio=100 |
-|------|------|------|---------|------------------|-------------------|
-| **WALK** | vx（前进） | 1.2 m/s | 0.4 | 0.84 m/s | 1.20 m/s |
-| | vx（后退） | 0.8 m/s | 0.4 | 0.56 m/s | 0.80 m/s |
-| | vy（横移） | 0.45 m/s | 0.4 | 0.315 m/s | 0.45 m/s |
-| | vyaw（转向） | 1.8 rad/s | 0.4 | 1.26 rad/s | 1.80 rad/s |
-| **FLYING_TROT** | vx（前进） | 2.0 m/s | 0.2 | 1.20 m/s | 2.00 m/s |
-| | vx（后退） | 1.0 m/s | 0.2 | 0.60 m/s | 1.00 m/s |
-| | vy（横移） | 0.55 m/s | 0.2 | 0.33 m/s | 0.55 m/s |
-| | vyaw（转向） | 1.4 rad/s | 0.2 | 0.84 rad/s | 1.40 rad/s |
-| **RL** | vx（前进） | 0.8 m/s | 0.3 | 0.52 m/s | 0.80 m/s |
-| | vx（后退） | 0.6 m/s | 0.3 | 0.39 m/s | 0.60 m/s |
-| | vy（横移） | 0.45 m/s | 0.3 | 0.293 m/s | 0.45 m/s |
-| | vyaw（转向） | 1.2 rad/s | 0.3 | 0.78 rad/s | 1.20 rad/s |
+| 步态            | 方向         | 上限      | k_lower | 最大值 @ ratio=50 | 最大值 @ ratio=100 |
+| --------------- | ------------ | --------- | ------- | ----------------- | ------------------ |
+| **WALK**        | vx（前进）   | 1.2 m/s   | 0.4     | 0.84 m/s          | 1.20 m/s           |
+|                 | vx（后退）   | 0.8 m/s   | 0.4     | 0.56 m/s          | 0.80 m/s           |
+|                 | vy（横移）   | 0.45 m/s  | 0.4     | 0.315 m/s         | 0.45 m/s           |
+|                 | vyaw（转向） | 1.8 rad/s | 0.4     | 1.26 rad/s        | 1.80 rad/s         |
+| **FLYING_TROT** | vx（前进）   | 2.0 m/s   | 0.2     | 1.20 m/s          | 2.00 m/s           |
+|                 | vx（后退）   | 1.0 m/s   | 0.2     | 0.60 m/s          | 1.00 m/s           |
+|                 | vy（横移）   | 0.55 m/s  | 0.2     | 0.33 m/s          | 0.55 m/s           |
+|                 | vyaw（转向） | 1.4 rad/s | 0.2     | 0.84 rad/s        | 1.40 rad/s         |
+| **RL**          | vx（前进）   | 0.8 m/s   | 0.3     | 0.52 m/s          | 0.80 m/s           |
+|                 | vx（后退）   | 0.6 m/s   | 0.3     | 0.39 m/s          | 0.60 m/s           |
+|                 | vy（横移）   | 0.45 m/s  | 0.3     | 0.293 m/s         | 0.45 m/s           |
+|                 | vyaw（转向） | 1.2 rad/s | 0.3     | 0.78 rad/s        | 1.20 rad/s         |
 
 > **注意**：当请求速度超过可达最大值时，内部会被钳位到上限。为获得最佳效果，请将速度值控制在 "最大值 @ ratio=N" 范围内。
 
@@ -332,15 +332,15 @@ Found 15 motions:
 
 #### 动作参数说明
 
-| 动作类型 | 动作 ID | 参数 | 说明 |
-|----------|---------|------|------|
-| 状态切换 | `passive`, `stand_down`, `stand_up`, `balance_stand` 等 | 无 | 单次状态转换 |
-| 自动寻路 | `path_to_state` | `target_state` | 自动导航到目标状态 |
-| 速度序列 | `walk_velocity_seq`, `flying_trot_velocity_seq` | `velocity_sequence` | 使用 m/s 和 rad/s 控制速度（详见 E4） |
+| 动作类型 | 动作 ID                                                                             | 参数                        | 说明                                         |
+| -------- | ----------------------------------------------------------------------------------- | --------------------------- | -------------------------------------------- |
+| 状态切换 | `passive`, `stand_down`, `stand_up`, `balance_stand` 等                             | 无                          | 单次状态转换                                 |
+| 自动寻路 | `path_to_state`                                                                     | `target_state`              | 自动导航到目标状态                           |
+| 速度序列 | `walk_velocity_seq`, `flying_trot_velocity_seq`                                     | `velocity_sequence`         | 使用 m/s 和 rad/s 控制速度（详见 E4）        |
 | 平衡动作 | `balance_pitch`, `balance_yaw`, `balance_roll`, `balance_height`, `balance_neutral` | `value`, `duration`, `mode` | 在 BALANCE_STAND 状态下的姿态控制（详见 E6） |
-| 直线行走 | `line_walk` | `direction`, `distance` | 按指定距离直线行走（详见 E7） |
-| 原地旋转 | `rotation` | `direction`, `angle` | 按指定角度原地旋转（详见 E8） |
-| 特殊指令 | `kill_robot` | 无 | 安全关闭控制器 |
+| 直线行走 | `line_walk`                                                                         | `direction`, `distance`     | 按指定距离直线行走（详见 E7）                |
+| 原地旋转 | `rotation`                                                                          | `direction`, `angle`        | 按指定角度原地旋转（详见 E8）                |
+| 特殊指令 | `kill_robot`                                                                        | 无                          | 安全关闭控制器                               |
 
 ---
 
@@ -453,9 +453,9 @@ cd high_level/cpp/build
 
 #### 动作 ID
 
-| 动作 ID | 目标步态 |
-|---------|----------|
-| `walk_velocity_seq` | WALK |
+| 动作 ID                    | 目标步态    |
+| -------------------------- | ----------- |
+| `walk_velocity_seq`        | WALK        |
 | `flying_trot_velocity_seq` | FLYING_TROT |
 
 每个动作会自动切换到所需的步态状态后再执行速度序列。
@@ -466,21 +466,21 @@ cd high_level/cpp/build
 "vx,vy,vyaw,duration;vx,vy,vyaw,duration;..."
 ```
 
-| 参数 | 单位 | 说明 |
-|------|------|------|
-| `vx` | m/s | X 方向线速度（前进/后退） |
-| `vy` | m/s | Y 方向线速度（左移/右移） |
-| `vyaw` | rad/s | 绕 Z 轴角速度（左转/右转） |
-| `duration` | 秒 | 该速度指令的持续时间 |
+| 参数       | 单位  | 说明                       |
+| ---------- | ----- | -------------------------- |
+| `vx`       | m/s   | X 方向线速度（前进/后退）  |
+| `vy`       | m/s   | Y 方向线速度（左移/右移）  |
+| `vyaw`     | rad/s | 绕 Z 轴角速度（左转/右转） |
+| `duration` | 秒    | 该速度指令的持续时间       |
 
 #### 速度方向说明
 
-| 方向 | 条件 | 说明 |
-|------|------|------|
-| 前进 | vx > 0 | 向前移动 |
-| 后退 | vx < 0 | 向后移动 |
-| 左平移 | vy > 0 | 向左横移 |
-| 右平移 | vy < 0 | 向右横移 |
+| 方向          | 条件     | 说明       |
+| ------------- | -------- | ---------- |
+| 前进          | vx > 0   | 向前移动   |
+| 后退          | vx < 0   | 向后移动   |
+| 左平移        | vy > 0   | 向左横移   |
+| 右平移        | vy < 0   | 向右横移   |
 | 左转 (逆时针) | vyaw > 0 | 逆时针旋转 |
 | 右转 (顺时针) | vyaw < 0 | 顺时针旋转 |
 
@@ -488,9 +488,9 @@ cd high_level/cpp/build
 
 详细的各步态最大速度请参见"步态速度上限"章节。以下是默认速度比 (50) 下的常用安全值：
 
-| 步态 | vx | vy | vyaw |
-|------|----|----|------|
-| WALK | +/-0.5 m/s | +/-0.2 m/s | +/-0.8 rad/s |
+| 步态        | vx         | vy         | vyaw         |
+| ----------- | ---------- | ---------- | ------------ |
+| WALK        | +/-0.5 m/s | +/-0.2 m/s | +/-0.8 rad/s |
 | FLYING_TROT | +/-0.8 m/s | +/-0.3 m/s | +/-0.6 rad/s |
 
 #### 示例代码
@@ -588,28 +588,28 @@ Done.
 
 #### 输出数据说明
 
-| 数据类别 | 字段 | 单位 | 说明 |
-|----------|------|------|------|
-| 腿部关节（实际值） | `jpos_leg` | rad | 关节实际位置（12个关节） |
-| | `jvel_leg` | rad/s | 关节实际速度 |
-| | `jtau_leg` | Nm | 关节实际力矩 |
-| 腿部关节（期望值） | `jpos_leg_des` | rad | 关节期望位置 |
-| | `jvel_leg_des` | rad/s | 关节期望速度 |
-| | `jtau_leg_des` | Nm | 关节期望力矩 |
-| 机身状态 | `pos_body`（暂未开放） | m | 机身位置 [x, y, z] |
-| | `vel_body`（暂未开放） | m/s | 机身速度 [vx, vy, vz] |
-| | `acc_body` | m/s2 | 机身加速度 [ax, ay, az] |
-| | `ori_body` | rad | 机身姿态 [roll, pitch, yaw] |
-| | `omega_body` | rad/s | 机身角速度 |
-| 接触力（原始） | `grf_left`（暂未开放） | N | 左侧足端力 [fx, fy, fz] |
-| | `grf_right`（暂未开放） | N | 右侧足端力 [fx, fy, fz] |
-| 接触力统计 | `temp[0]` | N | 左脚总接触力 |
-| | `temp[1]` | N | 右脚总接触力 |
-| | `temp[2]` | N | 双脚总接触力 |
-| | `temp[3]` | N | X方向总地面反力 |
-| 电源状态 | `temp[8]` | V | 电池1电压 |
-| | `temp[9]` | V | 电池2电压 |
-| FSM 状态 | `current_state` | -- | 当前 FSM 状态名（如 "WALK"） |
+| 数据类别           | 字段                    | 单位  | 说明                         |
+| ------------------ | ----------------------- | ----- | ---------------------------- |
+| 腿部关节（实际值） | `jpos_leg`              | rad   | 关节实际位置（12个关节）     |
+|                    | `jvel_leg`              | rad/s | 关节实际速度                 |
+|                    | `jtau_leg`              | Nm    | 关节实际力矩                 |
+| 腿部关节（期望值） | `jpos_leg_des`          | rad   | 关节期望位置                 |
+|                    | `jvel_leg_des`          | rad/s | 关节期望速度                 |
+|                    | `jtau_leg_des`          | Nm    | 关节期望力矩                 |
+| 机身状态           | `pos_body`（暂未开放）  | m     | 机身位置 [x, y, z]           |
+|                    | `vel_body`（暂未开放）  | m/s   | 机身速度 [vx, vy, vz]        |
+|                    | `acc_body`              | m/s2  | 机身加速度 [ax, ay, az]      |
+|                    | `ori_body`              | rad   | 机身姿态 [roll, pitch, yaw]  |
+|                    | `omega_body`            | rad/s | 机身角速度                   |
+| 接触力（原始）     | `grf_left`（暂未开放）  | N     | 左侧足端力 [fx, fy, fz]      |
+|                    | `grf_right`（暂未开放） | N     | 右侧足端力 [fx, fy, fz]      |
+| 接触力统计         | `temp[0]`               | N     | 左脚总接触力                 |
+|                    | `temp[1]`               | N     | 右脚总接触力                 |
+|                    | `temp[2]`               | N     | 双脚总接触力                 |
+|                    | `temp[3]`               | N     | X方向总地面反力              |
+| 电源状态           | `temp[8]`               | V     | 电池1电压                    |
+|                    | `temp[9]`               | V     | 电池2电压                    |
+| FSM 状态           | `current_state`         | --    | 当前 FSM 状态名（如 "WALK"） |
 
 > **注意**：`temp[4]` 至 `temp[7]` 为保留字段，当前未使用。
 
@@ -642,11 +642,11 @@ cd high_level/cpp/build
 
 #### 动作参数
 
-| 参数 | 说明 | 范围 |
-|------|------|------|
-| `value` | 目标偏置值（rpy 为度，高度为米） | roll: `[-30, 30]`，pitch: `[-15, 15]`，yaw: `[-20, 20]`，height: `[-0.12, 0]` |
-| `duration` | 动作时长（秒） | 单轴/批量平衡：`[0.5, 5]`；复合姿态（`dynamic_pose`/`static_pose`）：`[1, 5]` |
-| `mode` | 动作模式 | `"dynamic"` / `"static"` |
+| 参数       | 说明                             | 范围                                                                          |
+| ---------- | -------------------------------- | ----------------------------------------------------------------------------- |
+| `value`    | 目标偏置值（rpy 为度，高度为米） | roll: `[-30, 30]`，pitch: `[-15, 15]`，yaw: `[-20, 20]`，height: `[-0.12, 0]` |
+| `duration` | 动作时长（秒）                   | 单轴/批量平衡：`[0.5, 5]`；复合姿态（`dynamic_pose`/`static_pose`）：`[1, 5]` |
+| `mode`     | 动作模式                         | `"dynamic"` / `"static"`                                                      |
 
 #### 示例代码
 
@@ -700,10 +700,10 @@ cd high_level/cpp/build
 
 #### 参数
 
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `direction` | int | 0 | 方向：0=前进, 1=后退, 2=左平移, 3=右平移 |
-| `distance` | float | 1.0 | 距离，单位米 |
+| 参数        | 类型  | 默认值 | 说明                                     |
+| ----------- | ----- | ------ | ---------------------------------------- |
+| `direction` | int   | 0      | 方向：0=前进, 1=后退, 2=左平移, 3=右平移 |
+| `distance`  | float | 1.0    | 距离，单位米                             |
 
 #### 示例代码
 
@@ -744,10 +744,10 @@ cd high_level/cpp/build
 
 #### 参数
 
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `direction` | int | 0 | 方向：0=左转/逆时针, 1=右转/顺时针 |
-| `angle` | float | 90.0 | 旋转角度，单位度 |
+| 参数        | 类型  | 默认值 | 说明                               |
+| ----------- | ----- | ------ | ---------------------------------- |
+| `direction` | int   | 0      | 方向：0=左转/逆时针, 1=右转/顺时针 |
+| `angle`     | float | 90.0   | 旋转角度，单位度                   |
 
 #### 示例代码
 
@@ -866,19 +866,13 @@ cd high_level/cpp/build
 
 ### 服务: gRPCService
 
-| RPC 接口 | 请求 | 响应 | 类型 | 说明 |
-|----------|------|------|------|------|
-| `GetAvailableMotions` | `GetMotionsRequest` | `GetMotionsResponse` | 一元调用 | 列出所有可用动作及参数 |
-| `ExecuteSequence` | `ExecuteSequenceRequest` | stream `SequenceProgress` | 服务端流式 | 执行动作序列，实时推送进度 |
-| `GetRobotState` | `GetRobotStateRequest` | `GetRobotStateResponse` | 一元调用 | 获取机器人状态（关节、机身、FSM状态） |
-| `SetSpeedRatio` | `SetSpeedRatioRequest` | `SetSpeedRatioResponse` | 一元调用 | 设置/查询速度比 [10-100] |
-| `SetObstacleAvoidance` | `SetObstacleAvoidanceRequest` | `SetObstacleAvoidanceResponse` | 一元调用 | 开启/关闭避障 |
-| `GetSensorList` | `GetSensorListRequest` | `GetSensorListResponse` | 一元调用 | 列出可用传感器 |
-| `GetLidarData` | `GetLidarDataRequest` | `GetLidarDataResponse` | 一元调用 | 获取单次激光雷达扫描 |
-| `StreamLidarData` | `GetLidarDataRequest` | stream `GetLidarDataResponse` | 服务端流式 | 流式获取激光雷达数据 |
-| `GetCameraData` | `GetCameraDataRequest` | `GetCameraDataResponse` | 一元调用 | 获取单张相机图像 |
-| `StreamCameraData` | `GetCameraDataRequest` | stream `GetCameraDataResponse` | 服务端流式 | 流式获取相机图像 |
-| `GetDepthData` | `GetDepthDataRequest` | `GetDepthDataResponse` | 一元调用 | 获取深度相机数据 |
+| RPC 接口               | 请求                          | 响应                           | 类型       | 说明                                  |
+| ---------------------- | ----------------------------- | ------------------------------ | ---------- | ------------------------------------- |
+| `GetAvailableMotions`  | `GetMotionsRequest`           | `GetMotionsResponse`           | 一元调用   | 列出所有可用动作及参数                |
+| `ExecuteSequence`      | `ExecuteSequenceRequest`      | stream `SequenceProgress`      | 服务端流式 | 执行动作序列，实时推送进度            |
+| `GetRobotState`        | `GetRobotStateRequest`        | `GetRobotStateResponse`        | 一元调用   | 获取机器人状态（关节、机身、FSM状态） |
+| `SetSpeedRatio`        | `SetSpeedRatioRequest`        | `SetSpeedRatioResponse`        | 一元调用   | 设置/查询速度比 [10-100]              |
+| `SetObstacleAvoidance` | `SetObstacleAvoidanceRequest` | `SetObstacleAvoidanceResponse` | 一元调用   | 开启/关闭避障                         |
 
 ### SetSpeedRatio
 
@@ -925,6 +919,7 @@ SetObstacleAvoidanceResponse {
 ### Q: 为什么机器人无法前进？
 
 通常是避障系统阻断了前进速度 (vx) 导致的。可以尝试：
+
 1. 关闭避障：`robot.set_obstacle_avoidance(False)`
 2. 确保机器人前方没有障碍物
 3. 注意横移 (vy) 和转向 (vyaw) 不受避障影响

@@ -919,42 +919,48 @@ client.balance_stand();
         </tr>
         <tr>
           <td>7</td>
+          <td><code>rl()</code></td>
+          <td>切换到 RL 模式</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>8</td>
           <td><code>flying_trot()</code></td>
           <td>切换到奔跑模式</td>
           <td></td>
         </tr>
         <tr>
-          <td>8</td>
+          <td>9</td>
           <td><code>change_mode()</code></td>
           <td>行走⇄奔跑平滑切换</td>
           <td><span class="badge badge-new">新增</span></td>
         </tr>
         <tr>
-          <td>9</td>
+          <td>10</td>
           <td><code>dance()</code></td>
           <td>跳舞（别名：dance0）</td>
           <td></td>
         </tr>
         <tr>
-          <td>10</td>
+          <td>11</td>
           <td><code>jump()</code></td>
           <td>跳跃</td>
           <td></td>
         </tr>
         <tr>
-          <td>11</td>
-          <td><code>wave_hand()</code></td>
+          <td>12</td>
+          <td><code>wave_hand(duration=5.0)</code></td>
           <td>打招呼（别名：wave）</td>
           <td></td>
         </tr>
         <tr>
-          <td>12</td>
+          <td>13</td>
           <td><code>backflip()</code></td>
           <td>后空翻</td>
           <td></td>
         </tr>
         <tr>
-          <td>13</td>
+          <td>14</td>
           <td><code>recovery()</code></td>
           <td>恢复/自救</td>
           <td></td>
@@ -1275,7 +1281,7 @@ client.rotate_walk(45, 2.0);    // 朝 45° 方向走 2m
         <tr>
           <td><code>balance_yaw(value, duration, mode)</code></td>
           <td>[-20, 20]°</td>
-          <td>偏航。&gt;0 左看，&lt;0 右看</td>
+          <td>偏航。&gt;0 右看，&lt;0 左看</td>
         </tr>
         <tr>
           <td><code>balance_roll(value, duration, mode)</code></td>
@@ -1393,7 +1399,7 @@ client.rotate_walk(45, 2.0);    // 朝 45° 方向走 2m
         <tr>
           <td><code>yaw_deg</code></td>
           <td>[-20, 20]°</td>
-          <td>偏航角度，0 = 不动</td>
+          <td>偏航角度，&gt;0 向右，&lt;0 向左，0 = 不动</td>
         </tr>
         <tr>
           <td><code>height_m</code></td>
@@ -1457,7 +1463,7 @@ client.balance_neutral();
           <td>跳跃</td>
         </tr>
         <tr>
-          <td><code>wave_hand()</code></td>
+          <td><code>wave_hand(duration=5.0)</code></td>
           <td>打招呼（内部调用 <code>wave</code>）</td>
         </tr>
         <tr>

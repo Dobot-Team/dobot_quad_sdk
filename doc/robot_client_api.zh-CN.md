@@ -247,6 +247,7 @@ with RobotClient("192.168.5.2:50051") as robot:
 | `stand_up()`      | `stand_up`      | —             | 站立                           |
 | `balance_stand()` | `balance_stand` | —             | 平衡站立（多数动作的前置条件） |
 | `walk()`          | `walk`          | —             | 行走状态                       |
+| `rl()`            | `rl`            | —             | RL 状态                        |
 | `flying_trot()`   | `flying_trot`   | —             | 奔跑步态                       |
 | `change_mode()`   | `change_mode`   | —             | 腿部构型切换（平行 ↔ X 型）    |
 | `dance0()`        | `dance0`        | `dance()`     | 跳舞动作                       |
@@ -360,7 +361,7 @@ with RobotClient("192.168.5.2:50051") as robot:
 | 方法              | Python 签名                                           | C++ 签名                                                                              | 说明                                           |
 | ----------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------- |
 | `balance_pitch`   | `balance_pitch(value, duration=2.0, mode="dynamic")`  | `balance_pitch(float value, float duration=2.0f, const std::string& mode="dynamic")`  | 俯仰（点头）。`>0` 前倾，`<0` 后仰。单位：度。 |
-| `balance_yaw`     | `balance_yaw(value, duration=2.0, mode="dynamic")`    | `balance_yaw(float value, float duration=2.0f, const std::string& mode="dynamic")`    | 偏航（转头）。`>0` 向左，`<0` 向右。单位：度。 |
+| `balance_yaw`     | `balance_yaw(value, duration=2.0, mode="dynamic")`    | `balance_yaw(float value, float duration=2.0f, const std::string& mode="dynamic")`    | 偏航（转头）。`>0` 向右，`<0` 向左。单位：度。 |
 | `balance_roll`    | `balance_roll(value, duration=2.0, mode="dynamic")`   | `balance_roll(float value, float duration=2.0f, const std::string& mode="dynamic")`   | 横滚（侧倾）。`>0` 向左，`<0` 向右。单位：度。 |
 | `balance_height`  | `balance_height(value, duration=2.0, mode="dynamic")` | `balance_height(float value, float duration=2.0f, const std::string& mode="dynamic")` | 高度增量。`<0` 下蹲。单位：米。                |
 | `balance_neutral` | `balance_neutral(duration=0.5)`                       | `balance_neutral(float duration=0.5f)`                                                | 所有轴回中                                     |
@@ -404,13 +405,13 @@ with RobotClient("192.168.5.2:50051") as robot:
 |          | `static_pose(duration=2.0, roll_deg=0, pitch_deg=0, yaw_deg=0, height_m=0)`  | `static_pose(float duration, float roll_deg=0, float pitch_deg=0, float yaw_deg=0, float height_m=0)`  |
 | **返回** | `SequenceProgress` / `None`                                                  | `bool`                                                                                                 |
 
-| 参数        | 类型    | 范围                    | 说明                   |
-| ----------- | ------- | ----------------------- | ---------------------- |
-| `duration`  | `float` | `[1, 5]` 秒（钳位）     | 持续时间（秒）         |
-| `roll_deg`  | `float` | `[-30, 30]°`（钳位）    | 横滚角度。`0` = 不动。 |
-| `pitch_deg` | `float` | `[-15, 15]°`（钳位）    | 俯仰角度。`0` = 不动。 |
-| `yaw_deg`   | `float` | `[-20, 20]°`（钳位）    | 偏航角度。`0` = 不动。 |
-| `height_m`  | `float` | `[-0.12, 0]` 米（钳位） | 高度增量。`0` = 不动。 |
+| 参数        | 类型    | 范围                    | 说明                                         |
+| ----------- | ------- | ----------------------- | -------------------------------------------- |
+| `duration`  | `float` | `[1, 5]` 秒（钳位）     | 持续时间（秒）                               |
+| `roll_deg`  | `float` | `[-30, 30]°`（钳位）    | 横滚角度。`0` = 不动。                       |
+| `pitch_deg` | `float` | `[-15, 15]°`（钳位）    | 俯仰角度。`0` = 不动。                       |
+| `yaw_deg`   | `float` | `[-20, 20]°`（钳位）    | 偏航角度。`>0` 向右，`<0` 向左，`0` = 不动。 |
+| `height_m`  | `float` | `[-0.12, 0]` 米（钳位） | 高度增量。`0` = 不动。                       |
 
 ---
 
@@ -473,6 +474,7 @@ with RobotClient("192.168.5.2:50051") as robot:
 | stand_down             | `stand_down()`                          | `stand_down()`                          |
 | balance_stand          | `balance_stand()`                       | `balance_stand()`                       |
 | walk                   | `walk()`                                | `walk()`                                |
+| rl                     | `rl()`                                  | `rl()`                                  |
 | flying_trot            | `flying_trot()`                         | `flying_trot()`                         |
 | change_mode            | `change_mode()`                         | `change_mode()`                         |
 | change_mode            | `change_mode()`                         | `change_mode()`                         |
@@ -496,7 +498,7 @@ with RobotClient("192.168.5.2:50051") as robot:
 | balance_neutral        | `balance_neutral(duration)`             | `balance_neutral(duration)`             |
 | dance                  | `dance()`                               | `dance()`                               |
 | jump                   | `jump()`                                | `jump()`                                |
-| wave_hand              | `wave_hand()`                           | `wave_hand()`                           |
+| wave_hand              | `wave_hand(duration=5.0)`               | `wave_hand(int duration_sec=5)`         |
 | backflip               | `backflip()`                            | `backflip()`                            |
 | enable_safety_ready    | `robot.enable_safety_ready()`           | `robot::enable_safety_ready(client)`    |
 
