@@ -1,0 +1,3427 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://dobot-quad-sdk.readthedocs.io/zh/api/high_level/">
+      
+      
+        <link rel="prev" href="../../getting-started/quickstart/index.html">
+      
+      
+        <link rel="next" href="../low_level/index.html">
+      
+      
+        
+          <link rel="alternate" href="../../../api/high_level/index.html" hreflang="en">
+        
+          <link rel="alternate" href="./index.html" hreflang="zh">
+        
+      
+      
+      <link rel="icon" href="../../../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>高层 API - Dobot Quad SDK</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../index.html" title="Dobot Quad SDK" class="md-header__button md-logo" aria-label="Dobot Quad SDK" data-md-component="logo">
+      
+  <img src="../../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Dobot Quad SDK
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              高层 API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="选择当前语言">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../api/high_level/index.html" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./index.html" hreflang="zh" class="md-select__link">
+              简体中文
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Dobot-Team/dobot_quad_sdk" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/installation/index.html" class="md-tabs__link">
+          
+  
+  
+  快速开始
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./index.html" class="md-tabs__link">
+          
+  
+  
+  API 参考
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../changelog/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  更新日志
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="Dobot Quad SDK" class="md-nav__button md-logo" aria-label="Dobot Quad SDK" data-md-component="logo">
+      
+  <img src="../../../assets/logo.png" alt="logo">
+
+    </a>
+    Dobot Quad SDK
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Dobot-Team/dobot_quad_sdk" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    快速开始
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    快速开始
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    安装指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/quickstart/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    快速入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API 参考
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API 参考
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    高层 API
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./index.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    高层 API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、快速上手
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="一、快速上手">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        轮足机器人快速上手
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、接口说明
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 构造函数 / 连接接口
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 查询接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 查询接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-get_state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 get_state()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-get_motions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 get_motions()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-get_current_state_name-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 get_current_state_name() → string
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-get_speed_ratio-int" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 get_speed_ratio() → int
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-get_obstacle_avoidance-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 get_obstacle_avoidance() → bool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-get_robot_type-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 get_robot_type() → string
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-is_quad-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 is_quad() → bool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#28-is_quad_wheel-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.8 is_quad_wheel() → bool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 配置接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 配置接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-set_speed_ratioratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 set_speed_ratio(ratio)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-set_obstacle_avoidanceenable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 set_obstacle_avoidance(enable)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 动作执行接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 动作执行接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-executemotions-loopfalse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 execute(*motions, loop=False)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 状态切换接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 状态切换接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-set_target_statestate_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 set_target_state(state_name)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-change_mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 change_mode()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 速度序列接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 速度序列接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-velocity_sequencevel_seq-gait-speed_ratio-stand_down_after" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 velocity_sequence(vel_seq, gait, speed_ratio, stand_down_after)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 直线行走接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 直线行走接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-line_walkdirection-distance-speed_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 line_walk(direction, distance, speed_ratio)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 方向快捷函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 旋转控制接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 旋转控制接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-rotatedirection-angle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 rotate(direction, angle)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-circledirection-turns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 circle(direction, turns)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-rotate_walkangle-distance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 rotate_walk(angle, distance)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 平衡动作接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 平衡动作接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 单轴控制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 批量执行
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 复合姿势接口
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 特殊动作接口
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 安全处理器接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. 安全处理器接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enable_safety_ready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enable_safety_ready()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、示例程序详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、示例程序详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#e1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E1: 获取可用动作
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E2: 获取当前状态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E3: 状态切换
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E4: 速度序列
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E5: 机器人遥测
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E6: 平衡动作
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E7: 直线行走
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E8: 旋转
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E9: 组合序列
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E10: 配置演示
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参数范围速查表
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../low_level/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    底层 API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    更新日志
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、快速上手
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="一、快速上手">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        轮足机器人快速上手
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、接口说明
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 构造函数 / 连接接口
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 查询接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 查询接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-get_state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 get_state()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-get_motions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 get_motions()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-get_current_state_name-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 get_current_state_name() → string
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-get_speed_ratio-int" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 get_speed_ratio() → int
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-get_obstacle_avoidance-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 get_obstacle_avoidance() → bool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-get_robot_type-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 get_robot_type() → string
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-is_quad-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 is_quad() → bool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#28-is_quad_wheel-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.8 is_quad_wheel() → bool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 配置接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 配置接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-set_speed_ratioratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 set_speed_ratio(ratio)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-set_obstacle_avoidanceenable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 set_obstacle_avoidance(enable)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 动作执行接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 动作执行接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-executemotions-loopfalse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 execute(*motions, loop=False)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 状态切换接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 状态切换接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-set_target_statestate_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 set_target_state(state_name)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-change_mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 change_mode()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 速度序列接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 速度序列接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-velocity_sequencevel_seq-gait-speed_ratio-stand_down_after" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 velocity_sequence(vel_seq, gait, speed_ratio, stand_down_after)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 直线行走接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 直线行走接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-line_walkdirection-distance-speed_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 line_walk(direction, distance, speed_ratio)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 方向快捷函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 旋转控制接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 旋转控制接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-rotatedirection-angle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 rotate(direction, angle)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-circledirection-turns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 circle(direction, turns)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-rotate_walkangle-distance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 rotate_walk(angle, distance)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 平衡动作接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 平衡动作接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 单轴控制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 批量执行
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 复合姿势接口
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 特殊动作接口
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 安全处理器接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. 安全处理器接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enable_safety_ready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enable_safety_ready()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、示例程序详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、示例程序详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#e1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E1: 获取可用动作
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E2: 获取当前状态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E3: 状态切换
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E4: 速度序列
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E5: 机器人遥测
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E6: 平衡动作
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E7: 直线行走
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E8: 旋转
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E9: 组合序列
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E10: 配置演示
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参数范围速查表
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="api">高层 API 文档<a class="headerlink" href="#api" title="Permanent link">&para;</a></h1>
+<p>高层机器人客户端库的公开接口参考与示例程序文档。</p>
+<table>
+<thead>
+<tr>
+<th>语言</th>
+<th>文件</th>
+<th>类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td><code>high_level/python/dobot_quad/robot_client.py</code></td>
+<td><code>RobotClient</code></td>
+</tr>
+<tr>
+<td>C++</td>
+<td><code>high_level/cpp/robot_client.h</code></td>
+<td><code>robot::Client</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">传输协议</p>
+</div>
+<p><code>grpc_service.proto</code>（<code>grpc_comm</code> 包），所有调用均通过 gRPC。</p>
+<h2 id="_1">一、快速上手<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Python</label><label for="__tabbed_1_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">dobot_quad</span><span class="w"> </span><span class="kn">import</span> <span class="n">RobotClient</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">robot</span> <span class="o">=</span> <span class="n">RobotClient</span><span class="p">(</span><span class="s2">&quot;192.168.5.2:50051&quot;</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_stand</span><span class="p">()</span>            <span class="c1"># 切换到平衡站立</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">robot</span><span class="o">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>          <span class="c1"># 向前走 2 米</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">robot</span><span class="o">.</span><span class="n">move_left</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>             <span class="c1"># 向左移动 1 米</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">robot</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>         <span class="c1"># 左转 90°</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">robot</span><span class="o">.</span><span class="n">change_mode</span><span class="p">()</span>              <span class="c1"># 切换腿部构型</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">robot</span><span class="o">.</span><span class="n">dance</span><span class="p">()</span>                    <span class="c1"># 跳舞</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">robot</span><span class="o">.</span><span class="n">stand_down</span><span class="p">()</span>               <span class="c1"># 趴下</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;robot_client.h&quot;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">robot</span><span class="o">::</span><span class="n">Client</span><span class="w"> </span><span class="n">client</span><span class="p">(</span><span class="s">&quot;192.168.5.2:50051&quot;</span><span class="p">);</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_stand</span><span class="p">();</span><span class="w">           </span><span class="c1">// 切换到平衡站立</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">client</span><span class="p">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">2.0</span><span class="p">);</span><span class="w">         </span><span class="c1">// 向前走 2 米</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">client</span><span class="p">.</span><span class="n">move_left</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span><span class="w">            </span><span class="c1">// 向左移动 1 米</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">client</span><span class="p">.</span><span class="n">rotate</span><span class="p">(</span><span class="s">&quot;left&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">);</span><span class="w">        </span><span class="c1">// 左转 90°</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">client</span><span class="p">.</span><span class="n">change_mode</span><span class="p">();</span><span class="w">             </span><span class="c1">// 切换腿部构型</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="n">client</span><span class="p">.</span><span class="n">dance</span><span class="p">();</span><span class="w">                   </span><span class="c1">// 跳舞</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">client</span><span class="p">.</span><span class="n">stand_down</span><span class="p">();</span><span class="w">              </span><span class="c1">// 趴下</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="_2">轮足机器人快速上手<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<div class="admonition info">
+<p class="admonition-title">机型自动检测</p>
+</div>
+<p>SDK 通过 <code>get_robot_type()</code> 自动检测连接的机器人类型（点足 <code>miniQuad</code> 或轮足 <code>miniQuadW</code>）。
+<code>line_walk</code>、<code>rotate</code>、<code>velocity_sequence</code> 等接口在两种机型上通用，服务端会自动选择对应的运动控制器。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Python</label><label for="__tabbed_2_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">dobot_quad</span><span class="w"> </span><span class="kn">import</span> <span class="n">RobotClient</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">robot</span> <span class="o">=</span> <span class="n">RobotClient</span><span class="p">(</span><span class="s2">&quot;192.168.5.2:50051&quot;</span><span class="p">)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">get_robot_type</span><span class="p">())</span>     <span class="c1"># &quot;miniQuadW&quot;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">is_quad_wheel</span><span class="p">())</span>      <span class="c1"># True</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">robot</span><span class="o">.</span><span class="n">wheel_loco</span><span class="p">()</span>                <span class="c1"># 切换到轮式运动</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">robot</span><span class="o">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>           <span class="c1"># 向前走 2 米</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">robot</span><span class="o">.</span><span class="n">move_left</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>              <span class="c1"># 向左移动 1 米</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">robot</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>          <span class="c1"># 左转 90°</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">robot</span><span class="o">.</span><span class="n">drift</span><span class="p">()</span>                     <span class="c1"># 切换到漂移模式</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="n">robot</span><span class="o">.</span><span class="n">change_mode</span><span class="p">()</span>               <span class="c1"># 切换腿部构型</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="n">robot</span><span class="o">.</span><span class="n">handstand</span><span class="p">()</span>                 <span class="c1"># 倒立</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="n">robot</span><span class="o">.</span><span class="n">stand_down</span><span class="p">()</span>                <span class="c1"># 趴下</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;robot_client.h&quot;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">robot</span><span class="o">::</span><span class="n">Client</span><span class="w"> </span><span class="n">client</span><span class="p">(</span><span class="s">&quot;192.168.5.2:50051&quot;</span><span class="p">);</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">get_robot_type</span><span class="p">();</span><span class="w">  </span><span class="c1">// &quot;miniQuadW&quot;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">is_quad_wheel</span><span class="p">();</span><span class="w">   </span><span class="c1">// true</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">client</span><span class="p">.</span><span class="n">wheel_loco</span><span class="p">();</span><span class="w">                </span><span class="c1">// 切换到轮式运动</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">client</span><span class="p">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">2.0</span><span class="p">);</span><span class="w">           </span><span class="c1">// 向前走 2 米</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">client</span><span class="p">.</span><span class="n">move_left</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span><span class="w">              </span><span class="c1">// 向左移动 1 米</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">client</span><span class="p">.</span><span class="n">rotate</span><span class="p">(</span><span class="s">&quot;left&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">);</span><span class="w">          </span><span class="c1">// 左转 90°</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="n">client</span><span class="p">.</span><span class="n">drift</span><span class="p">();</span><span class="w">                     </span><span class="c1">// 切换到漂移模式</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="n">client</span><span class="p">.</span><span class="n">change_mode</span><span class="p">();</span><span class="w">               </span><span class="c1">// 切换腿部构型</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="n">client</span><span class="p">.</span><span class="n">handstand</span><span class="p">();</span><span class="w">                 </span><span class="c1">// 倒立</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="n">client</span><span class="p">.</span><span class="n">stand_down</span><span class="p">();</span><span class="w">                </span><span class="c1">// 趴下</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="_3">二、接口说明<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="1">1. 构造函数 / 连接接口<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Python</label><label for="__tabbed_3_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">RobotClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s2">&quot;192.168.5.2:50051&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">Client</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s">&quot;192.168.5.2:50051&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>addr</code></td>
+<td>string</td>
+<td><code>"192.168.5.2:50051"</code></td>
+<td>gRPC 服务地址</td>
+</tr>
+</tbody>
+</table>
+<p><strong>构造时行为：</strong></p>
+<ol>
+<li>打开到 <code>addr</code> 的 gRPC 通道。</li>
+<li>通过 <code>get_state()</code> 查询当前速度比并存储到本地。</li>
+<li>开启避障（<code>set_obstacle_avoidance(true)</code>）并将结果存储到本地。</li>
+</ol>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Python</label><label for="__tabbed_4_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># 上下文管理器（推荐）</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">with</span> <span class="n">RobotClient</span><span class="p">(</span><span class="s2">&quot;192.168.5.2:50051&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">robot</span><span class="p">:</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">robot</span><span class="o">.</span><span class="n">balance_stand</span><span class="p">()</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># 退出时自动关闭通道</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">robot</span><span class="o">::</span><span class="n">Client</span><span class="w"> </span><span class="n">client</span><span class="p">(</span><span class="s">&quot;192.168.5.2:50051&quot;</span><span class="p">);</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_stand</span><span class="p">();</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1">// 析构时自动清理</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="2">2. 查询接口<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="21-get_state">2.1 get_state()<a class="headerlink" href="#21-get_state" title="Permanent link">&para;</a></h3>
+<p>返回机器人完整遥测状态快照。</p>
+<table>
+<thead>
+<tr>
+<th>返回字段</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>success</code></td>
+<td>bool</td>
+<td>RPC 是否成功</td>
+</tr>
+<tr>
+<td><code>current_state</code></td>
+<td>string</td>
+<td>当前 FSM 状态名</td>
+</tr>
+<tr>
+<td><code>current_speed_ratio</code></td>
+<td>int32</td>
+<td>当前速度比 [10–100]</td>
+</tr>
+<tr>
+<td><code>obstacle_avoidance_enabled</code></td>
+<td>bool</td>
+<td>避障是否激活</td>
+</tr>
+<tr>
+<td><code>robot_state</code></td>
+<td>RobotState</td>
+<td>关节、机体、接触力遥测</td>
+</tr>
+</tbody>
+</table>
+<p><code>RobotState</code> 消息体：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>jpos_leg / jpos_leg_des</code></td>
+<td>float[]</td>
+<td>腿部关节位置 / 期望位置（rad）</td>
+</tr>
+<tr>
+<td><code>jvel_leg / jvel_leg_des</code></td>
+<td>float[]</td>
+<td>腿部关节速度 / 期望速度（rad/s）</td>
+</tr>
+<tr>
+<td><code>jtau_leg / jtau_leg_des</code></td>
+<td>float[]</td>
+<td>腿部关节力矩 / 期望力矩（Nm）</td>
+</tr>
+<tr>
+<td><code>pos_body</code></td>
+<td>float[3]</td>
+<td>机体位置 [x, y, z]（m）</td>
+</tr>
+<tr>
+<td><code>vel_body</code></td>
+<td>float[3]</td>
+<td>机体线速度（m/s）</td>
+</tr>
+<tr>
+<td><code>acc_body</code></td>
+<td>float[3]</td>
+<td>机体线加速度（m/s²）</td>
+</tr>
+<tr>
+<td><code>omega_body</code></td>
+<td>float[3]</td>
+<td>机体角速度（rad/s）</td>
+</tr>
+<tr>
+<td><code>ori_body</code></td>
+<td>float[3]</td>
+<td>机体姿态 [roll, pitch, yaw]（rad）</td>
+</tr>
+<tr>
+<td><code>grf_left / grf_right</code></td>
+<td>float[3]</td>
+<td>左/右脚地面反力（N）</td>
+</tr>
+<tr>
+<td><code>grf_vertical_filtered</code></td>
+<td>float[2]</td>
+<td>滤波后垂直接触力（N）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-get_motions">2.2 get_motions()<a class="headerlink" href="#22-get_motions" title="Permanent link">&para;</a></h3>
+<p>返回服务端已注册的动作库列表。</p>
+<h3 id="23-get_current_state_name-string">2.3 get_current_state_name() → string<a class="headerlink" href="#23-get_current_state_name-string" title="Permanent link">&para;</a></h3>
+<p>获取当前 FSM 状态名。失败时返回空字符串。</p>
+<h3 id="24-get_speed_ratio-int">2.4 get_speed_ratio() → int<a class="headerlink" href="#24-get_speed_ratio-int" title="Permanent link">&para;</a></h3>
+<p>返回本地跟踪的速度比。该值在每次调用 <code>set_speed_ratio()</code> 时从 RPC 响应中更新。</p>
+<h3 id="25-get_obstacle_avoidance-bool">2.5 get_obstacle_avoidance() → bool<a class="headerlink" href="#25-get_obstacle_avoidance-bool" title="Permanent link">&para;</a></h3>
+<p>返回本地跟踪的避障状态。该值在每次调用 <code>set_obstacle_avoidance()</code> 时从 RPC 响应中更新。</p>
+<h3 id="26-get_robot_type-string">2.6 get_robot_type() → string<a class="headerlink" href="#26-get_robot_type-string" title="Permanent link">&para;</a></h3>
+<p>返回机器人类型标识字符串。点足返回 <code>"miniQuad"</code>，轮足返回 <code>"miniQuadW"</code>。首次调用后缓存结果。</p>
+<h3 id="27-is_quad-bool">2.7 is_quad() → bool<a class="headerlink" href="#27-is_quad-bool" title="Permanent link">&para;</a></h3>
+<p>返回是否为点足机器人（<code>robot_type == "miniQuad"</code>）。</p>
+<h3 id="28-is_quad_wheel-bool">2.8 is_quad_wheel() → bool<a class="headerlink" href="#28-is_quad_wheel-bool" title="Permanent link">&para;</a></h3>
+<p>返回是否为轮足机器人（<code>robot_type == "miniQuadW"</code>）。</p>
+<h2 id="3">3. 配置接口<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="31-set_speed_ratioratio">3.1 set_speed_ratio(ratio)<a class="headerlink" href="#31-set_speed_ratioratio" title="Permanent link">&para;</a></h3>
+<p>设置速度比，自动钳位到 <strong>[10, 100]</strong>。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Python</label><label for="__tabbed_5_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">set_speed_ratio</span><span class="p">(</span><span class="n">ratio</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">set_speed_ratio</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">ratio</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="32-set_obstacle_avoidanceenable">3.2 set_obstacle_avoidance(enable)<a class="headerlink" href="#32-set_obstacle_avoidanceenable" title="Permanent link">&para;</a></h3>
+<p>启用/禁用避障。接受 <code>bool</code> 或 <code>"on"/"off"</code> 字符串。</p>
+<p>客户端通过 RPC 切换避障时，服务端会同步触发语音提示：<code>avoid_obstacle_on.wav</code> / <code>avoid_obstacle_off.wav</code>。</p>
+<h2 id="4">4. 动作执行接口<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41-executemotions-loopfalse">4.1 execute(*motions, loop=False)<a class="headerlink" href="#41-executemotions-loopfalse" title="Permanent link">&para;</a></h3>
+<p>执行动作序列并实时流式输出进度。每个参数可以是：</p>
+<ul>
+<li><code>str</code> — 动作 ID</li>
+<li><code>(str, dict)</code> — 动作 ID + 参数字典</li>
+</ul>
+<p>按 <strong>ctrl+c</strong> 可随时取消。</p>
+<h2 id="5">5. 状态切换接口<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<h3 id="51-set_target_statestate_name">5.1 set_target_state(state_name)<a class="headerlink" href="#51-set_target_statestate_name" title="Permanent link">&para;</a></h3>
+<p>通过名称切换状态（大小写不敏感）。无效名称抛出 <code>ValueError</code>。</p>
+<p><strong>有效状态 / 函数列表：</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>函数</th>
+<th>说明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>passive()</code></td>
+<td>被动模式（电机断电）</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>emergency()</code></td>
+<td>紧急停止</td>
+<td><code>passive()</code> 的别名</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>ready()</code></td>
+<td>缓慢趴下（安全停止）</td>
+<td>:material-new-box: 新增</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>stand_down()</code></td>
+<td>趴下</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>balance_stand()</code></td>
+<td>平衡站立</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>walk()</code></td>
+<td>切换到行走模式</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>rl()</code></td>
+<td>切换到 RL 模式</td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>flying_trot()</code></td>
+<td>切换到奔跑模式</td>
+<td></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>change_mode()</code></td>
+<td>行走⇄奔跑平滑切换</td>
+<td>:material-new-box: 新增</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>dance()</code></td>
+<td>跳舞（别名：dance0）</td>
+<td></td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>jump()</code></td>
+<td>跳跃</td>
+<td></td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>wave_hand(duration=5.0)</code></td>
+<td>打招呼（别名：wave）</td>
+<td></td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>backflip()</code></td>
+<td>后空翻</td>
+<td></td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>recovery()</code></td>
+<td>恢复/自救</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>轮足机器人（miniQuadW）有效状态 / 函数列表：</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>函数</th>
+<th>说明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>passive()</code></td>
+<td>被动模式（电机断电）</td>
+<td>共用</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>emergency()</code></td>
+<td>紧急停止</td>
+<td><code>passive()</code> 的别名</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>ready()</code></td>
+<td>缓慢趴下（安全停止）</td>
+<td>共用</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>stand_down()</code></td>
+<td>趴下</td>
+<td>共用</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>wheel_loco()</code></td>
+<td>轮式运动</td>
+<td>:material-new-box: 轮足专用</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>drift()</code></td>
+<td>漂移模式</td>
+<td>:material-new-box: 轮足专用</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>handstand()</code></td>
+<td>倒立</td>
+<td>:material-new-box: 轮足专用</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>change_mode()</code></td>
+<td>切换腿部构型</td>
+<td>共用</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">注意</p>
+</div>
+<p>所有状态切换方法已移除 <code>set_</code> 前缀。请使用 <code>robot.balance_stand()</code> 而非 <code>robot.set_balance_stand()</code>。</p>
+<h3 id="52-change_mode">5.2 change_mode()<a class="headerlink" href="#52-change_mode" title="Permanent link">&para;</a></h3>
+<p>切换腿部构型（平行 ↔ X 型）。无参数，在两种构型之间切换。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Python</label><label for="__tabbed_6_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">robot</span><span class="o">.</span><span class="n">change_mode</span><span class="p">()</span>    <span class="c1"># 切换腿部构型</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">robot</span><span class="o">.</span><span class="n">change_mode</span><span class="p">()</span>    <span class="c1"># 再次调用切换回另一种</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">client</span><span class="p">.</span><span class="n">change_mode</span><span class="p">();</span><span class="w">    </span><span class="c1">// 切换腿部构型</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">client</span><span class="p">.</span><span class="n">change_mode</span><span class="p">();</span><span class="w">    </span><span class="c1">// 再次调用切换回另一种</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="6">6. 速度序列接口<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<h3 id="61-velocity_sequencevel_seq-gait-speed_ratio-stand_down_after">6.1 velocity_sequence(vel_seq, gait, speed_ratio, stand_down_after)<a class="headerlink" href="#61-velocity_sequencevel_seq-gait-speed_ratio-stand_down_after" title="Permanent link">&para;</a></h3>
+<p>执行速度序列。当显式提供 <code>speed_ratio</code> 时临时设置并执行后恢复；省略时使用当前基础速度比。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>默认</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vel_seq</code></td>
+<td>string / list</td>
+<td>—</td>
+<td><code>"vx,vy,vyaw,dur;..."</code> 或元组列表</td>
+</tr>
+<tr>
+<td><code>gait</code></td>
+<td>string</td>
+<td><code>"walk"</code></td>
+<td>点足：<code>"walk"</code> / <code>"flying_trot"</code> / <code>"rl"</code>；轮足：<code>"wheel_loco"</code></td>
+</tr>
+<tr>
+<td><code>speed_ratio</code></td>
+<td>int</td>
+<td><code>None/-1</code></td>
+<td>可选 [10, 100]，省略时使用当前基础值</td>
+</tr>
+<tr>
+<td><code>stand_down_after</code></td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>序列结束后是否趴下</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Python</label><label for="__tabbed_7_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">steps</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>   <span class="c1"># 前进 2s</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>     <span class="c1"># 停止 1s</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># 后退 2s</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="p">]</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">robot</span><span class="o">.</span><span class="n">velocity_sequence</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">gait</span><span class="o">=</span><span class="s2">&quot;walk&quot;</span><span class="p">,</span> <span class="n">speed_ratio</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">robot</span><span class="o">::</span><span class="n">VelocityStep</span><span class="o">&gt;</span><span class="w"> </span><span class="n">steps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span><span class="p">{</span><span class="mf">0.8f</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">},</span><span class="w">   </span><span class="c1">// 前进 2s</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span><span class="w">      </span><span class="c1">// 停止 1s</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="p">{</span><span class="mf">-0.8f</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">},</span><span class="w">  </span><span class="c1">// 后退 2s</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="p">};</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="n">client</span><span class="p">.</span><span class="n">velocity_sequence</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;walk&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">);</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="7">7. 直线行走接口<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<h3 id="71-line_walkdirection-distance-speed_ratio">7.1 line_walk(direction, distance, speed_ratio)<a class="headerlink" href="#71-line_walkdirection-distance-speed_ratio" title="Permanent link">&para;</a></h3>
+<p>当显式提供 <code>speed_ratio</code> 时临时设置并执行后恢复；省略时使用当前基础速度比。</p>
+<div class="admonition info">
+<p class="admonition-title">轮足机器人支持</p>
+</div>
+<p>轮足机器人在 <strong>WHEEL_LOCO</strong>（<code>knee_mode=0</code>）和 <strong>DRIFT</strong>（<code>knee_mode=1</code>）两种状态下均支持直线行走。服务端会根据当前 <code>knee_mode</code> 自动选择目标状态。
+注意：DRIFT 模式下<strong>不支持</strong>左右横移（<code>move_left</code> / <code>move_right</code>），仅支持前进和后退。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>direction</code></td>
+<td>int / string</td>
+<td>0-3</td>
+<td>0="forward", 1="backward", 2="left", 3="right"</td>
+</tr>
+<tr>
+<td><code>distance</code></td>
+<td>float</td>
+<td><strong>[0, 3] m</strong></td>
+<td>行走距离（米）</td>
+</tr>
+<tr>
+<td><code>speed_ratio</code></td>
+<td>int / None</td>
+<td>None 或 [10, 100]</td>
+<td>可选速度比覆盖</td>
+</tr>
+</tbody>
+</table>
+<h3 id="72">7.2 方向快捷函数<a class="headerlink" href="#72" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>等价调用</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>walk_forward(distance)</code></td>
+<td><code>line_walk(0, distance)</code></td>
+<td>向前走</td>
+</tr>
+<tr>
+<td><code>walk_backward(distance)</code></td>
+<td><code>line_walk(1, distance)</code></td>
+<td>向后走</td>
+</tr>
+<tr>
+<td><code>move_left(distance)</code></td>
+<td><code>line_walk(2, distance)</code></td>
+<td>向左移动</td>
+</tr>
+<tr>
+<td><code>move_right(distance)</code></td>
+<td><code>line_walk(3, distance)</code></td>
+<td>向右移动</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Breaking Change</p>
+</div>
+<p><code>walk_left</code> → <code>move_left</code>，<code>walk_right</code> → <code>move_right</code>。距离上限从 10m 改为 <strong>3m</strong>。</p>
+<h2 id="8">8. 旋转控制接口<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">轮足机器人支持</p>
+</div>
+<p>旋转接口在轮足机器人上仅在 <strong>WHEEL_LOCO</strong> 状态下可用（DRIFT 模式不支持原地旋转）。
+<code>rotate_walk</code> 由旋转 + 直线行走组合而成，同样受此限制。</p>
+<h3 id="81-rotatedirection-angle">8.1 rotate(direction, angle)<a class="headerlink" href="#81-rotatedirection-angle" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>direction</code></td>
+<td>string / int</td>
+<td>"left"/"right" 或 0/1</td>
+<td>旋转方向</td>
+</tr>
+<tr>
+<td><code>angle</code></td>
+<td>float</td>
+<td>[0, 360]°</td>
+<td>旋转角度</td>
+</tr>
+</tbody>
+</table>
+<p>快捷函数：<code>rotate_left(angle)</code>，<code>rotate_right(angle)</code></p>
+<h3 id="82-circledirection-turns">8.2 circle(direction, turns)<a class="headerlink" href="#82-circledirection-turns" title="Permanent link">&para;</a></h3>
+<p>旋转指定圈数。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>direction</code></td>
+<td>"left"/"right"</td>
+<td>旋转方向</td>
+</tr>
+<tr>
+<td><code>turns</code></td>
+<td><strong>[1, 10]</strong></td>
+<td>圈数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="83-rotate_walkangle-distance">8.3 rotate_walk(angle, distance)<a class="headerlink" href="#83-rotate_walkangle-distance" title="Permanent link">&para;</a></h3>
+<p>朝指定方向角度行走。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>angle</code></td>
+<td><strong>[-180, 180]°</strong></td>
+<td>目标方向角度（正数=右，负数=左）</td>
+</tr>
+<tr>
+<td><code>distance</code></td>
+<td><strong>[0, 3] m</strong></td>
+<td>行走距离</td>
+</tr>
+</tbody>
+</table>
+<h2 id="9">9. 平衡动作接口<a class="headerlink" href="#9" title="Permanent link">&para;</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">仅限点足机器人</p>
+</div>
+<p>平衡动作接口（balance_pitch / balance_yaw / balance_roll / balance_height / balance_neutral / balance_sequence）以及复合姿势接口（dynamic_pose / static_pose）仅在点足机器人（miniQuad）的 BALANCE_STAND 状态下可用。轮足机器人不支持这些接口。</p>
+<div class="admonition info">
+<p class="admonition-title">模式说明</p>
+</div>
+<p><code>"dynamic"</code> — 正弦扫描到目标值 → 保持；
+<code>"static"</code> — 斜坡到目标值，保持，斜坡回中。</p>
+<h3 id="91">9.1 单轴控制<a class="headerlink" href="#91" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>value 范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>balance_pitch(value, duration, mode)</code></td>
+<td>[-15, 15]°</td>
+<td>俯仰。&gt;0 前倾，&lt;0 后仰</td>
+</tr>
+<tr>
+<td><code>balance_yaw(value, duration, mode)</code></td>
+<td>[-20, 20]°</td>
+<td>偏航。&gt;0 右看，&lt;0 左看</td>
+</tr>
+<tr>
+<td><code>balance_roll(value, duration, mode)</code></td>
+<td>[-30, 30]°</td>
+<td>横滚。&gt;0 左倾，&lt;0 右倾</td>
+</tr>
+<tr>
+<td><code>balance_height(value, duration, mode)</code></td>
+<td>[-0.12, 0] m</td>
+<td>高度。&lt;0 下蹲</td>
+</tr>
+<tr>
+<td><code>balance_neutral(duration)</code></td>
+<td>—</td>
+<td>回到中位</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>value</code></td>
+<td>float</td>
+<td>见上表</td>
+<td>目标偏置值（从初始姿态到目标姿态的变化量），单位：度（rpy）或米（高度）</td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td>float</td>
+<td>[0.5, 5] s</td>
+<td>持续时间（秒），默认 2.0</td>
+</tr>
+<tr>
+<td><code>mode</code></td>
+<td>string</td>
+<td>"dynamic" / "static"</td>
+<td>运动模式，默认 "dynamic"</td>
+</tr>
+</tbody>
+</table>
+<h3 id="92">9.2 批量执行<a class="headerlink" href="#92" title="Permanent link">&para;</a></h3>
+<p><code>balance_sequence(motions)</code> — 在单次 RPC 中批量执行多个平衡动作。motions 格式：<code>(motion_id, value, duration, mode)</code></p>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Python</label><label for="__tabbed_8_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_sequence</span><span class="p">([</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="p">(</span><span class="s2">&quot;balance_pitch&quot;</span><span class="p">,</span>  <span class="mf">20.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">),</span>   <span class="c1"># 前倾 20°</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="p">(</span><span class="s2">&quot;balance_pitch&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">),</span>   <span class="c1"># 后仰 20°</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="p">(</span><span class="s2">&quot;balance_neutral&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">),</span>   <span class="c1"># 回中位</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="p">])</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_sequence</span><span class="p">({</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="p">{</span><span class="s">&quot;balance_pitch&quot;</span><span class="p">,</span><span class="w">   </span><span class="mf">20.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">},</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="p">{</span><span class="s">&quot;balance_pitch&quot;</span><span class="p">,</span><span class="w">  </span><span class="mf">-20.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">},</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="p">{</span><span class="s">&quot;balance_neutral&quot;</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">},</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="p">});</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="10">10. 复合姿势接口<a class="headerlink" href="#10" title="Permanent link">&para;</a></h2>
+<p>包含 dynamic_pose / static_pose。同时控制 roll、pitch、yaw、height — 所有轴在一个服务端动作中同步执行。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>duration</code></td>
+<td>[1, 5] s</td>
+<td>持续时间（秒）</td>
+</tr>
+<tr>
+<td><code>roll_deg</code></td>
+<td>[-30, 30]°</td>
+<td>横滚角度，0 = 不动</td>
+</tr>
+<tr>
+<td><code>pitch_deg</code></td>
+<td>[-15, 15]°</td>
+<td>俯仰角度，0 = 不动</td>
+</tr>
+<tr>
+<td><code>yaw_deg</code></td>
+<td>[-20, 20]°</td>
+<td>偏航角度，&gt;0 向右，&lt;0 向左，0 = 不动</td>
+</tr>
+<tr>
+<td><code>height_m</code></td>
+<td>[-0.12, 0] m</td>
+<td>高度增量，0 = 不动</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">区别</p>
+</div>
+<p><code>dynamic_pose</code> — 正弦扫描到目标；
+<code>static_pose</code> — 斜坡到目标，保持，斜坡回中。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Python</label><label for="__tabbed_9_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># 正弦扫描：同时控制多轴</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">robot</span><span class="o">.</span><span class="n">dynamic_pose</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">roll_deg</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pitch_deg</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">yaw_deg</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">height_m</span><span class="o">=-</span><span class="mf">0.05</span><span class="p">)</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1"># 保持姿势：斜坡到目标，保持 5 秒</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="n">robot</span><span class="o">.</span><span class="n">static_pose</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">pitch_deg</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">height_m</span><span class="o">=-</span><span class="mf">0.03</span><span class="p">)</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># 回中位</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_neutral</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1">// 正弦扫描：同时控制多轴</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">client</span><span class="p">.</span><span class="n">dynamic_pose</span><span class="p">(</span><span class="mf">3.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.05f</span><span class="p">);</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="c1">// 保持姿势：斜坡到目标，保持 5 秒</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="n">client</span><span class="p">.</span><span class="n">static_pose</span><span class="p">(</span><span class="mf">5.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.03f</span><span class="p">);</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="c1">// 回中位</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_neutral</span><span class="p">();</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="11">11. 特殊动作接口<a class="headerlink" href="#11" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dance()</code></td>
+<td>跳舞（内部调用 <code>dance0</code>）</td>
+</tr>
+<tr>
+<td><code>jump()</code></td>
+<td>跳跃</td>
+</tr>
+<tr>
+<td><code>wave_hand(duration=5.0)</code></td>
+<td>打招呼（内部调用 <code>wave</code>）</td>
+</tr>
+<tr>
+<td><code>backflip()</code></td>
+<td>后空翻</td>
+</tr>
+</tbody>
+</table>
+<h2 id="12">12. 安全处理器接口<a class="headerlink" href="#12" title="Permanent link">&para;</a></h2>
+<h3 id="enable_safety_ready">enable_safety_ready()<a class="headerlink" href="#enable_safety_ready" title="Permanent link">&para;</a></h3>
+<p>注册 <strong>Ctrl+C</strong> 处理器。当按下 <strong>Ctrl+C</strong> 时，取消当前动作并在进程退出前切换到 <code>ready</code> 状态。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Python</label><label for="__tabbed_10_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">robot</span><span class="o">.</span><span class="n">enable_safety_ready</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">robot</span><span class="o">::</span><span class="n">enable_safety_ready</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">注意</p>
+</div>
+<p>处理器仅在 Ctrl+C（SIGINT）时触发。程序正常退出<strong>不会</strong>调用 <code>ready()</code>。</p>
+<h2 id="_4">三、示例程序详解<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>所有示例均提供 Python 和 C++ 两个版本，位于 <code>high_level/python/examples/</code> 和 <code>high_level/cpp/</code> 目录下。</p>
+<h3 id="e1">E1: 获取可用动作<a class="headerlink" href="#e1" title="Permanent link">&para;</a></h3>
+<p>列出服务端所有可用动作及其参数。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Python</label><label for="__tabbed_11_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">dobot_quad</span><span class="w"> </span><span class="kn">import</span> <span class="n">RobotClient</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="n">robot</span> <span class="o">=</span> <span class="n">RobotClient</span><span class="p">(</span><span class="s2">&quot;192.168.5.2:50051&quot;</span><span class="p">)</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="n">res</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">get_motions</span><span class="p">()</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">motions</span><span class="p">:</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [</span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">motion_id</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;      </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">float_value</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">int_value</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">string_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;robot_client.h&quot;</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="n">robot</span><span class="o">::</span><span class="n">Client</span><span class="w"> </span><span class="n">client</span><span class="p">(</span><span class="s">&quot;192.168.5.2:50051&quot;</span><span class="p">);</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="k">auto</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">get_motions</span><span class="p">();</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="n">motions</span><span class="p">())</span>
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  [&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m</span><span class="p">.</span><span class="n">motion_id</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;]&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="e2">E2: 获取当前状态<a class="headerlink" href="#e2" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">Python</label><label for="__tabbed_12_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">robot</span> <span class="o">=</span> <span class="n">RobotClient</span><span class="p">(</span><span class="s2">&quot;192.168.5.2:50051&quot;</span><span class="p">)</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="n">state</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">get_current_state_name</span><span class="p">()</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;当前状态: </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="n">robot</span><span class="o">::</span><span class="n">Client</span><span class="w"> </span><span class="n">client</span><span class="p">(</span><span class="s">&quot;192.168.5.2:50051&quot;</span><span class="p">);</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="k">auto</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">get_current_state_name</span><span class="p">();</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;当前状态: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="e3">E3: 状态切换<a class="headerlink" href="#e3" title="Permanent link">&para;</a></h3>
+<p>支持命令行参数或交互式选择。程序会根据机器人类型自动显示对应的状态列表。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="13:4"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><input id="__tabbed_13_3" name="__tabbed_13" type="radio" /><input id="__tabbed_13_4" name="__tabbed_13" type="radio" /><div class="tabbed-labels"><label for="__tabbed_13_1">Python（点足）</label><label for="__tabbed_13_2">Python（轮足）</label><label for="__tabbed_13_3">C++（点足）</label><label for="__tabbed_13_4">C++（轮足）</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="n">robot</span><span class="o">.</span><span class="n">set_target_state</span><span class="p">(</span><span class="s2">&quot;balance_stand&quot;</span><span class="p">)</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="n">robot</span><span class="o">.</span><span class="n">walk</span><span class="p">()</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="n">robot</span><span class="o">.</span><span class="n">flying_trot</span><span class="p">()</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">robot</span><span class="o">.</span><span class="n">change_mode</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="n">robot</span><span class="o">.</span><span class="n">wheel_loco</span><span class="p">()</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="n">robot</span><span class="o">.</span><span class="n">drift</span><span class="p">()</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="n">robot</span><span class="o">.</span><span class="n">handstand</span><span class="p">()</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="n">robot</span><span class="o">.</span><span class="n">change_mode</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_stand</span><span class="p">();</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="n">client</span><span class="p">.</span><span class="n">walk</span><span class="p">();</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="n">client</span><span class="p">.</span><span class="n">flying_trot</span><span class="p">();</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="n">client</span><span class="p">.</span><span class="n">change_mode</span><span class="p">();</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="n">client</span><span class="p">.</span><span class="n">wheel_loco</span><span class="p">();</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="n">client</span><span class="p">.</span><span class="n">drift</span><span class="p">();</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="n">client</span><span class="p">.</span><span class="n">handstand</span><span class="p">();</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="n">client</span><span class="p">.</span><span class="n">change_mode</span><span class="p">();</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="e4">E4: 速度序列<a class="headerlink" href="#e4" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="14:4"><input checked="checked" id="__tabbed_14_1" name="__tabbed_14" type="radio" /><input id="__tabbed_14_2" name="__tabbed_14" type="radio" /><input id="__tabbed_14_3" name="__tabbed_14" type="radio" /><input id="__tabbed_14_4" name="__tabbed_14" type="radio" /><div class="tabbed-labels"><label for="__tabbed_14_1">Python（点足）</label><label for="__tabbed_14_2">Python（轮足）</label><label for="__tabbed_14_3">C++（点足）</label><label for="__tabbed_14_4">C++（轮足）</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="n">steps</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>    <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>   <span class="c1"># 前进 2s</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>     <span class="c1"># 停止 1s</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>    <span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># 后退 2s</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>     <span class="c1"># 停止 1s</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="p">]</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="n">robot</span><span class="o">.</span><span class="n">velocity_sequence</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">gait</span><span class="o">=</span><span class="s2">&quot;walk&quot;</span><span class="p">,</span> <span class="n">speed_ratio</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="c1"># 也支持 flying_trot:</span>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="n">robot</span><span class="o">.</span><span class="n">velocity_sequence</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">gait</span><span class="o">=</span><span class="s2">&quot;flying_trot&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="n">steps</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>    <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>    <span class="c1"># 前进 2s</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>    <span class="c1"># 左移 2s</span>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>    <span class="c1"># 左转 2s</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>      <span class="c1"># 停止 1s</span>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="p">]</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="n">robot</span><span class="o">.</span><span class="n">velocity_sequence</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">gait</span><span class="o">=</span><span class="s2">&quot;wheel_loco&quot;</span><span class="p">,</span> <span class="n">speed_ratio</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">robot</span><span class="o">::</span><span class="n">VelocityStep</span><span class="o">&gt;</span><span class="w"> </span><span class="n">steps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="w">    </span><span class="p">{</span><span class="mf">0.8f</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">},</span><span class="w">   </span><span class="c1">// 前进 2s</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="w">    </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span><span class="w">      </span><span class="c1">// 停止 1s</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="w">    </span><span class="p">{</span><span class="mf">-0.8f</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">},</span><span class="w">  </span><span class="c1">// 后退 2s</span>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="w">    </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span><span class="w">      </span><span class="c1">// 停止 1s</span>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="p">};</span>
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="n">client</span><span class="p">.</span><span class="n">velocity_sequence</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;walk&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">);</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">robot</span><span class="o">::</span><span class="n">VelocityStep</span><span class="o">&gt;</span><span class="w"> </span><span class="n">steps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="w">    </span><span class="p">{</span><span class="mf">0.8f</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">},</span><span class="w">     </span><span class="c1">// 前进 2s</span>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="w">    </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3f</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">},</span><span class="w">     </span><span class="c1">// 左移 2s</span>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="w">    </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4f</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">},</span><span class="w">     </span><span class="c1">// 左转 2s</span>
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="w">    </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span><span class="w">        </span><span class="c1">// 停止 1s</span>
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a><span class="p">};</span>
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="n">client</span><span class="p">.</span><span class="n">velocity_sequence</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;wheel_loco&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">);</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="e5">E5: 机器人遥测<a class="headerlink" href="#e5" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="15:2"><input checked="checked" id="__tabbed_15_1" name="__tabbed_15" type="radio" /><input id="__tabbed_15_2" name="__tabbed_15" type="radio" /><div class="tabbed-labels"><label for="__tabbed_15_1">Python</label><label for="__tabbed_15_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="n">res</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">get_state</span><span class="p">()</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;当前状态: </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">current_state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;速度比:   </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">current_speed_ratio</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="n">s</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">robot_state</span>
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;机体位置: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">pos_body</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;腿部力矩: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">jtau_leg</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">get_state</span><span class="p">();</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;当前状态: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="n">current_state</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="n">robot_state</span><span class="p">();</span>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="c1">// s.pos_body(), s.jtau_leg(), 等</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="e6">E6: 平衡动作<a class="headerlink" href="#e6" title="Permanent link">&para;</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">仅限点足</p>
+</div>
+<p>平衡动作仅在点足机器人（miniQuad）上可用。轮足机器人调用时会提示不支持并退出。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="16:2"><input checked="checked" id="__tabbed_16_1" name="__tabbed_16" type="radio" /><input id="__tabbed_16_2" name="__tabbed_16" type="radio" /><div class="tabbed-labels"><label for="__tabbed_16_1">Python</label><label for="__tabbed_16_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="c1"># 单轴函数（dynamic）</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_pitch</span><span class="p">(</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">)</span>
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_yaw</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">)</span>
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_roll</span><span class="p">(</span><span class="o">-</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">)</span>
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_height</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">)</span>
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>
+</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a><span class="c1"># 单轴函数（static）</span>
+</span><span id="__span-34-8"><a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_pitch</span><span class="p">(</span><span class="o">-</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="s2">&quot;static&quot;</span><span class="p">)</span>
+</span><span id="__span-34-9"><a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_yaw</span><span class="p">(</span><span class="o">-</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="s2">&quot;static&quot;</span><span class="p">)</span>
+</span><span id="__span-34-10"><a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_roll</span><span class="p">(</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="s2">&quot;static&quot;</span><span class="p">)</span>
+</span><span id="__span-34-11"><a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_height</span><span class="p">(</span><span class="o">-</span><span class="mf">0.08</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="s2">&quot;static&quot;</span><span class="p">)</span>
+</span><span id="__span-34-12"><a id="__codelineno-34-12" name="__codelineno-34-12" href="#__codelineno-34-12"></a>
+</span><span id="__span-34-13"><a id="__codelineno-34-13" name="__codelineno-34-13" href="#__codelineno-34-13"></a><span class="c1"># balance_sequence</span>
+</span><span id="__span-34-14"><a id="__codelineno-34-14" name="__codelineno-34-14" href="#__codelineno-34-14"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_sequence</span><span class="p">([</span>
+</span><span id="__span-34-15"><a id="__codelineno-34-15" name="__codelineno-34-15" href="#__codelineno-34-15"></a>    <span class="p">(</span><span class="s2">&quot;balance_pitch&quot;</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">),</span>
+</span><span id="__span-34-16"><a id="__codelineno-34-16" name="__codelineno-34-16" href="#__codelineno-34-16"></a>    <span class="p">(</span><span class="s2">&quot;balance_yaw&quot;</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">),</span>
+</span><span id="__span-34-17"><a id="__codelineno-34-17" name="__codelineno-34-17" href="#__codelineno-34-17"></a>    <span class="p">(</span><span class="s2">&quot;balance_roll&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">),</span>
+</span><span id="__span-34-18"><a id="__codelineno-34-18" name="__codelineno-34-18" href="#__codelineno-34-18"></a>    <span class="p">(</span><span class="s2">&quot;balance_height&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">),</span>
+</span><span id="__span-34-19"><a id="__codelineno-34-19" name="__codelineno-34-19" href="#__codelineno-34-19"></a>    <span class="p">(</span><span class="s2">&quot;balance_neutral&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">),</span>
+</span><span id="__span-34-20"><a id="__codelineno-34-20" name="__codelineno-34-20" href="#__codelineno-34-20"></a><span class="p">])</span>
+</span><span id="__span-34-21"><a id="__codelineno-34-21" name="__codelineno-34-21" href="#__codelineno-34-21"></a>
+</span><span id="__span-34-22"><a id="__codelineno-34-22" name="__codelineno-34-22" href="#__codelineno-34-22"></a><span class="c1"># 两个复合姿势</span>
+</span><span id="__span-34-23"><a id="__codelineno-34-23" name="__codelineno-34-23" href="#__codelineno-34-23"></a><span class="n">robot</span><span class="o">.</span><span class="n">dynamic_pose</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">roll_deg</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pitch_deg</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">yaw_deg</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">height_m</span><span class="o">=-</span><span class="mf">0.05</span><span class="p">)</span>
+</span><span id="__span-34-24"><a id="__codelineno-34-24" name="__codelineno-34-24" href="#__codelineno-34-24"></a><span class="n">robot</span><span class="o">.</span><span class="n">static_pose</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">roll_deg</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pitch_deg</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">yaw_deg</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">height_m</span><span class="o">=-</span><span class="mf">0.05</span><span class="p">)</span>
+</span><span id="__span-34-25"><a id="__codelineno-34-25" name="__codelineno-34-25" href="#__codelineno-34-25"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_neutral</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="c1">// 单轴函数（dynamic）</span>
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_pitch</span><span class="p">(</span><span class="mf">15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">);</span>
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_yaw</span><span class="p">(</span><span class="mf">20.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">);</span>
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_roll</span><span class="p">(</span><span class="mf">-15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">);</span>
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_height</span><span class="p">(</span><span class="mf">-0.05f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">);</span>
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a><span class="c1">// 单轴函数（static）</span>
+</span><span id="__span-35-8"><a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_pitch</span><span class="p">(</span><span class="mf">-15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.5f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;static&quot;</span><span class="p">);</span>
+</span><span id="__span-35-9"><a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_yaw</span><span class="p">(</span><span class="mf">-20.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.5f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;static&quot;</span><span class="p">);</span>
+</span><span id="__span-35-10"><a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_roll</span><span class="p">(</span><span class="mf">15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.5f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;static&quot;</span><span class="p">);</span>
+</span><span id="__span-35-11"><a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_height</span><span class="p">(</span><span class="mf">-0.08f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.5f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;static&quot;</span><span class="p">);</span>
+</span><span id="__span-35-12"><a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a>
+</span><span id="__span-35-13"><a id="__codelineno-35-13" name="__codelineno-35-13" href="#__codelineno-35-13"></a><span class="c1">// balance_sequence</span>
+</span><span id="__span-35-14"><a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_sequence</span><span class="p">({</span>
+</span><span id="__span-35-15"><a id="__codelineno-35-15" name="__codelineno-35-15" href="#__codelineno-35-15"></a><span class="w">    </span><span class="p">{</span><span class="s">&quot;balance_pitch&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">},</span>
+</span><span id="__span-35-16"><a id="__codelineno-35-16" name="__codelineno-35-16" href="#__codelineno-35-16"></a><span class="w">    </span><span class="p">{</span><span class="s">&quot;balance_yaw&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">20.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">},</span>
+</span><span id="__span-35-17"><a id="__codelineno-35-17" name="__codelineno-35-17" href="#__codelineno-35-17"></a><span class="w">    </span><span class="p">{</span><span class="s">&quot;balance_roll&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">-15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">},</span>
+</span><span id="__span-35-18"><a id="__codelineno-35-18" name="__codelineno-35-18" href="#__codelineno-35-18"></a><span class="w">    </span><span class="p">{</span><span class="s">&quot;balance_height&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.05f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">},</span>
+</span><span id="__span-35-19"><a id="__codelineno-35-19" name="__codelineno-35-19" href="#__codelineno-35-19"></a><span class="w">    </span><span class="p">{</span><span class="s">&quot;balance_neutral&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">},</span>
+</span><span id="__span-35-20"><a id="__codelineno-35-20" name="__codelineno-35-20" href="#__codelineno-35-20"></a><span class="p">});</span>
+</span><span id="__span-35-21"><a id="__codelineno-35-21" name="__codelineno-35-21" href="#__codelineno-35-21"></a>
+</span><span id="__span-35-22"><a id="__codelineno-35-22" name="__codelineno-35-22" href="#__codelineno-35-22"></a><span class="c1">// 两个复合姿势</span>
+</span><span id="__span-35-23"><a id="__codelineno-35-23" name="__codelineno-35-23" href="#__codelineno-35-23"></a><span class="n">client</span><span class="p">.</span><span class="n">dynamic_pose</span><span class="p">(</span><span class="mf">3.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.05f</span><span class="p">);</span>
+</span><span id="__span-35-24"><a id="__codelineno-35-24" name="__codelineno-35-24" href="#__codelineno-35-24"></a><span class="n">client</span><span class="p">.</span><span class="n">static_pose</span><span class="p">(</span><span class="mf">3.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.05f</span><span class="p">);</span>
+</span><span id="__span-35-25"><a id="__codelineno-35-25" name="__codelineno-35-25" href="#__codelineno-35-25"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_neutral</span><span class="p">();</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="e7">E7: 直线行走<a class="headerlink" href="#e7" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="17:2"><input checked="checked" id="__tabbed_17_1" name="__tabbed_17" type="radio" /><input id="__tabbed_17_2" name="__tabbed_17" type="radio" /><div class="tabbed-labels"><label for="__tabbed_17_1">Python</label><label for="__tabbed_17_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="n">robot</span><span class="o">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>       <span class="c1"># 向前 2m（最大 3m）</span>
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="n">robot</span><span class="o">.</span><span class="n">walk_backward</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>      <span class="c1"># 向后 1.5m</span>
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a><span class="n">robot</span><span class="o">.</span><span class="n">move_left</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>          <span class="c1"># 向左 1m（原 walk_left）</span>
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a><span class="n">robot</span><span class="o">.</span><span class="n">move_right</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>         <span class="c1"># 向右 1m（原 walk_right）</span>
+</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a>
+</span><span id="__span-36-6"><a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a><span class="c1"># 使用通用接口:</span>
+</span><span id="__span-36-7"><a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="n">robot</span><span class="o">.</span><span class="n">line_walk</span><span class="p">(</span><span class="s2">&quot;forward&quot;</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
+</span><span id="__span-36-8"><a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a><span class="n">robot</span><span class="o">.</span><span class="n">line_walk</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>       <span class="c1"># direction=2 (left)</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="n">client</span><span class="p">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">2.0</span><span class="p">);</span><span class="w">       </span><span class="c1">// 向前 2m（最大 3m）</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="n">client</span><span class="p">.</span><span class="n">walk_backward</span><span class="p">(</span><span class="mf">1.5</span><span class="p">);</span><span class="w">      </span><span class="c1">// 向后 1.5m</span>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="n">client</span><span class="p">.</span><span class="n">move_left</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span><span class="w">          </span><span class="c1">// 向左 1m（原 walk_left）</span>
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="n">client</span><span class="p">.</span><span class="n">move_right</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span><span class="w">         </span><span class="c1">// 向右 1m（原 walk_right）</span>
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a>
+</span><span id="__span-37-6"><a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a><span class="c1">// 使用通用接口:</span>
+</span><span id="__span-37-7"><a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a><span class="n">client</span><span class="p">.</span><span class="n">line_walk</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">);</span><span class="w">       </span><span class="c1">// direction=0 (forward)</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="e8">E8: 旋转<a class="headerlink" href="#e8" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="18:2"><input checked="checked" id="__tabbed_18_1" name="__tabbed_18" type="radio" /><input id="__tabbed_18_2" name="__tabbed_18" type="radio" /><div class="tabbed-labels"><label for="__tabbed_18_1">Python</label><label for="__tabbed_18_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="n">robot</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>         <span class="c1"># 左转 90°</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="n">robot</span><span class="o">.</span><span class="n">rotate_right</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>           <span class="c1"># 右转 45°</span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a><span class="n">robot</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">turns</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>    <span class="c1"># 左转 3 圈（最大 10 圈）</span>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a><span class="n">robot</span><span class="o">.</span><span class="n">rotate_walk</span><span class="p">(</span><span class="o">-</span><span class="mi">45</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>      <span class="c1"># 朝 -45° 方向走 2m（向左）</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="n">client</span><span class="p">.</span><span class="n">rotate</span><span class="p">(</span><span class="s">&quot;left&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="p">);</span><span class="w">       </span><span class="c1">// 左转 90°</span>
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a><span class="n">client</span><span class="p">.</span><span class="n">rotate_right</span><span class="p">(</span><span class="mi">45</span><span class="p">);</span><span class="w">         </span><span class="c1">// 右转 45°</span>
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a><span class="n">client</span><span class="p">.</span><span class="n">circle</span><span class="p">(</span><span class="s">&quot;left&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span><span class="w">        </span><span class="c1">// 左转 3 圈（最大 10 圈）</span>
+</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a><span class="n">client</span><span class="p">.</span><span class="n">rotate_walk</span><span class="p">(</span><span class="mi">-45</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">);</span><span class="w">    </span><span class="c1">// 朝 -45° 方向走 2m（向左）</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="e9">E9: 组合序列<a class="headerlink" href="#e9" title="Permanent link">&para;</a></h3>
+<p>Arduino 风格的顺序阻塞调用 — 每个函数会阻塞直到动作完成。程序会根据机器人类型执行不同的流程。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="19:4"><input checked="checked" id="__tabbed_19_1" name="__tabbed_19" type="radio" /><input id="__tabbed_19_2" name="__tabbed_19" type="radio" /><input id="__tabbed_19_3" name="__tabbed_19" type="radio" /><input id="__tabbed_19_4" name="__tabbed_19" type="radio" /><div class="tabbed-labels"><label for="__tabbed_19_1">Python（点足）</label><label for="__tabbed_19_2">Python（轮足）</label><label for="__tabbed_19_3">C++（点足）</label><label for="__tabbed_19_4">C++（轮足）</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="c1"># 全流程：状态切换 + change_mode + 运动 + 平衡</span>
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a><span class="n">robot</span><span class="o">.</span><span class="n">passive</span><span class="p">();</span> <span class="n">robot</span><span class="o">.</span><span class="n">ready</span><span class="p">();</span> <span class="n">robot</span><span class="o">.</span><span class="n">balance_stand</span><span class="p">()</span>
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a><span class="n">robot</span><span class="o">.</span><span class="n">walk</span><span class="p">();</span> <span class="n">robot</span><span class="o">.</span><span class="n">change_mode</span><span class="p">();</span> <span class="n">robot</span><span class="o">.</span><span class="n">change_mode</span><span class="p">()</span>
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a>
+</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a><span class="n">robot</span><span class="o">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span> <span class="n">robot</span><span class="o">.</span><span class="n">walk_backward</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-40-6"><a id="__codelineno-40-6" name="__codelineno-40-6" href="#__codelineno-40-6"></a><span class="n">robot</span><span class="o">.</span><span class="n">move_left</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span> <span class="n">robot</span><span class="o">.</span><span class="n">move_right</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-40-7"><a id="__codelineno-40-7" name="__codelineno-40-7" href="#__codelineno-40-7"></a>
+</span><span id="__span-40-8"><a id="__codelineno-40-8" name="__codelineno-40-8" href="#__codelineno-40-8"></a><span class="n">robot</span><span class="o">.</span><span class="n">rotate_left</span><span class="p">(</span><span class="mi">90</span><span class="p">);</span> <span class="n">robot</span><span class="o">.</span><span class="n">rotate_left</span><span class="p">(</span><span class="mi">180</span><span class="p">)</span>
+</span><span id="__span-40-9"><a id="__codelineno-40-9" name="__codelineno-40-9" href="#__codelineno-40-9"></a><span class="n">robot</span><span class="o">.</span><span class="n">rotate_right</span><span class="p">(</span><span class="mi">90</span><span class="p">);</span> <span class="n">robot</span><span class="o">.</span><span class="n">rotate_right</span><span class="p">(</span><span class="mi">180</span><span class="p">)</span>
+</span><span id="__span-40-10"><a id="__codelineno-40-10" name="__codelineno-40-10" href="#__codelineno-40-10"></a><span class="n">robot</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-40-11"><a id="__codelineno-40-11" name="__codelineno-40-11" href="#__codelineno-40-11"></a>
+</span><span id="__span-40-12"><a id="__codelineno-40-12" name="__codelineno-40-12" href="#__codelineno-40-12"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_pitch</span><span class="p">(</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">);</span> <span class="n">robot</span><span class="o">.</span><span class="n">balance_pitch</span><span class="p">(</span><span class="o">-</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="s2">&quot;static&quot;</span><span class="p">)</span>
+</span><span id="__span-40-13"><a id="__codelineno-40-13" name="__codelineno-40-13" href="#__codelineno-40-13"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_yaw</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">);</span>   <span class="n">robot</span><span class="o">.</span><span class="n">balance_yaw</span><span class="p">(</span><span class="o">-</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="s2">&quot;static&quot;</span><span class="p">)</span>
+</span><span id="__span-40-14"><a id="__codelineno-40-14" name="__codelineno-40-14" href="#__codelineno-40-14"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_roll</span><span class="p">(</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">);</span>  <span class="n">robot</span><span class="o">.</span><span class="n">balance_roll</span><span class="p">(</span><span class="o">-</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="s2">&quot;static&quot;</span><span class="p">)</span>
+</span><span id="__span-40-15"><a id="__codelineno-40-15" name="__codelineno-40-15" href="#__codelineno-40-15"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_height</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">);</span> <span class="n">robot</span><span class="o">.</span><span class="n">balance_height</span><span class="p">(</span><span class="o">-</span><span class="mf">0.08</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="s2">&quot;static&quot;</span><span class="p">)</span>
+</span><span id="__span-40-16"><a id="__codelineno-40-16" name="__codelineno-40-16" href="#__codelineno-40-16"></a>
+</span><span id="__span-40-17"><a id="__codelineno-40-17" name="__codelineno-40-17" href="#__codelineno-40-17"></a><span class="n">robot</span><span class="o">.</span><span class="n">dynamic_pose</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">roll_deg</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pitch_deg</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">yaw_deg</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">height_m</span><span class="o">=-</span><span class="mf">0.05</span><span class="p">)</span>
+</span><span id="__span-40-18"><a id="__codelineno-40-18" name="__codelineno-40-18" href="#__codelineno-40-18"></a><span class="n">robot</span><span class="o">.</span><span class="n">static_pose</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">roll_deg</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pitch_deg</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">yaw_deg</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">height_m</span><span class="o">=-</span><span class="mf">0.05</span><span class="p">)</span>
+</span><span id="__span-40-19"><a id="__codelineno-40-19" name="__codelineno-40-19" href="#__codelineno-40-19"></a><span class="n">robot</span><span class="o">.</span><span class="n">balance_neutral</span><span class="p">()</span>
+</span><span id="__span-40-20"><a id="__codelineno-40-20" name="__codelineno-40-20" href="#__codelineno-40-20"></a>
+</span><span id="__span-40-21"><a id="__codelineno-40-21" name="__codelineno-40-21" href="#__codelineno-40-21"></a><span class="n">robot</span><span class="o">.</span><span class="n">wave_hand</span><span class="p">();</span> <span class="n">robot</span><span class="o">.</span><span class="n">dance</span><span class="p">();</span> <span class="n">robot</span><span class="o">.</span><span class="n">recovery</span><span class="p">()</span>
+</span><span id="__span-40-22"><a id="__codelineno-40-22" name="__codelineno-40-22" href="#__codelineno-40-22"></a><span class="n">robot</span><span class="o">.</span><span class="n">stand_down</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="c1"># 轮足全流程：状态切换 + 运动</span>
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a><span class="n">robot</span><span class="o">.</span><span class="n">passive</span><span class="p">();</span> <span class="n">robot</span><span class="o">.</span><span class="n">ready</span><span class="p">()</span>
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a><span class="n">robot</span><span class="o">.</span><span class="n">wheel_loco</span><span class="p">()</span>
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a><span class="n">robot</span><span class="o">.</span><span class="n">change_mode</span><span class="p">();</span> <span class="n">robot</span><span class="o">.</span><span class="n">change_mode</span><span class="p">()</span>
+</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a>
+</span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a><span class="n">robot</span><span class="o">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span> <span class="n">robot</span><span class="o">.</span><span class="n">walk_backward</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-41-7"><a id="__codelineno-41-7" name="__codelineno-41-7" href="#__codelineno-41-7"></a><span class="n">robot</span><span class="o">.</span><span class="n">move_left</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span> <span class="n">robot</span><span class="o">.</span><span class="n">move_right</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-41-8"><a id="__codelineno-41-8" name="__codelineno-41-8" href="#__codelineno-41-8"></a>
+</span><span id="__span-41-9"><a id="__codelineno-41-9" name="__codelineno-41-9" href="#__codelineno-41-9"></a><span class="n">robot</span><span class="o">.</span><span class="n">rotate_left</span><span class="p">(</span><span class="mi">90</span><span class="p">);</span> <span class="n">robot</span><span class="o">.</span><span class="n">rotate_right</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+</span><span id="__span-41-10"><a id="__codelineno-41-10" name="__codelineno-41-10" href="#__codelineno-41-10"></a><span class="n">robot</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-41-11"><a id="__codelineno-41-11" name="__codelineno-41-11" href="#__codelineno-41-11"></a>
+</span><span id="__span-41-12"><a id="__codelineno-41-12" name="__codelineno-41-12" href="#__codelineno-41-12"></a><span class="c1"># 轮足专用状态切换</span>
+</span><span id="__span-41-13"><a id="__codelineno-41-13" name="__codelineno-41-13" href="#__codelineno-41-13"></a><span class="n">robot</span><span class="o">.</span><span class="n">drift</span><span class="p">()</span>
+</span><span id="__span-41-14"><a id="__codelineno-41-14" name="__codelineno-41-14" href="#__codelineno-41-14"></a><span class="n">robot</span><span class="o">.</span><span class="n">wheel_loco</span><span class="p">()</span>
+</span><span id="__span-41-15"><a id="__codelineno-41-15" name="__codelineno-41-15" href="#__codelineno-41-15"></a><span class="n">robot</span><span class="o">.</span><span class="n">handstand</span><span class="p">()</span>
+</span><span id="__span-41-16"><a id="__codelineno-41-16" name="__codelineno-41-16" href="#__codelineno-41-16"></a>
+</span><span id="__span-41-17"><a id="__codelineno-41-17" name="__codelineno-41-17" href="#__codelineno-41-17"></a><span class="n">robot</span><span class="o">.</span><span class="n">stand_down</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="c1">// 全流程：状态切换 + change_mode + 运动 + 平衡</span>
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a><span class="n">client</span><span class="p">.</span><span class="n">passive</span><span class="p">();</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">ready</span><span class="p">();</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">balance_stand</span><span class="p">();</span>
+</span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a><span class="n">client</span><span class="p">.</span><span class="n">walk</span><span class="p">();</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">change_mode</span><span class="p">();</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">change_mode</span><span class="p">();</span>
+</span><span id="__span-42-4"><a id="__codelineno-42-4" name="__codelineno-42-4" href="#__codelineno-42-4"></a>
+</span><span id="__span-42-5"><a id="__codelineno-42-5" name="__codelineno-42-5" href="#__codelineno-42-5"></a><span class="n">client</span><span class="p">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">);</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">walk_backward</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">);</span>
+</span><span id="__span-42-6"><a id="__codelineno-42-6" name="__codelineno-42-6" href="#__codelineno-42-6"></a><span class="n">client</span><span class="p">.</span><span class="n">move_left</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">);</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">move_right</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">);</span>
+</span><span id="__span-42-7"><a id="__codelineno-42-7" name="__codelineno-42-7" href="#__codelineno-42-7"></a>
+</span><span id="__span-42-8"><a id="__codelineno-42-8" name="__codelineno-42-8" href="#__codelineno-42-8"></a><span class="n">client</span><span class="p">.</span><span class="n">rotate_left</span><span class="p">(</span><span class="mf">90.0f</span><span class="p">);</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">rotate_left</span><span class="p">(</span><span class="mf">180.0f</span><span class="p">);</span>
+</span><span id="__span-42-9"><a id="__codelineno-42-9" name="__codelineno-42-9" href="#__codelineno-42-9"></a><span class="n">client</span><span class="p">.</span><span class="n">rotate_right</span><span class="p">(</span><span class="mf">90.0f</span><span class="p">);</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">rotate_right</span><span class="p">(</span><span class="mf">180.0f</span><span class="p">);</span>
+</span><span id="__span-42-10"><a id="__codelineno-42-10" name="__codelineno-42-10" href="#__codelineno-42-10"></a><span class="n">client</span><span class="p">.</span><span class="n">circle</span><span class="p">(</span><span class="s">&quot;left&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-42-11"><a id="__codelineno-42-11" name="__codelineno-42-11" href="#__codelineno-42-11"></a>
+</span><span id="__span-42-12"><a id="__codelineno-42-12" name="__codelineno-42-12" href="#__codelineno-42-12"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_pitch</span><span class="p">(</span><span class="mf">15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">);</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">balance_pitch</span><span class="p">(</span><span class="mf">-15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.5f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;static&quot;</span><span class="p">);</span>
+</span><span id="__span-42-13"><a id="__codelineno-42-13" name="__codelineno-42-13" href="#__codelineno-42-13"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_yaw</span><span class="p">(</span><span class="mf">20.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">);</span><span class="w">   </span><span class="n">client</span><span class="p">.</span><span class="n">balance_yaw</span><span class="p">(</span><span class="mf">-20.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.5f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;static&quot;</span><span class="p">);</span>
+</span><span id="__span-42-14"><a id="__codelineno-42-14" name="__codelineno-42-14" href="#__codelineno-42-14"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_roll</span><span class="p">(</span><span class="mf">15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">);</span><span class="w">  </span><span class="n">client</span><span class="p">.</span><span class="n">balance_roll</span><span class="p">(</span><span class="mf">-15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.5f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;static&quot;</span><span class="p">);</span>
+</span><span id="__span-42-15"><a id="__codelineno-42-15" name="__codelineno-42-15" href="#__codelineno-42-15"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_height</span><span class="p">(</span><span class="mf">-0.05f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dynamic&quot;</span><span class="p">);</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">balance_height</span><span class="p">(</span><span class="mf">-0.08f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.5f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;static&quot;</span><span class="p">);</span>
+</span><span id="__span-42-16"><a id="__codelineno-42-16" name="__codelineno-42-16" href="#__codelineno-42-16"></a>
+</span><span id="__span-42-17"><a id="__codelineno-42-17" name="__codelineno-42-17" href="#__codelineno-42-17"></a><span class="n">client</span><span class="p">.</span><span class="n">dynamic_pose</span><span class="p">(</span><span class="mf">3.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.05f</span><span class="p">);</span>
+</span><span id="__span-42-18"><a id="__codelineno-42-18" name="__codelineno-42-18" href="#__codelineno-42-18"></a><span class="n">client</span><span class="p">.</span><span class="n">static_pose</span><span class="p">(</span><span class="mf">3.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">15.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.05f</span><span class="p">);</span>
+</span><span id="__span-42-19"><a id="__codelineno-42-19" name="__codelineno-42-19" href="#__codelineno-42-19"></a><span class="n">client</span><span class="p">.</span><span class="n">balance_neutral</span><span class="p">();</span>
+</span><span id="__span-42-20"><a id="__codelineno-42-20" name="__codelineno-42-20" href="#__codelineno-42-20"></a>
+</span><span id="__span-42-21"><a id="__codelineno-42-21" name="__codelineno-42-21" href="#__codelineno-42-21"></a><span class="n">client</span><span class="p">.</span><span class="n">wave_hand</span><span class="p">();</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">dance</span><span class="p">();</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">recovery</span><span class="p">();</span>
+</span><span id="__span-42-22"><a id="__codelineno-42-22" name="__codelineno-42-22" href="#__codelineno-42-22"></a><span class="n">client</span><span class="p">.</span><span class="n">stand_down</span><span class="p">();</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="c1">// 轮足全流程：状态切换 + 运动</span>
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a><span class="n">client</span><span class="p">.</span><span class="n">passive</span><span class="p">();</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">ready</span><span class="p">();</span>
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a><span class="n">client</span><span class="p">.</span><span class="n">wheel_loco</span><span class="p">();</span>
+</span><span id="__span-43-4"><a id="__codelineno-43-4" name="__codelineno-43-4" href="#__codelineno-43-4"></a><span class="n">client</span><span class="p">.</span><span class="n">change_mode</span><span class="p">();</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">change_mode</span><span class="p">();</span>
+</span><span id="__span-43-5"><a id="__codelineno-43-5" name="__codelineno-43-5" href="#__codelineno-43-5"></a>
+</span><span id="__span-43-6"><a id="__codelineno-43-6" name="__codelineno-43-6" href="#__codelineno-43-6"></a><span class="n">client</span><span class="p">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">);</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">walk_backward</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">);</span>
+</span><span id="__span-43-7"><a id="__codelineno-43-7" name="__codelineno-43-7" href="#__codelineno-43-7"></a><span class="n">client</span><span class="p">.</span><span class="n">move_left</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">);</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">move_right</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">);</span>
+</span><span id="__span-43-8"><a id="__codelineno-43-8" name="__codelineno-43-8" href="#__codelineno-43-8"></a>
+</span><span id="__span-43-9"><a id="__codelineno-43-9" name="__codelineno-43-9" href="#__codelineno-43-9"></a><span class="n">client</span><span class="p">.</span><span class="n">rotate_left</span><span class="p">(</span><span class="mf">90.0f</span><span class="p">);</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">rotate_right</span><span class="p">(</span><span class="mf">90.0f</span><span class="p">);</span>
+</span><span id="__span-43-10"><a id="__codelineno-43-10" name="__codelineno-43-10" href="#__codelineno-43-10"></a><span class="n">client</span><span class="p">.</span><span class="n">circle</span><span class="p">(</span><span class="s">&quot;left&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-43-11"><a id="__codelineno-43-11" name="__codelineno-43-11" href="#__codelineno-43-11"></a>
+</span><span id="__span-43-12"><a id="__codelineno-43-12" name="__codelineno-43-12" href="#__codelineno-43-12"></a><span class="c1">// 轮足专用状态切换</span>
+</span><span id="__span-43-13"><a id="__codelineno-43-13" name="__codelineno-43-13" href="#__codelineno-43-13"></a><span class="n">client</span><span class="p">.</span><span class="n">drift</span><span class="p">();</span>
+</span><span id="__span-43-14"><a id="__codelineno-43-14" name="__codelineno-43-14" href="#__codelineno-43-14"></a><span class="n">client</span><span class="p">.</span><span class="n">wheel_loco</span><span class="p">();</span>
+</span><span id="__span-43-15"><a id="__codelineno-43-15" name="__codelineno-43-15" href="#__codelineno-43-15"></a><span class="n">client</span><span class="p">.</span><span class="n">handstand</span><span class="p">();</span>
+</span><span id="__span-43-16"><a id="__codelineno-43-16" name="__codelineno-43-16" href="#__codelineno-43-16"></a>
+</span><span id="__span-43-17"><a id="__codelineno-43-17" name="__codelineno-43-17" href="#__codelineno-43-17"></a><span class="n">client</span><span class="p">.</span><span class="n">stand_down</span><span class="p">();</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="e10">E10: 配置演示<a class="headerlink" href="#e10" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="20:2"><input checked="checked" id="__tabbed_20_1" name="__tabbed_20" type="radio" /><input id="__tabbed_20_2" name="__tabbed_20" type="radio" /><div class="tabbed-labels"><label for="__tabbed_20_1">Python</label><label for="__tabbed_20_2">C++</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="c1"># 查询当前速度比（返回本地跟踪值）</span>
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a><span class="n">sr</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">get_speed_ratio</span><span class="p">()</span>
+</span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;速度比: </span><span class="si">{</span><span class="n">sr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-44-4"><a id="__codelineno-44-4" name="__codelineno-44-4" href="#__codelineno-44-4"></a>
+</span><span id="__span-44-5"><a id="__codelineno-44-5" name="__codelineno-44-5" href="#__codelineno-44-5"></a><span class="c1"># 设置基础速度比</span>
+</span><span id="__span-44-6"><a id="__codelineno-44-6" name="__codelineno-44-6" href="#__codelineno-44-6"></a><span class="n">robot</span><span class="o">.</span><span class="n">set_speed_ratio</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</span><span id="__span-44-7"><a id="__codelineno-44-7" name="__codelineno-44-7" href="#__codelineno-44-7"></a>
+</span><span id="__span-44-8"><a id="__codelineno-44-8" name="__codelineno-44-8" href="#__codelineno-44-8"></a><span class="c1"># 不指定 speed_ratio，使用当前基础值 (30)</span>
+</span><span id="__span-44-9"><a id="__codelineno-44-9" name="__codelineno-44-9" href="#__codelineno-44-9"></a><span class="n">robot</span><span class="o">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+</span><span id="__span-44-10"><a id="__codelineno-44-10" name="__codelineno-44-10" href="#__codelineno-44-10"></a>
+</span><span id="__span-44-11"><a id="__codelineno-44-11" name="__codelineno-44-11" href="#__codelineno-44-11"></a><span class="c1"># 显式指定 speed_ratio=100，临时覆盖，执行后恢复为 30</span>
+</span><span id="__span-44-12"><a id="__codelineno-44-12" name="__codelineno-44-12" href="#__codelineno-44-12"></a><span class="n">robot</span><span class="o">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">speed_ratio</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</span><span id="__span-44-13"><a id="__codelineno-44-13" name="__codelineno-44-13" href="#__codelineno-44-13"></a>
+</span><span id="__span-44-14"><a id="__codelineno-44-14" name="__codelineno-44-14" href="#__codelineno-44-14"></a><span class="c1"># 避障开关</span>
+</span><span id="__span-44-15"><a id="__codelineno-44-15" name="__codelineno-44-15" href="#__codelineno-44-15"></a><span class="n">robot</span><span class="o">.</span><span class="n">set_obstacle_avoidance</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>    <span class="c1"># 或 &quot;on&quot;</span>
+</span><span id="__span-44-16"><a id="__codelineno-44-16" name="__codelineno-44-16" href="#__codelineno-44-16"></a><span class="n">robot</span><span class="o">.</span><span class="n">set_obstacle_avoidance</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>   <span class="c1"># 或 &quot;off&quot;</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a><span class="c1">// 查询当前速度比（返回本地跟踪值）</span>
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a><span class="kt">int</span><span class="w"> </span><span class="n">sr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">get_speed_ratio</span><span class="p">();</span>
+</span><span id="__span-45-3"><a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;速度比: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span id="__span-45-4"><a id="__codelineno-45-4" name="__codelineno-45-4" href="#__codelineno-45-4"></a>
+</span><span id="__span-45-5"><a id="__codelineno-45-5" name="__codelineno-45-5" href="#__codelineno-45-5"></a><span class="c1">// 设置基础速度比</span>
+</span><span id="__span-45-6"><a id="__codelineno-45-6" name="__codelineno-45-6" href="#__codelineno-45-6"></a><span class="n">client</span><span class="p">.</span><span class="n">set_speed_ratio</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
+</span><span id="__span-45-7"><a id="__codelineno-45-7" name="__codelineno-45-7" href="#__codelineno-45-7"></a>
+</span><span id="__span-45-8"><a id="__codelineno-45-8" name="__codelineno-45-8" href="#__codelineno-45-8"></a><span class="c1">// 不指定 speed_ratio，使用当前基础值 (30)</span>
+</span><span id="__span-45-9"><a id="__codelineno-45-9" name="__codelineno-45-9" href="#__codelineno-45-9"></a><span class="n">client</span><span class="p">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">2.0</span><span class="p">);</span>
+</span><span id="__span-45-10"><a id="__codelineno-45-10" name="__codelineno-45-10" href="#__codelineno-45-10"></a>
+</span><span id="__span-45-11"><a id="__codelineno-45-11" name="__codelineno-45-11" href="#__codelineno-45-11"></a><span class="c1">// 显式指定 speed_ratio=100，临时覆盖，执行后恢复为 30</span>
+</span><span id="__span-45-12"><a id="__codelineno-45-12" name="__codelineno-45-12" href="#__codelineno-45-12"></a><span class="n">client</span><span class="p">.</span><span class="n">walk_forward</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
+</span><span id="__span-45-13"><a id="__codelineno-45-13" name="__codelineno-45-13" href="#__codelineno-45-13"></a>
+</span><span id="__span-45-14"><a id="__codelineno-45-14" name="__codelineno-45-14" href="#__codelineno-45-14"></a><span class="c1">// 避障开关</span>
+</span><span id="__span-45-15"><a id="__codelineno-45-15" name="__codelineno-45-15" href="#__codelineno-45-15"></a><span class="n">client</span><span class="p">.</span><span class="n">set_obstacle_avoidance</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+</span><span id="__span-45-16"><a id="__codelineno-45-16" name="__codelineno-45-16" href="#__codelineno-45-16"></a><span class="n">client</span><span class="p">.</span><span class="n">set_obstacle_avoidance</span><span class="p">(</span><span class="s">&quot;off&quot;</span><span class="p">);</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="_5">参数范围速查表<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>范围</th>
+<th>涉及函数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>speed_ratio</td>
+<td>[10, 100]</td>
+<td>set_speed_ratio；可选覆盖: line_walk, velocity_sequence, rotate_walk</td>
+</tr>
+<tr>
+<td>distance</td>
+<td><strong>[0, 3] m</strong></td>
+<td>walk_forward, walk_backward, move_left, move_right, rotate_walk</td>
+</tr>
+<tr>
+<td>angle (rotate)</td>
+<td>[0, 360]°</td>
+<td>rotate, rotate_left, rotate_right</td>
+</tr>
+<tr>
+<td>angle (rotate_walk)</td>
+<td><strong>[-180, 180]°</strong></td>
+<td>rotate_walk</td>
+</tr>
+<tr>
+<td>turns</td>
+<td><strong>[1, 10]</strong></td>
+<td>circle</td>
+</tr>
+<tr>
+<td>balance value (rpy)</td>
+<td>roll: [-30, 30]°, pitch: [-15, 15]°, yaw: [-20, 20]°</td>
+<td>balance_pitch/yaw/roll, balance_sequence</td>
+</tr>
+<tr>
+<td>balance value (height)</td>
+<td>[-0.12, 0] m</td>
+<td>balance_height, balance_sequence</td>
+</tr>
+<tr>
+<td>balance duration</td>
+<td>[0.5, 5] s</td>
+<td>所有 balance_* 函数</td>
+</tr>
+<tr>
+<td>dynamic_pose / static_pose 角度</td>
+<td>roll: [-30, 30]°, pitch: [-15, 15]°, yaw: [-20, 20]°</td>
+<td>dynamic_pose, static_pose</td>
+</tr>
+<tr>
+<td>dynamic_pose / static_pose 高度</td>
+<td>[-0.12, 0] m</td>
+<td>dynamic_pose, static_pose</td>
+</tr>
+<tr>
+<td>dynamic_pose / static_pose 时长</td>
+<td>[1, 5] s</td>
+<td>dynamic_pose, static_pose</td>
+</tr>
+<tr>
+<td>obstacle_avoidance</td>
+<td>bool / "on" / "off"</td>
+<td>set_obstacle_avoidance</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Dobot. All rights reserved.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://dobot-robots.com/" target="_blank" rel="noopener" title="Dobot Official Website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

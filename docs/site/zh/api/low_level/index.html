@@ -1,0 +1,2401 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://dobot-quad-sdk.readthedocs.io/zh/api/low_level/">
+      
+      
+        <link rel="prev" href="../high_level/index.html">
+      
+      
+        <link rel="next" href="../../changelog/index.html">
+      
+      
+        
+          <link rel="alternate" href="../../../api/low_level/index.html" hreflang="en">
+        
+          <link rel="alternate" href="./index.html" hreflang="zh">
+        
+      
+      
+      <link rel="icon" href="../../../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>底层 API - Dobot Quad SDK</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../index.html" title="Dobot Quad SDK" class="md-header__button md-logo" aria-label="Dobot Quad SDK" data-md-component="logo">
+      
+  <img src="../../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Dobot Quad SDK
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              底层 API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="选择当前语言">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../api/low_level/index.html" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./index.html" hreflang="zh" class="md-select__link">
+              简体中文
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Dobot-Team/dobot_quad_sdk" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/installation/index.html" class="md-tabs__link">
+          
+  
+  
+  快速开始
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../high_level/index.html" class="md-tabs__link">
+          
+  
+  
+  API 参考
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../changelog/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  更新日志
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="Dobot Quad SDK" class="md-nav__button md-logo" aria-label="Dobot Quad SDK" data-md-component="logo">
+      
+  <img src="../../../assets/logo.png" alt="logo">
+
+    </a>
+    Dobot Quad SDK
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Dobot-Team/dobot_quad_sdk" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    快速开始
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    快速开始
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    安装指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/quickstart/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    快速入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API 参考
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API 参考
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../high_level/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    高层 API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    底层 API
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./index.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    底层 API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、初始化
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#qos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、QoS 配置说明
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="二、QoS 配置说明">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 默认配置文件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-qos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 QoS 参数说明
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 推荐配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、示例程序详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、示例程序详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#e1-rgb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E1: RGB 图像订阅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E2: 深度图像订阅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e3-led" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E3: LED 灯光控制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e4-imu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E4: IMU 数据订阅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E5: 电机状态订阅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E6: 电池状态订阅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E7: 语音播放
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E8: 语音采集
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E9: 电机指令发布
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_58" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见问题
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="常见问题">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: 订阅不到数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-led" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: LED 控制没有效果
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: 电机控制剧烈震荡
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    更新日志
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、初始化
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#qos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、QoS 配置说明
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="二、QoS 配置说明">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 默认配置文件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-qos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 QoS 参数说明
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 推荐配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、示例程序详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、示例程序详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#e1-rgb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E1: RGB 图像订阅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E2: 深度图像订阅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e3-led" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E3: LED 灯光控制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e4-imu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E4: IMU 数据订阅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E5: 电机状态订阅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E6: 电池状态订阅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E7: 语音播放
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E8: 语音采集
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E9: 电机指令发布
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_58" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见问题
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="常见问题">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: 订阅不到数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-led" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: LED 控制没有效果
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: 电机控制剧烈震荡
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="api">底层 API 文档<a class="headerlink" href="#api" title="Permanent link">&para;</a></h1>
+<p>本文档详细介绍 Dobot Quad SDK 的底层控制层（DDS）API，包括各示例程序的功能、QoS 配置、原理和使用方法。底层控制层基于 CycloneDDS 实现，提供直接访问机器人硬件的能力：</p>
+<ul>
+<li><strong>传感器订阅</strong>：IMU、电机状态、电池状态、图像等</li>
+<li><strong>执行器控制</strong>：LED 灯光、电机指令、语音播放</li>
+<li><strong>低延迟通信</strong>：毫秒级实时数据传输</li>
+</ul>
+<h2 id="_1">一、初始化<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># 使用配置文件初始化</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># 或使用 Domain ID 初始化</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="qos">二、QoS 配置说明<a class="headerlink" href="#qos" title="Permanent link">&para;</a></h2>
+<p>DDS 的 QoS (Quality of Service) 配置决定了数据传输的可靠性和性能特性。</p>
+<h3 id="21">2.1 默认配置文件<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<p>配置文件位于 <code>low_level/python/config/dds_config.yaml</code>：</p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>Writer 默认值</th>
+<th>Reader 默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>domain_id</code></td>
+<td>0</td>
+<td>0</td>
+<td>DDS 域 ID</td>
+</tr>
+<tr>
+<td><code>reliability</code></td>
+<td><code>reliable</code></td>
+<td><code>best_effort</code></td>
+<td>可靠性策略</td>
+</tr>
+<tr>
+<td><code>history_kind</code></td>
+<td><code>keep_last</code></td>
+<td><code>keep_last</code></td>
+<td>历史记录类型</td>
+</tr>
+<tr>
+<td><code>history_depth</code></td>
+<td>10</td>
+<td>10</td>
+<td>历史记录深度</td>
+</tr>
+<tr>
+<td><code>durability</code></td>
+<td><code>volatile</code></td>
+<td><code>volatile</code></td>
+<td>持久性策略</td>
+</tr>
+<tr>
+<td><code>liveliness</code></td>
+<td><code>automatic</code></td>
+<td><code>automatic</code></td>
+<td>存活性策略</td>
+</tr>
+<tr>
+<td><code>deadline</code></td>
+<td><code>infinite</code></td>
+<td><code>infinite</code></td>
+<td>截止时间</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-qos">2.2 QoS 参数说明<a class="headerlink" href="#22-qos" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>可选值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reliability</code></td>
+<td><code>reliable</code> / <code>best_effort</code></td>
+<td>reliable 保证数据到达，best_effort 允许丢包</td>
+</tr>
+<tr>
+<td><code>history_kind</code></td>
+<td><code>keep_last</code> / <code>keep_all</code></td>
+<td>keep_last 只保留最新 N 条，keep_all 保留所有</td>
+</tr>
+<tr>
+<td><code>history_depth</code></td>
+<td>整数</td>
+<td>保留的历史消息数量</td>
+</tr>
+<tr>
+<td><code>durability</code></td>
+<td><code>volatile</code> / <code>transient_local</code></td>
+<td>volatile 不保存历史，transient_local 保存给后来的订阅者</td>
+</tr>
+</tbody>
+</table>
+<h3 id="23">2.3 推荐配置<a class="headerlink" href="#23" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>Reliability</th>
+<th>History Depth</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实时传感器数据</td>
+<td>best_effort</td>
+<td>1-5</td>
+<td>低延迟，允许丢包</td>
+</tr>
+<tr>
+<td>控制指令</td>
+<td>reliable</td>
+<td>1-5</td>
+<td>保证到达</td>
+</tr>
+<tr>
+<td>图像数据</td>
+<td>best_effort</td>
+<td>1-5</td>
+<td>大数据量，优先低延迟</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_2">三、示例程序详解<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h3 id="e1-rgb">E1: RGB 图像订阅<a class="headerlink" href="#e1-rgb" title="Permanent link">&para;</a></h3>
+<p><strong>文件</strong>: <code>low_level/python/e1_rgb_image_sub.py</code></p>
+<h4 id="_3">功能说明<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<p>从机器人相机订阅压缩的 RGB 彩色图像数据。</p>
+<h4 id="qos_1">QoS 配置<a class="headerlink" href="#qos_1" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># 使用配置文件中的默认 reader QoS</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1"># reliability: best_effort</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># history_kind: keep_last</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># history_depth: 10</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># durability: volatile</span>
+</span></code></pre></div>
+<h4 id="_4">订阅话题<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>话题名称</th>
+<th>消息类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/camera/camera2/image_compressed</code></td>
+<td><code>CompressedImage</code></td>
+<td>压缩的 RGB 图像</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_5">图像保存功能<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<p>示例程序会自动将接收到的图像保存到 <code>rgb_images/</code> 目录：</p>
+<p><strong>Python 版本：</strong></p>
+<ul>
+<li>使用 OpenCV (<code>cv2.imdecode</code>) 将压缩的 JPEG 数据解码为原始图像格式</li>
+<li>保存为无损的 PNG 格式以获得更好的质量</li>
+<li>文件名格式：<code>rgb_{时间戳秒}_{时间戳纳秒}.png</code></li>
+</ul>
+<p><strong>C++ 版本：</strong></p>
+<ul>
+<li>使用 <code>cv::imdecode</code> 将压缩数据解码为 <code>cv::Mat</code></li>
+<li>使用 <code>cv::imwrite</code> 保存为 PNG 格式</li>
+<li>与 Python 版本相同的文件名格式</li>
+</ul>
+<h4 id="_6">示例代码<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">image_callback</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received RGB CompressedImage:&quot;</span><span class="p">)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Timestamp: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">sec</span><span class="p">()</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">nanosec</span><span class="p">()</span><span class="si">:</span><span class="s2">09d</span><span class="si">}</span><span class="s2"> (sec.nanosec)&quot;</span><span class="p">)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Frame ID: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">frame_id</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Format: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">format</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Data size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">())</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="c1"># 解码压缩图像</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">np_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imdecode</span><span class="p">(</span><span class="n">np_arr</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_COLOR</span><span class="p">)</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;rgb_images/rgb_</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">sec</span><span class="p">()</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">nanosec</span><span class="p">()</span><span class="si">}</span><span class="s2">.png&quot;</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>        <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved raw image to </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="c1"># 创建保存目录</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;rgb_images&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="n">middleware</span><span class="o">.</span><span class="n">subscribeCompressedImage</span><span class="p">(</span><span class="s2">&quot;rt/camera/camera2/image_compressed&quot;</span><span class="p">,</span> <span class="n">image_callback</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="_7">输出示例<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Subscribed to RGB image topic. Waiting for messages...
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Received RGB CompressedImage:
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>  Timestamp: 1706000000.123456789 (sec.nanosec)
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>  Frame ID: camera2_optical_frame
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>  Format: jpeg
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>  Data size: 45678 bytesSaved raw image to rgb_images/rgb_1706000000_123456789.png---
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>  ...
+</span></code></pre></div>
+<h4 id="_8">运行方式<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>python3<span class="w"> </span>e1_rgb_image_sub.py
+</span></code></pre></div>
+<h3 id="e2">E2: 深度图像订阅<a class="headerlink" href="#e2" title="Permanent link">&para;</a></h3>
+<p><strong>文件</strong>: <code>low_level/python/e2_depth_image_sub.py</code></p>
+<h4 id="_9">功能说明<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
+<p>从机器人深度相机订阅原始深度图像数据。</p>
+<h4 id="qos_2">QoS 配置<a class="headerlink" href="#qos_2" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;best_effort&quot;</span><span class="p">,</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="_10">订阅话题<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>话题名称</th>
+<th>消息类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/camera/camera2/image_depth</code></td>
+<td><code>Image</code></td>
+<td>原始深度图像</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_11">深度图像可视化<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h4>
+<p>示例程序会处理深度图像并保存到 <code>depth_images/</code> 目录：</p>
+<p><strong>可视化处理：</strong></p>
+<ol>
+<li><strong>归一化</strong>：使用 <code>cv2.normalize</code> 将深度值拉伸到 0-255 范围</li>
+<li><strong>伪彩色</strong>：应用 Jet 色图（红色/暖色 = 近处，蓝色/冷色 = 远处）</li>
+<li><strong>保存</strong>：将处理后的可视化图像保存为 PNG 文件</li>
+</ol>
+<p><strong>Python 版本：</strong></p>
+<ul>
+<li>使用 <code>view(np.uint16)</code> 将原始字节转换为 numpy 数组</li>
+<li>使用 OpenCV 应用归一化和色图</li>
+<li>文件名格式：<code>depth_{时间戳秒}_{时间戳纳秒}.png</code></li>
+</ul>
+<p><strong>C++ 版本：</strong></p>
+<ul>
+<li>直接从原始数据指针创建 <code>cv::Mat</code></li>
+<li>使用 <code>cv::normalize</code> 和 <code>cv::applyColorMap</code> 进行可视化</li>
+<li>与 Python 版本相同的文件名格式</li>
+</ul>
+<h4 id="_12">示例代码<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">depth_image_callback</span><span class="p">(</span><span class="n">depth_msg</span><span class="p">):</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received Image message:&quot;</span><span class="p">)</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Timestamp: </span><span class="si">{</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">sec</span><span class="p">()</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">nanosec</span><span class="p">()</span><span class="si">:</span><span class="s2">09d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Frame ID: </span><span class="si">{</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">frame_id</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Encoding: </span><span class="si">{</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">encoding</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Data size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">data</span><span class="p">())</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    <span class="k">if</span> <span class="s2">&quot;16UC1&quot;</span> <span class="ow">in</span> <span class="n">depth_msg</span><span class="o">.</span><span class="n">encoding</span><span class="p">():</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>        <span class="c1"># 转换为 16 位深度图</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>        <span class="n">depth_img</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span> <span class="n">depth_msg</span><span class="o">.</span><span class="n">width</span><span class="p">()))</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>        <span class="c1"># 归一化并应用色图</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>        <span class="n">depth_vis</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">depth_img</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">NORM_MINMAX</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">CV_8U</span><span class="p">)</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>        <span class="n">depth_color</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">applyColorMap</span><span class="p">(</span><span class="n">depth_vis</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLORMAP_JET</span><span class="p">)</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;depth_images/depth_</span><span class="si">{</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">sec</span><span class="p">()</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">nanosec</span><span class="p">()</span><span class="si">}</span><span class="s2">.png&quot;</span>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>        <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">depth_color</span><span class="p">)</span>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved visibility depth map to </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a><span class="c1"># 创建保存目录</span>
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;depth_images&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a>
+</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a><span class="n">middleware</span><span class="o">.</span><span class="n">subscribeImage</span><span class="p">(</span><span class="s2">&quot;rt/camera/camera2/image_depth&quot;</span><span class="p">,</span> <span class="n">depth_image_callback</span><span class="p">,</span> <span class="n">qos_config</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="_13">输出示例<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Starting DDS Python Image subscriber...
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>Subscribing to topic: rt/camera/camera2/image_depth
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>Using QoS config: {&#39;reliability&#39;: &#39;best_effort&#39;, &#39;history_kind&#39;: &#39;keep_last&#39;, &#39;history_depth&#39;: 5, &#39;durability&#39;: &#39;volatile&#39;}
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>Image subscriber started, waiting for messages...
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>Received Image message:
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>  Timestamp: 1706000000.123456789
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>  Image size: 640x480
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>  Encoding: 16UC1
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>  Data size: 614400 bytes
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>  Step: 1280
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>  Big endian: False
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>...
+</span></code></pre></div>
+<h4 id="_14">运行方式<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>python3<span class="w"> </span>e2_depth_image_sub.py
+</span></code></pre></div>
+<h3 id="e3-led">E3: LED 灯光控制<a class="headerlink" href="#e3-led" title="Permanent link">&para;</a></h3>
+<p><strong>文件</strong>: <code>low_level/python/e3_led_control_pub.py</code></p>
+<h4 id="_15">功能说明<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h4>
+<p>控制机器人上的 6 个 LED 灯，支持 RGB 颜色设置和呼吸灯效果。</p>
+<h4 id="_16">⚠️ 重要警告<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h4>
+<p><strong>在运行此程序之前，必须先停止机器人的主控程序！</strong> 否则 LED 控制在当前版本中可能不生效。</p>
+<p>停止主控程序的方法（推荐使用 SDK 提供的工具）：</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># 推荐方法：使用 kill_robot 工具</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nb">cd</span><span class="w"> </span>high_level/python
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>python3<span class="w"> </span>kill_robot.py<span class="w"> </span><span class="m">192</span>.168.5.2:50051
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1"># 或使用 C++ 版本</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="nb">cd</span><span class="w"> </span>high_level/cpp/build
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>./kill_robot<span class="w"> </span><span class="m">192</span>.168.5.2:50051
+</span></code></pre></div>
+<p><code>kill_robot</code> 工具会安全地将机器人切换到 PASSIVE 状态并终止控制器进程。详见 <a href="../../getting-started/quickstart/#_6">安全关闭章节</a>。</p>
+<h4 id="qos_3">QoS 配置<a class="headerlink" href="#qos_3" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;reliable&quot;</span><span class="p">,</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="_17">发布话题<a class="headerlink" href="#_17" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>话题名称</th>
+<th>消息类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/leds/cmd</code></td>
+<td><code>LedsCmd</code></td>
+<td>LED 控制指令</td>
+</tr>
+</tbody>
+</table>
+<h4 id="led">LED 名称<a class="headerlink" href="#led" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>LED 名称</th>
+<th>位置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>leg_light1</code></td>
+<td>腿部灯 1</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>leg_light2</code></td>
+<td>腿部灯 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>leg_light3</code></td>
+<td>腿部灯 3</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>leg_light4</code></td>
+<td>腿部灯 4</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>fill_light1</code></td>
+<td>前照灯</td>
+<td>机器人前方的照明灯</td>
+</tr>
+<tr>
+<td><code>fill_light2</code></td>
+<td>补光灯 2</td>
+<td>暂未开放功能</td>
+</tr>
+<tr>
+<td><code>fill_light3</code></td>
+<td>后照灯</td>
+<td>机器人后方的照明灯</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_18">示例代码<a class="headerlink" href="#_18" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;reliable&quot;</span><span class="p">,</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="p">}</span>
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="n">middleware</span><span class="o">.</span><span class="n">createLedsCmdWriter</span><span class="p">(</span><span class="s2">&quot;rt/leds/cmd&quot;</span><span class="p">,</span> <span class="n">qos_config</span><span class="p">)</span>
+</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>
+</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="c1"># 创建 LED 控制命令</span>
+</span><span id="__span-11-17"><a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="n">led_cmd</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">LedsCmd</span><span class="p">()</span>
+</span><span id="__span-11-18"><a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a><span class="n">leds</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-11-19"><a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>
+</span><span id="__span-11-20"><a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="c1"># LED1 - 红色</span>
+</span><span id="__span-11-21"><a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="n">led1</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">LEDControl</span><span class="p">()</span>
+</span><span id="__span-11-22"><a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="n">led1</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="s2">&quot;leg_light1&quot;</span><span class="p">)</span>
+</span><span id="__span-11-23"><a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a><span class="n">led1</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># RGB 模式</span>
+</span><span id="__span-11-24"><a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a><span class="n">led1</span><span class="o">.</span><span class="n">brightness</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
+</span><span id="__span-11-25"><a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a><span class="n">led1</span><span class="o">.</span><span class="n">r</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
+</span><span id="__span-11-26"><a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a><span class="n">led1</span><span class="o">.</span><span class="n">g</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-11-27"><a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a><span class="n">led1</span><span class="o">.</span><span class="n">b</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-11-28"><a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a><span class="n">led1</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-11-29"><a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a><span class="n">leds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">led1</span><span class="p">)</span>
+</span><span id="__span-11-30"><a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a>
+</span><span id="__span-11-31"><a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a><span class="n">led_cmd</span><span class="o">.</span><span class="n">leds</span><span class="p">(</span><span class="n">leds</span><span class="p">)</span>
+</span><span id="__span-11-32"><a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a><span class="n">middleware</span><span class="o">.</span><span class="n">publishLedsCmd</span><span class="p">(</span><span class="n">led_cmd</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="_19">输出示例<a class="headerlink" href="#_19" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>LED control publisher started, press Ctrl+C to exit...
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>Published LED control command: Intensity: 50% LED1 (R:127 G:0 B:0) LED2 (R:0 G:127 B:0) ...
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>Published LED control command: Intensity: 100% LED1 (R:255 G:0 B:0) LED2 (R:0 G:255 B:0) ...
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>Program finished after 15000ms
+</span></code></pre></div>
+<h4 id="_20">运行方式<a class="headerlink" href="#_20" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>python3<span class="w"> </span>e3_led_control_pub.py
+</span></code></pre></div>
+<hr />
+<h3 id="e4-imu">E4: IMU 数据订阅<a class="headerlink" href="#e4-imu" title="Permanent link">&para;</a></h3>
+<p><strong>文件</strong>: <code>low_level/python/e4_imu_state_sub.py</code></p>
+<h4 id="_21">功能说明<a class="headerlink" href="#_21" title="Permanent link">&para;</a></h4>
+<p>从底层直接获取 IMU（惯性测量单元）的原始数据，包括四元数、陀螺仪和加速度计数据。</p>
+<h4 id="qos_4">QoS 配置<a class="headerlink" href="#qos_4" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># 使用配置文件中的默认 reader QoS</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="c1"># reliability: best_effort</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="c1"># history_kind: keep_last</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># history_depth: 10</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1"># durability: volatile</span>
+</span></code></pre></div>
+<h4 id="_22">订阅话题<a class="headerlink" href="#_22" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>话题名称</th>
+<th>消息类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/lower/state</code></td>
+<td><code>LowerState</code></td>
+<td>底层状态（包含 IMU 数据）</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_23">数据字段说明<a class="headerlink" href="#_23" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>单位</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>quaternion</code></td>
+<td>float[4]</td>
+<td>-</td>
+<td>姿态四元数 [w, x, y, z]</td>
+</tr>
+<tr>
+<td><code>gyroscope</code></td>
+<td>float[3]</td>
+<td>rad/s</td>
+<td>陀螺仪角速度 [x, y, z]</td>
+</tr>
+<tr>
+<td><code>accelerometer</code></td>
+<td>float[3]</td>
+<td>m/s²</td>
+<td>加速度计 [x, y, z]</td>
+</tr>
+<tr>
+<td><code>rpy</code></td>
+<td>float[3]</td>
+<td>rad</td>
+<td>欧拉角 [roll, pitch, yaw]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_24">示例代码<a class="headerlink" href="#_24" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">lower_state_callback</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">imu_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">imu_state</span><span class="p">()</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IMU State:&quot;</span><span class="p">)</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Quaternion: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">imu_state</span><span class="o">.</span><span class="n">quaternion</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Gyroscope (rad/s): </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">imu_state</span><span class="o">.</span><span class="n">gyroscope</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Accelerometer (m/s²): </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">imu_state</span><span class="o">.</span><span class="n">accelerometer</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  RPY (roll, pitch, yaw in rad): </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">imu_state</span><span class="o">.</span><span class="n">rpy</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="n">middleware</span><span class="o">.</span><span class="n">subscribeLowerState</span><span class="p">(</span><span class="s2">&quot;rt/lower/state&quot;</span><span class="p">,</span> <span class="n">lower_state_callback</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="_25">输出示例<a class="headerlink" href="#_25" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Received LowerState #100
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>IMU State:
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>  Quaternion: [0.9998, 0.0012, -0.0156, 0.0023]
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>  Gyroscope (rad/s): [0.0021, -0.0034, 0.0012]
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>  Accelerometer (m/s²): [0.12, -0.08, 9.78]
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>  RPY (roll, pitch, yaw in rad): [0.0024, -0.0312, 0.0046]
+</span></code></pre></div>
+<h4 id="_26">运行方式<a class="headerlink" href="#_26" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>python3<span class="w"> </span>e4_imu_state_sub.py
+</span></code></pre></div>
+<h3 id="e5">E5: 电机状态订阅<a class="headerlink" href="#e5" title="Permanent link">&para;</a></h3>
+<p><strong>文件</strong>: <code>low_level/python/e5_motor_state_sub.py</code></p>
+<h4 id="_27">功能说明<a class="headerlink" href="#_27" title="Permanent link">&para;</a></h4>
+<p>从底层直接获取 16 个电机（对于点足式四足机器狗来说有四个足端电机为无效数据）的状态数据，包括位置、速度、力矩和温度等信息。</p>
+<h4 id="qos_5">QoS 配置<a class="headerlink" href="#qos_5" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># 使用配置文件中的默认 reader QoS</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="c1"># reliability: best_effort</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="c1"># history_kind: keep_last</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1"># history_depth: 10</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="c1"># durability: volatile</span>
+</span></code></pre></div>
+<h4 id="_28">订阅话题<a class="headerlink" href="#_28" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>话题名称</th>
+<th>消息类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/lower/state</code></td>
+<td><code>LowerState</code></td>
+<td>底层状态（包含电机数据）</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_29">电机数据字段说明<a class="headerlink" href="#_29" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>单位</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mode</code></td>
+<td>uint8</td>
+<td>-</td>
+<td>模式：0-失能, 1-报错, 2-掉线, 3-使能, 4-受控, 5-回零</td>
+</tr>
+<tr>
+<td><code>q</code></td>
+<td>float</td>
+<td>rad</td>
+<td>角位置</td>
+</tr>
+<tr>
+<td><code>dq</code></td>
+<td>float</td>
+<td>rad/s</td>
+<td>角速度</td>
+</tr>
+<tr>
+<td><code>ddq</code></td>
+<td>float</td>
+<td>rad/s²</td>
+<td>角加速度</td>
+</tr>
+<tr>
+<td><code>tau_est</code></td>
+<td>float</td>
+<td>Nm</td>
+<td>估计力矩</td>
+</tr>
+<tr>
+<td><code>q_raw</code></td>
+<td>float</td>
+<td>rad</td>
+<td>原始角位置</td>
+</tr>
+<tr>
+<td><code>dq_raw</code></td>
+<td>float</td>
+<td>rad/s</td>
+<td>原始角速度</td>
+</tr>
+<tr>
+<td><code>ddq_raw</code></td>
+<td>float</td>
+<td>rad/s²</td>
+<td>原始角加速度</td>
+</tr>
+<tr>
+<td><code>motor_temp</code></td>
+<td>uint8</td>
+<td>°C</td>
+<td>电机温度</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_30">电机编号<a class="headerlink" href="#_30" title="Permanent link">&para;</a></h4>
+<p>机器人有 16 个电机，编号 0-15，分布在四条腿上（点足式四足机器狗只有12个电机）：</p>
+<table>
+<thead>
+<tr>
+<th>腿部</th>
+<th>电机编号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>前左腿</td>
+<td>0, 1, 2, 3</td>
+</tr>
+<tr>
+<td>前右腿</td>
+<td>4, 5, 6, 7</td>
+</tr>
+<tr>
+<td>后左腿</td>
+<td>8, 9, 10, 11</td>
+</tr>
+<tr>
+<td>后右腿</td>
+<td>12, 13, 14, 15</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_31">示例代码<a class="headerlink" href="#_31" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">lower_state_callback</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>    <span class="n">motor_states</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">motor_state</span><span class="p">()</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received Motor States&quot;</span><span class="p">)</span>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>        <span class="n">motor</span> <span class="o">=</span> <span class="n">motor_states</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Motor[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">]: mode=</span><span class="si">{</span><span class="n">motor</span><span class="o">.</span><span class="n">mode</span><span class="p">()</span><span class="si">}</span><span class="s2">, q=</span><span class="si">{</span><span class="n">motor</span><span class="o">.</span><span class="n">q</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> rad, &quot;</span>
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>              <span class="sa">f</span><span class="s2">&quot;dq=</span><span class="si">{</span><span class="n">motor</span><span class="o">.</span><span class="n">dq</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> rad/s, tau_est=</span><span class="si">{</span><span class="n">motor</span><span class="o">.</span><span class="n">tau_est</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> Nm, &quot;</span>
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>              <span class="sa">f</span><span class="s2">&quot;temp=</span><span class="si">{</span><span class="n">motor</span><span class="o">.</span><span class="n">motor_temp</span><span class="p">()</span><span class="si">}</span><span class="s2">°C&quot;</span><span class="p">)</span>
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="n">middleware</span><span class="o">.</span><span class="n">subscribeLowerState</span><span class="p">(</span><span class="s2">&quot;rt/lower/state&quot;</span><span class="p">,</span> <span class="n">lower_state_callback</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="_32">输出示例<a class="headerlink" href="#_32" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>Received Motor States #50
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>Motor[0]: mode=4, q(rad)=-0.0523, dq(rad/s)=0.0012, ddq(rad/s²)=0.0001, tau_est(N·m)=0.12345, q_raw(rad)=-0.0523, dq_raw(rad/s)=0.0012, ddq_raw(rad/s²)=0.0001, motor_temp(°C)=35
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>Motor[1]: mode=4, q(rad)=0.8542, dq(rad/s)=-0.0034, ...
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>...
+</span></code></pre></div>
+<h4 id="_33">运行方式<a class="headerlink" href="#_33" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>python3<span class="w"> </span>e5_motor_state_sub.py
+</span></code></pre></div>
+<h3 id="e6">E6: 电池状态订阅<a class="headerlink" href="#e6" title="Permanent link">&para;</a></h3>
+<p><strong>文件</strong>: <code>low_level/python/e6_bms_state_sub.py</code></p>
+<h4 id="_34">功能说明<a class="headerlink" href="#_34" title="Permanent link">&para;</a></h4>
+<p>获取电池管理系统（BMS）的状态信息。</p>
+<h4 id="_35">⚠️ 注意<a class="headerlink" href="#_35" title="Permanent link">&para;</a></h4>
+<p><strong>Python 版本的 E6 示例目前只输出电池电量（battery_level）一项信息。</strong> 如需更多的 BMS 数据，请参考 C++ 版本。</p>
+<h4 id="qos_6">QoS 配置<a class="headerlink" href="#qos_6" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># 使用配置文件中的默认 reader QoS</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="c1"># reliability: best_effort</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="c1"># history_kind: keep_last</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1"># history_depth: 10</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="c1"># durability: volatile</span>
+</span></code></pre></div>
+<h4 id="_36">订阅话题<a class="headerlink" href="#_36" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>话题名称</th>
+<th>消息类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/lower/state</code></td>
+<td><code>LowerState</code></td>
+<td>底层状态（包含 BMS 数据）</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_37">示例代码<a class="headerlink" href="#_37" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">lower_state_callback</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>    <span class="n">bms</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">bms_state</span><span class="p">()</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received BMS State&quot;</span><span class="p">)</span>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Battery Level: </span><span class="si">{</span><span class="n">bms</span><span class="o">.</span><span class="n">battery_level</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="n">middleware</span><span class="o">.</span><span class="n">subscribeLowerState</span><span class="p">(</span><span class="s2">&quot;rt/lower/state&quot;</span><span class="p">,</span> <span class="n">lower_state_callback</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="_38">输出示例<a class="headerlink" href="#_38" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>Received BMS State #100
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>Battery Level: 85
+</span></code></pre></div>
+<h4 id="_39">运行方式<a class="headerlink" href="#_39" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>python3<span class="w"> </span>e6_bms_state_sub.py
+</span></code></pre></div>
+<h3 id="e7">E7: 语音播放<a class="headerlink" href="#e7" title="Permanent link">&para;</a></h3>
+<p><strong>文件</strong>: <code>low_level/python/e7_voice_pub.py</code></p>
+<h4 id="_40">功能说明<a class="headerlink" href="#_40" title="Permanent link">&para;</a></h4>
+<p>向机器人发送语音播放命令，支持两种模式：</p>
+<ol>
+<li><strong>File 模式</strong>：播放机器人主机上的音频文件</li>
+<li><strong>Streaming 模式</strong>：实时发送音频流数据</li>
+</ol>
+<h4 id="qos_7">QoS 配置<a class="headerlink" href="#qos_7" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;reliable&quot;</span><span class="p">,</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="_41">发布话题<a class="headerlink" href="#_41" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>话题名称</th>
+<th>消息类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/voice/cmd</code></td>
+<td><code>VoiceCmd</code></td>
+<td>语音命令</td>
+</tr>
+</tbody>
+</table>
+<h4 id="file">File 模式<a class="headerlink" href="#file" title="Permanent link">&para;</a></h4>
+<p>播放机器人主机端的音频文件。</p>
+<p><strong>重要</strong>：音频文件必须存在于机器人主机上，而不是开发机上！</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;reliable&quot;</span><span class="p">,</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="p">}</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a>
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="n">middleware</span><span class="o">.</span><span class="n">createVoiceCmdWriter</span><span class="p">(</span><span class="s2">&quot;rt/voice/cmd&quot;</span><span class="p">,</span> <span class="n">qos_config</span><span class="p">)</span>
+</span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>
+</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="c1"># ⚠️ 重要：发布前需要 sleep 约 1 秒</span>
+</span><span id="__span-27-15"><a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="c1"># 原因：DDS 是一个分布式通信中间件，Writer 创建后需要时间发现对应的 Reader。</span>
+</span><span id="__span-27-16"><a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a><span class="c1"># 这个发现过程（Entity Discovery）需要通过网络协议的握手完成，通常需要 100-1000ms。</span>
+</span><span id="__span-27-17"><a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a><span class="c1"># 如果立即发布，对方可能还未完全发现该 Writer，导致消息丢失。</span>
+</span><span id="__span-27-18"><a id="__codelineno-27-18" name="__codelineno-27-18" href="#__codelineno-27-18"></a><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+</span><span id="__span-27-19"><a id="__codelineno-27-19" name="__codelineno-27-19" href="#__codelineno-27-19"></a><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-27-20"><a id="__codelineno-27-20" name="__codelineno-27-20" href="#__codelineno-27-20"></a>
+</span><span id="__span-27-21"><a id="__codelineno-27-21" name="__codelineno-27-21" href="#__codelineno-27-21"></a><span class="c1"># File 模式</span>
+</span><span id="__span-27-22"><a id="__codelineno-27-22" name="__codelineno-27-22" href="#__codelineno-27-22"></a><span class="n">voice_cmd</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">VoiceCmd</span><span class="p">()</span>
+</span><span id="__span-27-23"><a id="__codelineno-27-23" name="__codelineno-27-23" href="#__codelineno-27-23"></a><span class="n">voice_cmd</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="s2">&quot;file&quot;</span><span class="p">)</span>
+</span><span id="__span-27-24"><a id="__codelineno-27-24" name="__codelineno-27-24" href="#__codelineno-27-24"></a><span class="n">voice_cmd</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">&quot;/root/test.wav&quot;</span><span class="p">)</span>  <span class="c1"># 机器人主机上的文件路径</span>
+</span><span id="__span-27-25"><a id="__codelineno-27-25" name="__codelineno-27-25" href="#__codelineno-27-25"></a><span class="n">voice_cmd</span><span class="o">.</span><span class="n">data</span><span class="p">([])</span>
+</span><span id="__span-27-26"><a id="__codelineno-27-26" name="__codelineno-27-26" href="#__codelineno-27-26"></a>
+</span><span id="__span-27-27"><a id="__codelineno-27-27" name="__codelineno-27-27" href="#__codelineno-27-27"></a><span class="n">middleware</span><span class="o">.</span><span class="n">publishVoiceCmd</span><span class="p">(</span><span class="n">voice_cmd</span><span class="p">)</span>
+</span></code></pre></div>
+<p>支持的音频格式：</p>
+<ul>
+<li>WAV</li>
+<li>FLAC</li>
+<li>MP3</li>
+</ul>
+<h4 id="streaming">Streaming 模式<a class="headerlink" href="#streaming" title="Permanent link">&para;</a></h4>
+<p>实时发送音频流数据，适用于 TTS 或实时音频传输场景。</p>
+<p>音频参数要求：</p>
+<ul>
+<li>采样率：24kHz</li>
+<li>位深：16bit</li>
+<li>声道：单声道</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1"># Streaming 模式</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="n">voice_cmd</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">VoiceCmd</span><span class="p">()</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="n">voice_cmd</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="s2">&quot;streaming&quot;</span><span class="p">)</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="n">voice_cmd</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="n">voice_cmd</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">audio_bytes</span><span class="p">)</span>  <span class="c1"># PCM 音频数据</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="n">middleware</span><span class="o">.</span><span class="n">publishVoiceCmd</span><span class="p">(</span><span class="n">voice_cmd</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="_42">运行方式<a class="headerlink" href="#_42" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="c1"># File 模式</span>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>python3<span class="w"> </span>e7_voice_pub.py<span class="w"> </span>file
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="c1"># Streaming 模式（从麦克风捕获）</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>python3<span class="w"> </span>e7_voice_pub.py<span class="w"> </span>streaming
+</span></code></pre></div>
+<h3 id="e8">E8: 语音采集<a class="headerlink" href="#e8" title="Permanent link">&para;</a></h3>
+<p><strong>文件</strong>: <code>low_level/python/e8_voice_sub.py</code></p>
+<h4 id="_43">功能说明<a class="headerlink" href="#_43" title="Permanent link">&para;</a></h4>
+<p>从机器人麦克风订阅音频流数据。</p>
+<p>音频参数：</p>
+<ul>
+<li>采样率：24kHz</li>
+<li>位深：16bit</li>
+<li>声道：单声道</li>
+</ul>
+<h4 id="qos_8">QoS 配置<a class="headerlink" href="#qos_8" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;best_effort&quot;</span><span class="p">,</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="_44">订阅话题<a class="headerlink" href="#_44" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>话题名称</th>
+<th>消息类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/voice/state</code></td>
+<td><code>VoiceState</code></td>
+<td>语音状态/音频流</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_45">示例代码<a class="headerlink" href="#_45" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">voice_state_callback</span><span class="p">(</span><span class="n">voice_state_msg</span><span class="p">):</span>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received VoiceState message:&quot;</span><span class="p">)</span>
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Data size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">voice_state_msg</span><span class="o">.</span><span class="n">data_</span><span class="p">())</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-31-8"><a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a><span class="n">middleware</span><span class="o">.</span><span class="n">subscribeVoiceState</span><span class="p">(</span><span class="s2">&quot;rt/voice/state&quot;</span><span class="p">,</span> <span class="n">voice_state_callback</span><span class="p">,</span> <span class="n">qos_config</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="_46">输出示例<a class="headerlink" href="#_46" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>Starting DDS Python VoiceState subscriber...
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>Subscribing to topic: rt/voice/state
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>VoiceState subscriber started, waiting for voice state messages...
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>Received VoiceState message:
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>  Data size: 4800 bytes
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a>---
+</span></code></pre></div>
+<h4 id="_47">运行方式<a class="headerlink" href="#_47" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>python3<span class="w"> </span>e8_voice_sub.py
+</span></code></pre></div>
+<h3 id="e9">E9: 电机指令发布<a class="headerlink" href="#e9" title="Permanent link">&para;</a></h3>
+<p><strong>文件</strong>: <code>low_level/python/e9_motor_cmd_pub.py</code></p>
+<h4 id="_48">功能说明<a class="headerlink" href="#_48" title="Permanent link">&para;</a></h4>
+<p>直接向电机发送控制指令。此示例演示了正弦波位置控制测试。</p>
+<h4 id="_49">🚨 重要安全警告<a class="headerlink" href="#_49" title="Permanent link">&para;</a></h4>
+<p><strong>在运行此程序之前，必须先停止机器人的主控程序！</strong></p>
+<p>直接控制电机而不停止主程序<strong>会造成严重安全事故</strong>，可能导致：</p>
+<ul>
+<li>⚠️ <strong>控制冲突</strong>：主程序和你的代码同时发送指令，电机行为不可预测</li>
+<li>🤖 <strong>机器人失控</strong>：不可预期的危险动作</li>
+<li>🔥 <strong>硬件损坏</strong>：电机过载、过热、机械碰撞</li>
+<li>👥 <strong>人员伤害</strong>：机器人意外移动造成伤害</li>
+</ul>
+<h4 id="_50">✅ 正确的停止方法（必须执行！）<a class="headerlink" href="#_50" title="Permanent link">&para;</a></h4>
+<p><strong>推荐使用 SDK 提供的 <code>kill_robot</code> 工具</strong>：</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="c1"># Python 版本（推荐）</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="nb">cd</span><span class="w"> </span>high_level/python
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>python3<span class="w"> </span>kill_robot.py<span class="w"> </span><span class="m">192</span>.168.5.2:50051
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="c1"># C++ 版本</span>
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a><span class="nb">cd</span><span class="w"> </span>high_level/cpp/build
+</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a>./kill_robot<span class="w"> </span><span class="m">192</span>.168.5.2:50051
+</span></code></pre></div>
+<p><code>kill_robot</code> 工具会安全地：</p>
+<ol>
+<li>✅ 将机器人切换到 <strong>PASSIVE</strong> 状态（电机失能）</li>
+<li>⏱️ 等待 <strong>5 秒</strong>确保机器人安全停止</li>
+<li>🚫 终止所有控制器进程</li>
+</ol>
+<p>详细信息请参考：<a href="../../getting-started/quickstart/#_6">安全关闭章节</a></p>
+<h4 id="_51">🛡️ 使用前检查清单<a class="headerlink" href="#_51" title="Permanent link">&para;</a></h4>
+<p>在运行电机控制程序前，请确认：</p>
+<ul>
+<li>[ ] 已使用 <code>kill_robot</code> 工具停止主控程序</li>
+<li>[ ] 机器人处于安全位置（平坦地面，远离障碍物）</li>
+<li>[ ] 周围无人员和贵重物品</li>
+<li>[ ] 理解你的代码将会发送的指令</li>
+<li>[ ] 准备好紧急停止按钮（Ctrl+C）</li>
+</ul>
+<h4 id="qos_9">QoS 配置<a class="headerlink" href="#qos_9" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;reliable&quot;</span><span class="p">,</span>
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="_52">发布/订阅话题<a class="headerlink" href="#_52" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>话题名称</th>
+<th>类型</th>
+<th>消息类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/lower/cmd</code></td>
+<td>发布</td>
+<td><code>LowerCmd</code></td>
+<td>电机控制指令</td>
+</tr>
+<tr>
+<td><code>rt/lower/state</code></td>
+<td>订阅</td>
+<td><code>LowerState</code></td>
+<td>电机状态反馈</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_53">电机指令参数<a class="headerlink" href="#_53" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>单位</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mode</code></td>
+<td>uint8</td>
+<td>-</td>
+<td>控制模式</td>
+</tr>
+<tr>
+<td><code>q</code></td>
+<td>float</td>
+<td>rad</td>
+<td>目标位置</td>
+</tr>
+<tr>
+<td><code>dq</code></td>
+<td>float</td>
+<td>rad/s</td>
+<td>目标速度</td>
+</tr>
+<tr>
+<td><code>tau</code></td>
+<td>float</td>
+<td>Nm</td>
+<td>前馈力矩</td>
+</tr>
+<tr>
+<td><code>kp</code></td>
+<td>float</td>
+<td>-</td>
+<td>位置增益</td>
+</tr>
+<tr>
+<td><code>kd</code></td>
+<td>float</td>
+<td>-</td>
+<td>速度增益</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_54">控制公式<a class="headerlink" href="#_54" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>τ = kp × (q_des - q) + kd × (dq_des - dq) + τ_ff
+</span></code></pre></div>
+<p>其中：</p>
+<ul>
+<li><code>τ</code> - 最终输出力矩</li>
+<li><code>q_des</code>, <code>dq_des</code> - 期望位置和速度</li>
+<li><code>q</code>, <code>dq</code> - 实际位置和速度</li>
+<li><code>τ_ff</code> - 前馈力矩</li>
+<li><code>kp</code>, <code>kd</code> - 增益参数</li>
+</ul>
+<h4 id="offset-e9">电机 Offset（来自 E9 电机控制示例）<a class="headerlink" href="#offset-e9" title="Permanent link">&para;</a></h4>
+<p>E9 示例使用固定的电机零位 offset 表，用于在硬件角度与逻辑关节角之间转换。</p>
+<ul>
+<li>12 个有效电机使用的硬件索引映射：</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="n">ABS2HW</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">]</span>
+</span></code></pre></div>
+<ul>
+<li>Offset 表（长度 16，按硬件电机 ID 索引）：</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="n">MOTOR_OFFSET</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a>    <span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a>    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a>    <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a><span class="p">]</span>
+</span></code></pre></div>
+<p>控制环中的使用方式：</p>
+<ul>
+<li>读取侧（硬件 -&gt; 逻辑）：<code>q_real = q_hw - MOTOR_OFFSET[hw]</code></li>
+<li>下发侧（逻辑 -&gt; 硬件）：<code>q_cmd = q_target + MOTOR_OFFSET[hw]</code></li>
+</ul>
+<h4 id="_55">示例代码<a class="headerlink" href="#_55" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>
+</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a><span class="c1"># 电机索引映射</span>
+</span><span id="__span-39-5"><a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a><span class="n">NUM_MOTORS</span> <span class="o">=</span> <span class="mi">12</span>
+</span><span id="__span-39-6"><a id="__codelineno-39-6" name="__codelineno-39-6" href="#__codelineno-39-6"></a><span class="n">ABS2HW</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">]</span>
+</span><span id="__span-39-7"><a id="__codelineno-39-7" name="__codelineno-39-7" href="#__codelineno-39-7"></a><span class="n">MOTOR_OFFSET</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-39-8"><a id="__codelineno-39-8" name="__codelineno-39-8" href="#__codelineno-39-8"></a>    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-39-9"><a id="__codelineno-39-9" name="__codelineno-39-9" href="#__codelineno-39-9"></a>    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span>
+</span><span id="__span-39-10"><a id="__codelineno-39-10" name="__codelineno-39-10" href="#__codelineno-39-10"></a><span class="p">]</span>
+</span><span id="__span-39-11"><a id="__codelineno-39-11" name="__codelineno-39-11" href="#__codelineno-39-11"></a>
+</span><span id="__span-39-12"><a id="__codelineno-39-12" name="__codelineno-39-12" href="#__codelineno-39-12"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-39-13"><a id="__codelineno-39-13" name="__codelineno-39-13" href="#__codelineno-39-13"></a>
+</span><span id="__span-39-14"><a id="__codelineno-39-14" name="__codelineno-39-14" href="#__codelineno-39-14"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-39-15"><a id="__codelineno-39-15" name="__codelineno-39-15" href="#__codelineno-39-15"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;reliable&quot;</span><span class="p">,</span>
+</span><span id="__span-39-16"><a id="__codelineno-39-16" name="__codelineno-39-16" href="#__codelineno-39-16"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-39-17"><a id="__codelineno-39-17" name="__codelineno-39-17" href="#__codelineno-39-17"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-39-18"><a id="__codelineno-39-18" name="__codelineno-39-18" href="#__codelineno-39-18"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-39-19"><a id="__codelineno-39-19" name="__codelineno-39-19" href="#__codelineno-39-19"></a><span class="p">}</span>
+</span><span id="__span-39-20"><a id="__codelineno-39-20" name="__codelineno-39-20" href="#__codelineno-39-20"></a>
+</span><span id="__span-39-21"><a id="__codelineno-39-21" name="__codelineno-39-21" href="#__codelineno-39-21"></a><span class="n">middleware</span><span class="o">.</span><span class="n">createLowerCmdWriter</span><span class="p">(</span><span class="s2">&quot;rt/lower/cmd&quot;</span><span class="p">,</span> <span class="n">qos_config</span><span class="p">)</span>
+</span><span id="__span-39-22"><a id="__codelineno-39-22" name="__codelineno-39-22" href="#__codelineno-39-22"></a>
+</span><span id="__span-39-23"><a id="__codelineno-39-23" name="__codelineno-39-23" href="#__codelineno-39-23"></a><span class="c1"># 创建正弦波控制指令</span>
+</span><span id="__span-39-24"><a id="__codelineno-39-24" name="__codelineno-39-24" href="#__codelineno-39-24"></a><span class="k">def</span><span class="w"> </span><span class="nf">create_swing_cmd</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">q_init</span><span class="p">):</span>
+</span><span id="__span-39-25"><a id="__codelineno-39-25" name="__codelineno-39-25" href="#__codelineno-39-25"></a>    <span class="n">cmd</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">LowerCmd</span><span class="p">()</span>
+</span><span id="__span-39-26"><a id="__codelineno-39-26" name="__codelineno-39-26" href="#__codelineno-39-26"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUM_MOTORS</span><span class="p">):</span>
+</span><span id="__span-39-27"><a id="__codelineno-39-27" name="__codelineno-39-27" href="#__codelineno-39-27"></a>        <span class="n">hw</span> <span class="o">=</span> <span class="n">ABS2HW</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span id="__span-39-28"><a id="__codelineno-39-28" name="__codelineno-39-28" href="#__codelineno-39-28"></a>        <span class="n">qdes</span> <span class="o">=</span> <span class="n">q_init</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span> <span class="o">+</span> <span class="n">MOTOR_OFFSET</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span>
+</span><span id="__span-39-29"><a id="__codelineno-39-29" name="__codelineno-39-29" href="#__codelineno-39-29"></a>        <span class="n">cmd</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-39-30"><a id="__codelineno-39-30" name="__codelineno-39-30" href="#__codelineno-39-30"></a>        <span class="n">cmd</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">qdes</span><span class="p">)</span>
+</span><span id="__span-39-31"><a id="__codelineno-39-31" name="__codelineno-39-31" href="#__codelineno-39-31"></a>        <span class="n">cmd</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span><span class="o">.</span><span class="n">dq</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+</span><span id="__span-39-32"><a id="__codelineno-39-32" name="__codelineno-39-32" href="#__codelineno-39-32"></a>        <span class="n">cmd</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span><span class="o">.</span><span class="n">tau</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+</span><span id="__span-39-33"><a id="__codelineno-39-33" name="__codelineno-39-33" href="#__codelineno-39-33"></a>        <span class="n">cmd</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span><span class="o">.</span><span class="n">kp</span><span class="p">(</span><span class="mf">30.0</span><span class="p">)</span>
+</span><span id="__span-39-34"><a id="__codelineno-39-34" name="__codelineno-39-34" href="#__codelineno-39-34"></a>        <span class="n">cmd</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span><span class="o">.</span><span class="n">kd</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)</span>
+</span><span id="__span-39-35"><a id="__codelineno-39-35" name="__codelineno-39-35" href="#__codelineno-39-35"></a>    <span class="k">return</span> <span class="n">cmd</span>
+</span></code></pre></div>
+<h4 id="_56">运行方式<a class="headerlink" href="#_56" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>python3<span class="w"> </span>e9_motor_cmd_pub.py
+</span></code></pre></div>
+<h4 id="_57">输出示例<a class="headerlink" href="#_57" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>Waiting for initial position collection...
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>Initial position collection completed: -0.0500 0.8500 -1.7000 ...
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a>Starting control loop
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a>[0] Initialization phase
+</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a>[10] Starting swing
+</span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a>[5000] Swing completed, entering damping mode
+</span></code></pre></div>
+<h2 id="_58">常见问题<a class="headerlink" href="#_58" title="Permanent link">&para;</a></h2>
+<h3 id="q">Q: 订阅不到数据<a class="headerlink" href="#q" title="Permanent link">&para;</a></h3>
+<ol>
+<li>检查 <code>CYCLONEDDS_URI</code> 环境变量是否设置</li>
+<li>检查网络接口配置是否正确</li>
+<li>使用 <code>cyclonedds ps</code> 查看可用话题</li>
+</ol>
+<h3 id="q-led">Q: LED 控制没有效果<a class="headerlink" href="#q-led" title="Permanent link">&para;</a></h3>
+<p>必须先停止主控程序，参见 E3 部分的警告说明。</p>
+<h3 id="q_1">Q: 电机控制剧烈震荡<a class="headerlink" href="#q_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li>必须先停止主控程序</li>
+<li>确认电机初始位置采集完成</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Dobot. All rights reserved.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://dobot-robots.com/" target="_blank" rel="noopener" title="Dobot Official Website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

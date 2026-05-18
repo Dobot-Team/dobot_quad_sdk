@@ -71,6 +71,22 @@ VALID_BALANCE_MOTIONS = frozenset(
 #: Valid gait names for velocity_sequence.
 VALID_GAITS = frozenset({"walk", "flying_trot"})
 
+#: Valid FSM state names for MINI_QUAD_WHEEL (轮足).
+VALID_WHEEL_STATES = frozenset(
+    {
+        "passive",
+        "ready",
+        "stand_down",
+        "wheel_loco",
+        "drift",
+        "climb",
+        "handstand",
+    }
+)
+
+#: Valid gait names for velocity_sequence on MINI_QUAD_WHEEL.
+VALID_WHEEL_GAITS = frozenset({"wheel_loco"})
+
 #: Direction name → int mapping for line_walk.
 DIRECTION_MAP = {
     "forward": 0,
@@ -86,16 +102,16 @@ DEFAULT_STATE_POST_SLEEP_SECONDS = 2.0
 
 #: Single-axis/pose target offset limits in BALANCE_STAND.
 #: These values are offsets from initial posture to target posture.
-BALANCE_ROLL_LIMIT_DEG = 30.0
-BALANCE_PITCH_LIMIT_DEG = 15.0
-BALANCE_YAW_LIMIT_DEG = 20.0
-BALANCE_HEIGHT_MIN_M = -0.12
+BALANCE_ROLL_LIMIT_DEG = 17.0
+BALANCE_PITCH_LIMIT_DEG = 11.5
+BALANCE_YAW_LIMIT_DEG = 11.5
+BALANCE_HEIGHT_MIN_M = -0.08
 BALANCE_HEIGHT_MAX_M = 0.0
 
 #: Dance configurable duration constraints.
-DEFAULT_DANCE_SECONDS = 13.0
-MIN_DANCE_SECONDS = 1.0
-MAX_DANCE_SECONDS = 14.0
+DEFAULT_DANCE_SECONDS = 126.5
+MIN_DANCE_SECONDS = 4.0
+MAX_DANCE_SECONDS = 128.0
 
 #: Wave configurable first waiting time, with fixed tail wait.
 DEFAULT_WAVE_SECONDS = 5.0
@@ -179,12 +195,13 @@ def validate_state(state_name):
         Lowercased state name.
 
     Raises:
-        ValueError: If state_name is not in VALID_STATES.
+        ValueError: If state_name is not in VALID_STATES or VALID_WHEEL_STATES.
     """
     norm = state_name.strip().lower()
     norm = STATE_ALIASES.get(norm, norm)
-    if norm not in VALID_STATES:
-        raise ValueError(f"Unknown state '{state_name}'. " f"Valid states: {sorted(VALID_STATES)}")
+    all_valid = VALID_STATES | VALID_WHEEL_STATES
+    if norm not in all_valid:
+        raise ValueError(f"Unknown state '{state_name}'. " f"Valid states: {sorted(all_valid)}")
     return norm
 
 
@@ -207,11 +224,12 @@ def validate_gait(gait):
         Lowercased gait name.
 
     Raises:
-        ValueError: If gait is not in VALID_GAITS.
+        ValueError: If gait is not in VALID_GAITS or VALID_WHEEL_GAITS.
     """
     norm = gait.strip().lower()
-    if norm not in VALID_GAITS:
-        raise ValueError(f"Unknown gait '{gait}'. Valid: {sorted(VALID_GAITS)}")
+    all_valid = VALID_GAITS | VALID_WHEEL_GAITS
+    if norm not in all_valid:
+        raise ValueError(f"Unknown gait '{gait}'. Valid: {sorted(all_valid)}")
     return norm
 
 
@@ -271,6 +289,7 @@ class RobotClient:
         res = self.get_state()
         self._speed_ratio = res.current_speed_ratio if res.success else 50
         self._obstacle_avoidance = True
+        self._robot_type = None
         # self.set_obstacle_avoidance(True)
 
     # =================================================================
@@ -297,6 +316,23 @@ class RobotClient:
     def get_obstacle_avoidance(self) -> bool:
         """Get the current obstacle avoidance state."""
         return self._obstacle_avoidance
+
+    def get_robot_type(self) -> str:
+        """Get the robot type string (e.g. 'miniQuad' or 'miniQuadW').
+        Cached after first successful query."""
+        if not self._robot_type:
+            res = self.get_state()
+            if res.success:
+                self._robot_type = res.robot_type
+        return self._robot_type
+
+    def is_quad(self) -> bool:
+        """Check if connected robot is MINI_QUAD (点足)."""
+        return self.get_robot_type() == "miniQuad"
+
+    def is_quad_wheel(self) -> bool:
+        """Check if connected robot is MINI_QUAD_WHEEL (轮足)."""
+        return self.get_robot_type() == "miniQuadW"
 
     # =================================================================
     # Core RPC: Configuration
@@ -476,12 +512,38 @@ class RobotClient:
         return self.execute("change_mode", show_progress=show_progress)
 
     # =================================================================
+    # State Switching – MINI_QUAD_WHEEL (轮足)
+    # =================================================================
+
+    def wheel_loco(self, show_progress=True):
+        """切换到 WHEEL_LOCO 状态（轮足）。"""
+        return self._set_state_with_delay(
+            "wheel_loco", DEFAULT_STATE_POST_SLEEP_SECONDS, show_progress
+        )
+
+    def drift(self, show_progress=True):
+        """切换到 DRIFT 状态（轮足）。"""
+        return self._set_state_with_delay("drift", DEFAULT_STATE_POST_SLEEP_SECONDS, show_progress)
+
+    def climb(self, show_progress=True):
+        """切换到 CLIMB 状态（轮足）。"""
+        return self._set_state_with_delay("climb", DEFAULT_STATE_POST_SLEEP_SECONDS, show_progress)
+
+    def handstand(self, show_progress=True):
+        """切换到 HANDSTAND 状态（轮足）。"""
+        return self._set_state_with_delay(
+            "handstand", DEFAULT_STATE_POST_SLEEP_SECONDS, show_progress
+        )
+
+    # =================================================================
     # Velocity Sequence
     # =================================================================
 
     @staticmethod
     def make_velocity_string(steps):
         """Convert list of (vx, vy, vyaw, duration) tuples to velocity sequence string."""
+        if not steps:
+            return ""
         return ";".join(f"{vx},{vy},{vyaw},{dur}" for vx, vy, vyaw, dur in steps) + ";"
 
     def velocity_sequence(
@@ -515,6 +577,7 @@ class RobotClient:
         gait_map = {
             "walk": "walk_velocity_seq",
             "flying_trot": "flying_trot_velocity_seq",
+            "wheel_loco": "wheel_loco_velocity_seq",
         }
         motion_id = gait_map[norm_gait]
         motions = [(motion_id, {"velocity_sequence": vel_seq})]
@@ -683,7 +746,7 @@ class RobotClient:
         """向 angle 方向移动 distance 米：先旋转再前进。
 
         Args:
-            angle: degrees [-180, 180]. Negative = clockwise (right), Positive = counter-clockwise (left).
+            angle: degrees [-180, 180]. Negative = counter-clockwise (left), Positive = clockwise (right).
             distance: meters [0, 3].
             speed_ratio: [10, 100] or None to use current base speed ratio.
         """
@@ -691,9 +754,9 @@ class RobotClient:
         distance = clamp_distance(distance)
 
         if angle >= 0:
-            first = self.rotate("left", angle, show_progress)
+            first = self.rotate("right", angle, show_progress)
         else:
-            first = self.rotate("right", -angle, show_progress)
+            first = self.rotate("left", -angle, show_progress)
         if first is None or (hasattr(first, "success") and not first.success):
             return first
         return self.walk_forward(distance, speed_ratio, show_progress)
@@ -721,7 +784,13 @@ class RobotClient:
             height_m:   高度偏移（米）[-0.12, 0.0]，0 不动。
         """
         return self._pose_motion(
-            "dynamic_pose", duration, roll_deg, pitch_deg, yaw_deg, height_m, show_progress
+            "dynamic_pose",
+            duration,
+            roll_deg,
+            pitch_deg,
+            yaw_deg,
+            height_m,
+            show_progress,
         )
 
     def static_pose(
@@ -743,7 +812,13 @@ class RobotClient:
             height_m:   高度偏移（米）[-0.12, 0.0]，0 不动。
         """
         return self._pose_motion(
-            "static_pose", duration, roll_deg, pitch_deg, yaw_deg, height_m, show_progress
+            "static_pose",
+            duration,
+            roll_deg,
+            pitch_deg,
+            yaw_deg,
+            height_m,
+            show_progress,
         )
 
     # =================================================================

@@ -20,31 +20,43 @@ STATES = [
     "change_mode",
 ]
 
+WHEEL_STATES = [
+    "emergency",
+    "ready",
+    "stand_down",
+    "wheel_loco",
+    "drift",
+    "handstand",
+    "change_mode",
+]
+
 
 def main():
     robot = RobotClient(sys.argv[1] if len(sys.argv) > 1 else "192.168.5.2:50051")
     robot.enable_safety_ready()
 
+    states = WHEEL_STATES if robot.is_quad_wheel() else STATES
+
     if len(sys.argv) > 2:
         target = sys.argv[2].lower()
     else:
         print("Available states:")
-        for i, s in enumerate(STATES):
+        for i, s in enumerate(states):
             print(f"  {i}. {s}")
 
         while True:
             try:
-                choice = int(input(f"Select [0-{len(STATES)-1}]: "))
-                if 0 <= choice < len(STATES):
+                choice = int(input(f"Select [0-{len(states)-1}]: "))
+                if 0 <= choice < len(states):
                     break
-                print(f"Invalid choice. Please select [0-{len(STATES)-1}].")
+                print(f"Invalid choice. Please select [0-{len(states)-1}].")
             except ValueError:
                 print("Invalid input. Please enter a number.")
             except (KeyboardInterrupt, EOFError):
                 print("\nAborted.")
                 return 0
 
-        target = STATES[choice]
+        target = states[choice]
 
     print(f"Switching to: {target}")
     if target == "change_mode":

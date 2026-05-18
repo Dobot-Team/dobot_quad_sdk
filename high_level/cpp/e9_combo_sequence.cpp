@@ -10,6 +10,41 @@ int main(int argc, char** argv)
     robot::Client client(argc > 1 ? argv[1] : "192.168.5.2:50051");
     robot::enable_safety_ready(client);
 
+    if (client.is_quad_wheel()) {
+        std::cout << "\n=== Combo Sequence Demo (Wheel) ===" << std::endl;
+
+        // 1) 基础状态切换 + 构型切换
+        client.passive();
+        client.ready();
+        client.wheel_loco();
+        client.change_mode();
+        client.change_mode();
+
+        // 2) 前后左右各 1 米
+        client.walk_forward(1.0f);
+        client.walk_backward(1.0f);
+        client.move_left(1.0f);
+        client.move_right(1.0f);
+
+        // 3) 左右转：90° 和 180°
+        client.rotate_left(90.0f);
+        client.rotate_right(90.0f);
+
+        // 4) 转圈 1 圈
+        client.circle("left", 1);
+
+        // 5) 轮足专用状态切换
+        client.drift();
+        client.wheel_loco();
+        client.handstand();
+
+        // 6) 结束
+        client.stand_down();
+
+        std::cout << "Done." << std::endl;
+        return 0;
+    }
+
     std::cout << "\n=== Combo Sequence Demo (Full) ===" << std::endl;
 
     // 1) 基础状态切换 + 构型切换

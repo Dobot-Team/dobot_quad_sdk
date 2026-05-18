@@ -1,0 +1,377 @@
+/* Dobot Quad SDK Custom Styles */
+
+:root {
+  --md-primary-fg-color: #24292f;
+  --md-primary-fg-color--light: #656d76;
+  --md-accent-fg-color: #0969da;
+  --sidebar-bg: #f8f9fb;
+  --sidebar-active-bg: #ddf4ff;
+}
+
+/* === Smooth Scrolling === */
+html {
+  scroll-behavior: smooth;
+}
+
+/* === Header / Logo === */
+.md-header__title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.md-header__title .md-header__topic {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* === Sidebar Navigation === */
+.md-nav--primary {
+  font-size: 14px;
+  padding: 8px 0;
+}
+
+/* Section Labels (一级目录标题) */
+.md-nav__title {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--md-primary-fg-color--light);
+  padding: 12px 20px 15px 20px;
+  margin-top: 12px;
+}
+
+.md-nav__title:first-child {
+  margin-top: 0;
+  padding-top: 8px;
+}
+
+/* Navigation List Items */
+.md-nav__list {
+  margin: 0;
+  padding: 0;
+}
+
+.md-nav__item {
+  margin: 0;
+  padding: 0;
+}
+
+/* Navigation Links */
+.md-nav__link {
+  display: block;
+  padding: 6px 20px 6px 28px;
+  color: var(--md-primary-fg-color);
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s ease;
+  margin: 2px 0;
+}
+
+.md-nav__link:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--md-primary-fg-color);
+}
+
+/* Active State */
+.md-nav__link--active {
+  color: var(--md-accent-fg-color);
+  border-left-color: var(--md-accent-fg-color);
+  background: var(--sidebar-active-bg);
+  font-weight: 600;
+}
+
+/* Nested Navigation Container */
+.md-nav__item .md-nav {
+  margin-top: 15px;
+  margin-bottom: 8px;
+}
+
+/* Nested Links (sub-items) */
+.md-nav__item .md-nav__item .md-nav__link {
+  padding: 5px 20px 5px 40px;
+  font-size: 13px;
+  color: var(--md-primary-fg-color--light);
+}
+
+.md-nav__item .md-nav__item .md-nav__link:hover {
+  color: var(--md-primary-fg-color);
+}
+
+.md-nav__item .md-nav__item .md-nav__link--active {
+  color: var(--md-accent-fg-color);
+}
+
+/* Third level */
+.md-nav__item .md-nav__item .md-nav__item .md-nav__link {
+  padding-left: 52px;
+  font-size: 12px;
+}
+
+/* Section header within nested nav */
+.md-nav__item .md-nav__title {
+  margin-top: 12px;
+  padding-top: 8px;
+}
+
+/* === Sidebar Scrollbar === */
+.md-nav--primary::-webkit-scrollbar {
+  width: 4px;
+}
+
+.md-nav--primary::-webkit-scrollbar-thumb {
+  background: #c8c8c8;
+  border-radius: 4px;
+}
+
+/* === Content Headings === */
+/* H1 - Page Title */
+.md-typeset h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--md-primary-fg-color);
+}
+
+/* H2 - Section Headers */
+.md-typeset h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 40px !important;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #d0d7de;
+}
+
+/* H2 after H1 - Add extra margin */
+.md-typeset h1 + h2 {
+  margin-top: 32px !important;
+}
+
+/* H3 */
+.md-typeset h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 28px !important;
+  margin-bottom: 8px;
+}
+
+/* H4 */
+.md-typeset h4 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 20px !important;
+  margin-bottom: 6px;
+  color: var(--md-primary-fg-color--light);
+}
+
+/* === Code Blocks === */
+.md-typeset pre > code {
+  border-radius: 6px;
+}
+
+/* === Tables === */
+.md-typeset table:not([class]) {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #d0d7de;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: #f6f8fa;
+  color: var(--md-primary-fg-color);
+  font-weight: 600;
+}
+
+.md-typeset table:not([class]) tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Admonitions */
+.md-typeset .admonition {
+  border-radius: 8px;
+  border-left-width: 4px;
+}
+
+.md-typeset .admonition.note {
+  border-left-color: var(--md-primary-fg-color);
+}
+
+.md-typeset .admonition.warning {
+  border-left-color: #F59E0B;
+}
+
+.md-typeset .admonition.tip {
+  border-left-color: #10B981;
+}
+
+/* === Search === */
+.md-search__form {
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* === Footer === */
+.md-footer {
+  background-color: var(--md-primary-fg-color);
+}
+
+/* === Links === */
+.md-typeset a {
+  color: var(--md-accent-fg-color);
+}
+
+.md-typeset a:hover {
+  text-decoration: underline;
+}
+
+/* === Code Copy Button === */
+.md-clipboard {
+  color: var(--md-accent-fg-color);
+}
+
+.md-clipboard:hover {
+  color: var(--md-primary-fg-color);
+}
+
+/* === Tabbed Content === */
+.md-typeset .tabbed-set {
+  border-radius: 8px;
+  border: 1px solid #d0d7de;
+  overflow: hidden;
+}
+
+.md-typeset .tabbed-labels {
+  background: #f6f8fa;
+  border-bottom: 1px solid #d0d7de;
+}
+
+.md-typeset .tabbed-labels > label {
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 20px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.md-typeset .tabbed-labels > label:hover {
+  color: var(--md-primary-fg-color);
+}
+
+.md-typeset .tabbed-content {
+  padding: 0;
+}
+
+.md-typeset .tabbed-content > div > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #f6f8fa;
+}
+
+/* === TOC (Right Sidebar) === */
+.md-typeset .toc {
+  border-left: 3px solid var(--md-accent-fg-color);
+  padding-left: 16px;
+}
+
+/* === Permalinks === */
+.md-typeset .headerlink {
+  color: var(--md-primary-fg-color--light);
+}
+
+.md-typeset .headerlink:hover {
+  color: var(--md-accent-fg-color);
+}
+
+/* === Dark Mode Adjustments === */
+[data-md-color-scheme="slate"] {
+  --sidebar-bg: #11161d;
+  --sidebar-active-bg: rgba(56, 139, 253, 0.16);
+  --md-accent-fg-color: #58a6ff;
+  --md-primary-fg-color: #24292f;
+  --md-primary-fg-color--light: #24292f;
+}
+
+[data-md-color-scheme="slate"] .md-nav__title {
+  color: #9da7b3;
+}
+
+[data-md-color-scheme="slate"] .md-nav__link {
+  color: #e6edf3;
+}
+
+[data-md-color-scheme="slate"] .md-nav__link:hover {
+  background: rgba(240, 246, 252, 0.06);
+  color: #e6edf3;
+}
+
+[data-md-color-scheme="slate"] .md-nav__item .md-nav__item .md-nav__link {
+  color: #9da7b3;
+}
+
+[data-md-color-scheme="slate"] .md-nav__item .md-nav__item .md-nav__link:hover {
+  color: #e6edf3;
+}
+
+/* Dark mode headings */
+[data-md-color-scheme="slate"] .md-typeset h1 {
+  border-bottom-color: #58a6ff;
+  color: #e6edf3;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h2 {
+  border-bottom-color: #30363d;
+  color: #e6edf3;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h3 {
+  color: #e6edf3;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h4 {
+  color: #9da7b3;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) {
+  border-color: #30363d;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  background-color: #161b22;
+  color: #e6edf3;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .admonition.info {
+  background: rgba(56, 139, 253, 0.15);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .tabbed-set {
+  border-color: #30363d;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .tabbed-labels {
+  background: #161b22;
+  border-bottom-color: #30363d;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .tabbed-labels > label {
+  color: #9da7b3;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .tabbed-labels > label:hover {
+  color: #e6edf3;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .tabbed-content > div > pre {
+  background: #161b22;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .headerlink {
+  color: #9da7b3;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .headerlink:hover {
+  color: #58a6ff;
+}

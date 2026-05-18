@@ -1,0 +1,2415 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://dobot-quad-sdk.readthedocs.io/api/low_level/">
+      
+      
+        <link rel="prev" href="../high_level/index.html">
+      
+      
+        <link rel="next" href="../../changelog/index.html">
+      
+      
+        
+          <link rel="alternate" href="./index.html" hreflang="en">
+        
+          <link rel="alternate" href="../../zh/api/low_level/index.html" hreflang="zh">
+        
+      
+      
+      <link rel="icon" href="../../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Low-Level API - Dobot Quad SDK</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#low-level-api-documentation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="Dobot Quad SDK" class="md-header__button md-logo" aria-label="Dobot Quad SDK" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Dobot Quad SDK
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Low-Level API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./index.html" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../zh/api/low_level/index.html" hreflang="zh" class="md-select__link">
+              简体中文
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Dobot-Team/dobot_quad_sdk" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/installation/index.html" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../high_level/index.html" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../changelog/index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="Dobot Quad SDK" class="md-nav__button md-logo" aria-label="Dobot Quad SDK" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    Dobot Quad SDK
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Dobot-Team/dobot_quad_sdk" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/quickstart/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../high_level/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    High-Level API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Low-Level API
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./index.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Low-Level API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-initialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Initialization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-qos-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. QoS Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. QoS Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-default-configuration-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Default Configuration File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-qos-parameter-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 QoS Parameter Reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-recommended-configurations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Recommended Configurations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-example-programs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Example Programs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Example Programs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#e1-rgb-image-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E1: RGB Image Subscription
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e2-depth-image-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E2: Depth Image Subscription
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e3-led-light-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E3: LED Light Control
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e4-imu-data-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E4: IMU Data Subscription
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e5-motor-state-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E5: Motor State Subscription
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e6-battery-state-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E6: Battery State Subscription
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e7-voice-playback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E7: Voice Playback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e8-voice-capture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E8: Voice Capture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e9-motor-command-publishing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E9: Motor Command Publishing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FAQ
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FAQ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q-not-receiving-any-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: Not receiving any data?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-led-control-has-no-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: LED control has no effect?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-motor-control-not-responding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: Motor control not responding?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-severe-image-data-packet-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: Severe image data packet loss?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-initialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Initialization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-qos-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. QoS Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. QoS Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-default-configuration-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Default Configuration File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-qos-parameter-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 QoS Parameter Reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-recommended-configurations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Recommended Configurations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-example-programs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Example Programs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Example Programs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#e1-rgb-image-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E1: RGB Image Subscription
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e2-depth-image-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E2: Depth Image Subscription
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e3-led-light-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E3: LED Light Control
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e4-imu-data-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E4: IMU Data Subscription
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e5-motor-state-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E5: Motor State Subscription
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e6-battery-state-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E6: Battery State Subscription
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e7-voice-playback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E7: Voice Playback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e8-voice-capture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E8: Voice Capture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e9-motor-command-publishing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E9: Motor Command Publishing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FAQ
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FAQ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q-not-receiving-any-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: Not receiving any data?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-led-control-has-no-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: LED control has no effect?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-motor-control-not-responding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: Motor control not responding?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-severe-image-data-packet-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q: Severe image data packet loss?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="low-level-api-documentation">Low-Level API Documentation<a class="headerlink" href="#low-level-api-documentation" title="Permanent link">&para;</a></h1>
+<p>This document provides detailed information about the Dobot Quad SDK's low-level control layer (DDS) API, including functionality, QoS configuration, principles, and usage of each example program. The low-level control layer is implemented using CycloneDDS, providing direct access to robot hardware:</p>
+<ul>
+<li><strong>Sensor Subscription</strong>: IMU, motor state, battery state, images, etc.</li>
+<li><strong>Actuator Control</strong>: LED lights, motor commands, voice playback</li>
+<li><strong>Low-Latency Communication</strong>: Millisecond-level real-time data transmission</li>
+</ul>
+<h2 id="1-initialization">1. Initialization<a class="headerlink" href="#1-initialization" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Initialize with config file</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Or initialize with Domain ID</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="2-qos-configuration">2. QoS Configuration<a class="headerlink" href="#2-qos-configuration" title="Permanent link">&para;</a></h2>
+<p>DDS QoS (Quality of Service) configuration determines the reliability and performance characteristics of data transmission.</p>
+<h3 id="21-default-configuration-file">2.1 Default Configuration File<a class="headerlink" href="#21-default-configuration-file" title="Permanent link">&para;</a></h3>
+<p>Configuration file located at <code>low_level/python/config/dds_config.yaml</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Configuration</th>
+<th>Writer Default</th>
+<th>Reader Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>domain_id</code></td>
+<td>0</td>
+<td>0</td>
+<td>DDS domain ID</td>
+</tr>
+<tr>
+<td><code>reliability</code></td>
+<td><code>reliable</code></td>
+<td><code>best_effort</code></td>
+<td>Reliability policy</td>
+</tr>
+<tr>
+<td><code>history_kind</code></td>
+<td><code>keep_last</code></td>
+<td><code>keep_last</code></td>
+<td>History type</td>
+</tr>
+<tr>
+<td><code>history_depth</code></td>
+<td>10</td>
+<td>10</td>
+<td>History depth</td>
+</tr>
+<tr>
+<td><code>durability</code></td>
+<td><code>volatile</code></td>
+<td><code>volatile</code></td>
+<td>Durability policy</td>
+</tr>
+<tr>
+<td><code>liveliness</code></td>
+<td><code>automatic</code></td>
+<td><code>automatic</code></td>
+<td>Liveliness policy</td>
+</tr>
+<tr>
+<td><code>deadline</code></td>
+<td><code>infinite</code></td>
+<td><code>infinite</code></td>
+<td>Deadline</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-qos-parameter-reference">2.2 QoS Parameter Reference<a class="headerlink" href="#22-qos-parameter-reference" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Values</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reliability</code></td>
+<td><code>reliable</code> / <code>best_effort</code></td>
+<td>reliable guarantees delivery, best_effort allows packet loss</td>
+</tr>
+<tr>
+<td><code>history_kind</code></td>
+<td><code>keep_last</code> / <code>keep_all</code></td>
+<td>keep_last retains only latest N, keep_all retains all</td>
+</tr>
+<tr>
+<td><code>history_depth</code></td>
+<td>integer</td>
+<td>Number of historical messages to retain</td>
+</tr>
+<tr>
+<td><code>durability</code></td>
+<td><code>volatile</code> / <code>transient_local</code></td>
+<td>volatile doesn't save history, transient_local saves for late subscribers</td>
+</tr>
+</tbody>
+</table>
+<h3 id="23-recommended-configurations">2.3 Recommended Configurations<a class="headerlink" href="#23-recommended-configurations" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reliability</th>
+<th>History Depth</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Real-time sensor data</td>
+<td>best_effort</td>
+<td>1-5</td>
+<td>Low latency, allows packet loss</td>
+</tr>
+<tr>
+<td>Control commands</td>
+<td>reliable</td>
+<td>1-5</td>
+<td>Guaranteed delivery</td>
+</tr>
+<tr>
+<td>Image data</td>
+<td>best_effort</td>
+<td>1-5</td>
+<td>Large data, prioritize low latency</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-example-programs">3. Example Programs<a class="headerlink" href="#3-example-programs" title="Permanent link">&para;</a></h2>
+<h3 id="e1-rgb-image-subscription">E1: RGB Image Subscription<a class="headerlink" href="#e1-rgb-image-subscription" title="Permanent link">&para;</a></h3>
+<p><strong>File</strong>: <code>low_level/python/e1_rgb_image_sub.py</code></p>
+<h4 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h4>
+<p>Subscribe to compressed RGB color image data from the robot camera.</p>
+<h4 id="qos-configuration">QoS Configuration<a class="headerlink" href="#qos-configuration" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Uses default reader QoS from config file</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1"># reliability: best_effort</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># history_kind: keep_last</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># history_depth: 10</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># durability: volatile</span>
+</span></code></pre></div>
+<h4 id="topic">Topic<a class="headerlink" href="#topic" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Topic Name</th>
+<th>Message Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/camera/camera2/image_compressed</code></td>
+<td><code>CompressedImage</code></td>
+<td>Compressed RGB image</td>
+</tr>
+</tbody>
+</table>
+<h4 id="image-saving">Image Saving<a class="headerlink" href="#image-saving" title="Permanent link">&para;</a></h4>
+<p>The example automatically saves received images to the <code>rgb_images/</code> directory:</p>
+<p><strong>Python Version:</strong></p>
+<ul>
+<li>Uses OpenCV (<code>cv2.imdecode</code>) to decode compressed JPEG data into raw image format</li>
+<li>Saves as lossless PNG format for better quality</li>
+<li>Filename format: <code>rgb_{timestamp_sec}_{timestamp_nanosec}.png</code></li>
+</ul>
+<p><strong>C++ Version:</strong></p>
+<ul>
+<li>Uses <code>cv::imdecode</code> to decode compressed data into <code>cv::Mat</code></li>
+<li>Saves as PNG format using <code>cv::imwrite</code></li>
+<li>Same filename format as Python version</li>
+</ul>
+<h4 id="sample-code">Sample Code<a class="headerlink" href="#sample-code" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">image_callback</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received RGB CompressedImage:&quot;</span><span class="p">)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Timestamp: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">sec</span><span class="p">()</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">nanosec</span><span class="p">()</span><span class="si">:</span><span class="s2">09d</span><span class="si">}</span><span class="s2"> (sec.nanosec)&quot;</span><span class="p">)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Frame ID: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">frame_id</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Format: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">format</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Data size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">())</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="c1"># Decode compressed image</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">np_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imdecode</span><span class="p">(</span><span class="n">np_arr</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_COLOR</span><span class="p">)</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;rgb_images/rgb_</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">sec</span><span class="p">()</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">nanosec</span><span class="p">()</span><span class="si">}</span><span class="s2">.png&quot;</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>        <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved raw image to </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="c1"># Create save directory</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;rgb_images&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="n">middleware</span><span class="o">.</span><span class="n">subscribeCompressedImage</span><span class="p">(</span><span class="s2">&quot;rt/camera/camera2/image_compressed&quot;</span><span class="p">,</span> <span class="n">image_callback</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="sample-output">Sample Output<a class="headerlink" href="#sample-output" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Subscribed to RGB image topic. Waiting for messages...
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Received RGB CompressedImage:
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>  Timestamp: 1706000000.123456789 (sec.nanosec)
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>  Frame ID: camera2_optical_frame
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>  Format: jpeg
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>  Data size: 45678 bytes
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>Saved raw image to rgb_images/rgb_1706000000_123456789.png
+</span></code></pre></div>
+<h4 id="running">Running<a class="headerlink" href="#running" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>python3<span class="w"> </span>e1_rgb_image_sub.py
+</span></code></pre></div>
+<h3 id="e2-depth-image-subscription">E2: Depth Image Subscription<a class="headerlink" href="#e2-depth-image-subscription" title="Permanent link">&para;</a></h3>
+<p><strong>File</strong>: <code>low_level/python/e2_depth_image_sub.py</code></p>
+<h4 id="description_1">Description<a class="headerlink" href="#description_1" title="Permanent link">&para;</a></h4>
+<p>Subscribe to raw depth image data from the robot depth camera.</p>
+<h4 id="qos-configuration_1">QoS Configuration<a class="headerlink" href="#qos-configuration_1" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;best_effort&quot;</span><span class="p">,</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="topic_1">Topic<a class="headerlink" href="#topic_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Topic Name</th>
+<th>Message Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/camera/camera2/image_depth</code></td>
+<td><code>Image</code></td>
+<td>Raw depth image</td>
+</tr>
+</tbody>
+</table>
+<h4 id="depth-image-visualization">Depth Image Visualization<a class="headerlink" href="#depth-image-visualization" title="Permanent link">&para;</a></h4>
+<p>The example processes and saves depth images to the <code>depth_images/</code> directory:</p>
+<p><strong>Visualization processing:</strong></p>
+<ol>
+<li><strong>Normalization</strong>: Use <code>cv2.normalize</code> to stretch depth values to 0-255 range</li>
+<li><strong>Pseudo-color</strong>: Apply Jet colormap (red/warm = near, blue/cold = far)</li>
+<li><strong>Save</strong>: Save processed visualization as PNG file</li>
+</ol>
+<p><strong>Python Version:</strong></p>
+<ul>
+<li>Converts raw bytes to numpy array with <code>view(np.uint16)</code></li>
+<li>Applies normalization and colormap using OpenCV</li>
+<li>Filename format: <code>depth_{timestamp_sec}_{timestamp_nanosec}.png</code></li>
+</ul>
+<p><strong>C++ Version:</strong></p>
+<ul>
+<li>Creates <code>cv::Mat</code> directly from raw data pointer</li>
+<li>Uses <code>cv::normalize</code> and <code>cv::applyColorMap</code> for visualization</li>
+<li>Same filename format as Python version</li>
+</ul>
+<h4 id="sample-code_1">Sample Code<a class="headerlink" href="#sample-code_1" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">depth_image_callback</span><span class="p">(</span><span class="n">depth_msg</span><span class="p">):</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received Image message:&quot;</span><span class="p">)</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Timestamp: </span><span class="si">{</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">sec</span><span class="p">()</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">nanosec</span><span class="p">()</span><span class="si">:</span><span class="s2">09d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Frame ID: </span><span class="si">{</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">frame_id</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Encoding: </span><span class="si">{</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">encoding</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Data size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">data</span><span class="p">())</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    <span class="k">if</span> <span class="s2">&quot;16UC1&quot;</span> <span class="ow">in</span> <span class="n">depth_msg</span><span class="o">.</span><span class="n">encoding</span><span class="p">():</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>        <span class="c1"># Convert to 16-bit depth map</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>        <span class="n">depth_img</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span> <span class="n">depth_msg</span><span class="o">.</span><span class="n">width</span><span class="p">()))</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>        <span class="c1"># Normalize and apply colormap</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>        <span class="n">depth_vis</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">depth_img</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">NORM_MINMAX</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">CV_8U</span><span class="p">)</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>        <span class="n">depth_color</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">applyColorMap</span><span class="p">(</span><span class="n">depth_vis</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLORMAP_JET</span><span class="p">)</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;depth_images/depth_</span><span class="si">{</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">sec</span><span class="p">()</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">depth_msg</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span><span class="o">.</span><span class="n">nanosec</span><span class="p">()</span><span class="si">}</span><span class="s2">.png&quot;</span>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>        <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">depth_color</span><span class="p">)</span>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved visibility depth map to </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a><span class="c1"># Create save directory</span>
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;depth_images&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a>
+</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a><span class="n">middleware</span><span class="o">.</span><span class="n">subscribeImage</span><span class="p">(</span><span class="s2">&quot;rt/camera/camera2/image_depth&quot;</span><span class="p">,</span> <span class="n">depth_image_callback</span><span class="p">,</span> <span class="n">qos_config</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="sample-output_1">Sample Output<a class="headerlink" href="#sample-output_1" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Starting DDS Python Image subscriber...
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>Subscribing to topic: rt/camera/camera2/image_depth
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>Using QoS config: {&#39;reliability&#39;: &#39;best_effort&#39;, &#39;history_kind&#39;: &#39;keep_last&#39;, &#39;history_depth&#39;: 5, &#39;durability&#39;: &#39;volatile&#39;}
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>Image subscriber started, waiting for messages...
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>Received Image message:
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>  Timestamp: 1706000000.123456789
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>  Image size: 640x480
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>  Encoding: 16UC1
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>  Data size: 614400 bytes
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>  Step: 1280
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>  Big endian: False
+</span></code></pre></div>
+<h4 id="running_1">Running<a class="headerlink" href="#running_1" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>python3<span class="w"> </span>e2_depth_image_sub.py
+</span></code></pre></div>
+<h3 id="e3-led-light-control">E3: LED Light Control<a class="headerlink" href="#e3-led-light-control" title="Permanent link">&para;</a></h3>
+<p><strong>File</strong>: <code>low_level/python/e3_led_control_pub.py</code></p>
+<h4 id="description_2">Description<a class="headerlink" href="#description_2" title="Permanent link">&para;</a></h4>
+<p>Control the 6 LED lights on the robot, supporting RGB color settings and breathing light effects.</p>
+<h4 id="important-warning">⚠️ Important Warning<a class="headerlink" href="#important-warning" title="Permanent link">&para;</a></h4>
+<p><strong>You must stop the robot's main control program before running this program!</strong> Otherwise, LED control may not take effect.</p>
+<p>How to stop the main control program (recommended using SDK tool):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Recommended: Use kill_robot tool</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nb">cd</span><span class="w"> </span>high_level/python
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>python3<span class="w"> </span>kill_robot.py<span class="w"> </span><span class="m">192</span>.168.5.2:50051
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1"># Or use C++ version</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="nb">cd</span><span class="w"> </span>high_level/cpp/build
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>./kill_robot<span class="w"> </span><span class="m">192</span>.168.5.2:50051
+</span></code></pre></div>
+<p>The <code>kill_robot</code> tool will safely switch the robot to PASSIVE state and terminate controller processes. See <a href="../../getting-started/quickstart/#safety-shutdown-robot-controller">shutdown section</a> for details.</p>
+<h4 id="qos-configuration_2">QoS Configuration<a class="headerlink" href="#qos-configuration_2" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;reliable&quot;</span><span class="p">,</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="topic_2">Topic<a class="headerlink" href="#topic_2" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Topic Name</th>
+<th>Message Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/leds/cmd</code></td>
+<td><code>LedsCmd</code></td>
+<td>LED control command</td>
+</tr>
+</tbody>
+</table>
+<h4 id="led-names">LED Names<a class="headerlink" href="#led-names" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>LED Name</th>
+<th>Location</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>leg_light1</code></td>
+<td>Leg light 1</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>leg_light2</code></td>
+<td>Leg light 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>leg_light3</code></td>
+<td>Leg light 3</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>leg_light4</code></td>
+<td>Leg light 4</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>fill_light1</code></td>
+<td>Front light</td>
+<td>Illumination light at the front of the robot</td>
+</tr>
+<tr>
+<td><code>fill_light2</code></td>
+<td>Fill light 2</td>
+<td>Currently unavailable</td>
+</tr>
+<tr>
+<td><code>fill_light3</code></td>
+<td>Rear light</td>
+<td>Illumination light at the rear of the robot</td>
+</tr>
+</tbody>
+</table>
+<h4 id="sample-code_2">Sample Code<a class="headerlink" href="#sample-code_2" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;reliable&quot;</span><span class="p">,</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="p">}</span>
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="n">middleware</span><span class="o">.</span><span class="n">createLedsCmdWriter</span><span class="p">(</span><span class="s2">&quot;rt/leds/cmd&quot;</span><span class="p">,</span> <span class="n">qos_config</span><span class="p">)</span>
+</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>
+</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="c1"># Create LED control command</span>
+</span><span id="__span-11-17"><a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="n">led_cmd</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">LedsCmd</span><span class="p">()</span>
+</span><span id="__span-11-18"><a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a><span class="n">leds</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-11-19"><a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>
+</span><span id="__span-11-20"><a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="c1"># LED1 - Red</span>
+</span><span id="__span-11-21"><a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="n">led1</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">LEDControl</span><span class="p">()</span>
+</span><span id="__span-11-22"><a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="n">led1</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="s2">&quot;leg_light1&quot;</span><span class="p">)</span>
+</span><span id="__span-11-23"><a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a><span class="n">led1</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># RGB mode</span>
+</span><span id="__span-11-24"><a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a><span class="n">led1</span><span class="o">.</span><span class="n">brightness</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
+</span><span id="__span-11-25"><a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a><span class="n">led1</span><span class="o">.</span><span class="n">r</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
+</span><span id="__span-11-26"><a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a><span class="n">led1</span><span class="o">.</span><span class="n">g</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-11-27"><a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a><span class="n">led1</span><span class="o">.</span><span class="n">b</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-11-28"><a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a><span class="n">led1</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-11-29"><a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a><span class="n">leds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">led1</span><span class="p">)</span>
+</span><span id="__span-11-30"><a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a>
+</span><span id="__span-11-31"><a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a><span class="n">led_cmd</span><span class="o">.</span><span class="n">leds</span><span class="p">(</span><span class="n">leds</span><span class="p">)</span>
+</span><span id="__span-11-32"><a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a><span class="n">middleware</span><span class="o">.</span><span class="n">publishLedsCmd</span><span class="p">(</span><span class="n">led_cmd</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="sample-output_2">Sample Output<a class="headerlink" href="#sample-output_2" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>LED control publisher started, press Ctrl+C to exit...
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>Published LED control command: Intensity: 50% LED1 (R:127 G:0 B:0) LED2 (R:0 G:127 B:0) ...
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>Published LED control command: Intensity: 100% LED1 (R:255 G:0 B:0) LED2 (R:0 G:255 B:0) ...
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>Program finished after 15000ms
+</span></code></pre></div>
+<h4 id="running_2">Running<a class="headerlink" href="#running_2" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>python3<span class="w"> </span>e3_led_control_pub.py
+</span></code></pre></div>
+<h3 id="e4-imu-data-subscription">E4: IMU Data Subscription<a class="headerlink" href="#e4-imu-data-subscription" title="Permanent link">&para;</a></h3>
+<p><strong>File</strong>: <code>low_level/python/e4_imu_state_sub.py</code></p>
+<h4 id="description_3">Description<a class="headerlink" href="#description_3" title="Permanent link">&para;</a></h4>
+<p>Get raw IMU (Inertial Measurement Unit) data directly from the low level, including quaternion, gyroscope, and accelerometer data.</p>
+<h4 id="qos-configuration_3">QoS Configuration<a class="headerlink" href="#qos-configuration_3" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Uses default reader QoS from config file</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="c1"># reliability: best_effort</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="c1"># history_kind: keep_last</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># history_depth: 10</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1"># durability: volatile</span>
+</span></code></pre></div>
+<h4 id="topic_3">Topic<a class="headerlink" href="#topic_3" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Topic Name</th>
+<th>Message Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/lower/state</code></td>
+<td><code>LowerState</code></td>
+<td>Lower-level state (includes IMU data)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="data-fields">Data Fields<a class="headerlink" href="#data-fields" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Unit</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>quaternion</code></td>
+<td>float[4]</td>
+<td>-</td>
+<td>Orientation quaternion [w, x, y, z]</td>
+</tr>
+<tr>
+<td><code>gyroscope</code></td>
+<td>float[3]</td>
+<td>rad/s</td>
+<td>Gyroscope angular velocity [x, y, z]</td>
+</tr>
+<tr>
+<td><code>accelerometer</code></td>
+<td>float[3]</td>
+<td>m/s²</td>
+<td>Accelerometer [x, y, z]</td>
+</tr>
+<tr>
+<td><code>rpy</code></td>
+<td>float[3]</td>
+<td>rad</td>
+<td>Euler angles [roll, pitch, yaw]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="sample-code_3">Sample Code<a class="headerlink" href="#sample-code_3" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">lower_state_callback</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">imu_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">imu_state</span><span class="p">()</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IMU State:&quot;</span><span class="p">)</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Quaternion: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">imu_state</span><span class="o">.</span><span class="n">quaternion</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Gyroscope (rad/s): </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">imu_state</span><span class="o">.</span><span class="n">gyroscope</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Accelerometer (m/s²): </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">imu_state</span><span class="o">.</span><span class="n">accelerometer</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  RPY (roll, pitch, yaw in rad): </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">imu_state</span><span class="o">.</span><span class="n">rpy</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="n">middleware</span><span class="o">.</span><span class="n">subscribeLowerState</span><span class="p">(</span><span class="s2">&quot;rt/lower/state&quot;</span><span class="p">,</span> <span class="n">lower_state_callback</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="sample-output_3">Sample Output<a class="headerlink" href="#sample-output_3" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Received LowerState #100
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>IMU State:
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>  Quaternion: [0.9998, 0.0012, -0.0156, 0.0023]
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>  Gyroscope (rad/s): [0.0021, -0.0034, 0.0012]
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>  Accelerometer (m/s²): [0.12, -0.08, 9.78]
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>  RPY (roll, pitch, yaw in rad): [0.0024, -0.0312, 0.0046]
+</span></code></pre></div>
+<h4 id="running_3">Running<a class="headerlink" href="#running_3" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>python3<span class="w"> </span>e4_imu_state_sub.py
+</span></code></pre></div>
+<h3 id="e5-motor-state-subscription">E5: Motor State Subscription<a class="headerlink" href="#e5-motor-state-subscription" title="Permanent link">&para;</a></h3>
+<p><strong>File</strong>: <code>low_level/python/e5_motor_state_sub.py</code></p>
+<h4 id="description_4">Description<a class="headerlink" href="#description_4" title="Permanent link">&para;</a></h4>
+<p>Get status data for all 16 motors directly from the low level, including position, velocity, torque, and temperature information.</p>
+<h4 id="qos-configuration_4">QoS Configuration<a class="headerlink" href="#qos-configuration_4" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Uses default reader QoS from config file</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="c1"># reliability: best_effort</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="c1"># history_kind: keep_last</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1"># history_depth: 10</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="c1"># durability: volatile</span>
+</span></code></pre></div>
+<h4 id="topic_4">Topic<a class="headerlink" href="#topic_4" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Topic Name</th>
+<th>Message Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/lower/state</code></td>
+<td><code>LowerState</code></td>
+<td>Lower-level state (includes motor data)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="motor-data-fields">Motor Data Fields<a class="headerlink" href="#motor-data-fields" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Unit</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mode</code></td>
+<td>uint8</td>
+<td>-</td>
+<td>Mode: 0-disabled, 1-error, 2-offline, 3-enabled, 4-controlled, 5-homing</td>
+</tr>
+<tr>
+<td><code>q</code></td>
+<td>float</td>
+<td>rad</td>
+<td>Angular position</td>
+</tr>
+<tr>
+<td><code>dq</code></td>
+<td>float</td>
+<td>rad/s</td>
+<td>Angular velocity</td>
+</tr>
+<tr>
+<td><code>ddq</code></td>
+<td>float</td>
+<td>rad/s²</td>
+<td>Angular acceleration</td>
+</tr>
+<tr>
+<td><code>tau_est</code></td>
+<td>float</td>
+<td>Nm</td>
+<td>Estimated torque</td>
+</tr>
+<tr>
+<td><code>q_raw</code></td>
+<td>float</td>
+<td>rad</td>
+<td>Raw angular position</td>
+</tr>
+<tr>
+<td><code>dq_raw</code></td>
+<td>float</td>
+<td>rad/s</td>
+<td>Raw angular velocity</td>
+</tr>
+<tr>
+<td><code>ddq_raw</code></td>
+<td>float</td>
+<td>rad/s²</td>
+<td>Raw angular acceleration</td>
+</tr>
+<tr>
+<td><code>motor_temp</code></td>
+<td>uint8</td>
+<td>°C</td>
+<td>Motor temperature</td>
+</tr>
+</tbody>
+</table>
+<h4 id="motor-numbering">Motor Numbering<a class="headerlink" href="#motor-numbering" title="Permanent link">&para;</a></h4>
+<p>The robot has 16 motors, numbered 0-15, distributed across four legs:</p>
+<table>
+<thead>
+<tr>
+<th>Leg</th>
+<th>Motor IDs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Front Left</td>
+<td>0, 1, 2, 3</td>
+</tr>
+<tr>
+<td>Front Right</td>
+<td>4, 5, 6, 7</td>
+</tr>
+<tr>
+<td>Rear Left</td>
+<td>8, 9, 10, 11</td>
+</tr>
+<tr>
+<td>Rear Right</td>
+<td>12, 13, 14, 15</td>
+</tr>
+</tbody>
+</table>
+<h4 id="sample-code_4">Sample Code<a class="headerlink" href="#sample-code_4" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">lower_state_callback</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>    <span class="n">motor_states</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">motor_state</span><span class="p">()</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received Motor States&quot;</span><span class="p">)</span>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>        <span class="n">motor</span> <span class="o">=</span> <span class="n">motor_states</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Motor[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">]: mode=</span><span class="si">{</span><span class="n">motor</span><span class="o">.</span><span class="n">mode</span><span class="p">()</span><span class="si">}</span><span class="s2">, q=</span><span class="si">{</span><span class="n">motor</span><span class="o">.</span><span class="n">q</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> rad, &quot;</span>
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>              <span class="sa">f</span><span class="s2">&quot;dq=</span><span class="si">{</span><span class="n">motor</span><span class="o">.</span><span class="n">dq</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> rad/s, tau_est=</span><span class="si">{</span><span class="n">motor</span><span class="o">.</span><span class="n">tau_est</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> Nm, &quot;</span>
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>              <span class="sa">f</span><span class="s2">&quot;temp=</span><span class="si">{</span><span class="n">motor</span><span class="o">.</span><span class="n">motor_temp</span><span class="p">()</span><span class="si">}</span><span class="s2">°C&quot;</span><span class="p">)</span>
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="n">middleware</span><span class="o">.</span><span class="n">subscribeLowerState</span><span class="p">(</span><span class="s2">&quot;rt/lower/state&quot;</span><span class="p">,</span> <span class="n">lower_state_callback</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="sample-output_4">Sample Output<a class="headerlink" href="#sample-output_4" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>Received Motor States #50
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>Motor[0]: mode=4, q(rad)=-0.0523, dq(rad/s)=0.0012, ddq(rad/s²)=0.0001, tau_est(N·m)=0.12345, q_raw(rad)=-0.0523, dq_raw(rad/s)=0.0012, ddq_raw(rad/s²)=0.0001, motor_temp(°C)=35
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>Motor[1]: mode=4, q(rad)=0.8542, dq(rad/s)=-0.0034, ...
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>...
+</span></code></pre></div>
+<h4 id="running_4">Running<a class="headerlink" href="#running_4" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>python3<span class="w"> </span>e5_motor_state_sub.py
+</span></code></pre></div>
+<h3 id="e6-battery-state-subscription">E6: Battery State Subscription<a class="headerlink" href="#e6-battery-state-subscription" title="Permanent link">&para;</a></h3>
+<p><strong>File</strong>: <code>low_level/python/e6_bms_state_sub.py</code></p>
+<h4 id="description_5">Description<a class="headerlink" href="#description_5" title="Permanent link">&para;</a></h4>
+<p>Get Battery Management System (BMS) status information.</p>
+<h4 id="note">⚠️ Note<a class="headerlink" href="#note" title="Permanent link">&para;</a></h4>
+<p><strong>The Python version of E6 currently only outputs battery_level information.</strong> For complete BMS data, please refer to the C++ version.</p>
+<h4 id="qos-configuration_5">QoS Configuration<a class="headerlink" href="#qos-configuration_5" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># Uses default reader QoS from config file</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="c1"># reliability: best_effort</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="c1"># history_kind: keep_last</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1"># history_depth: 10</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="c1"># durability: volatile</span>
+</span></code></pre></div>
+<h4 id="topic_5">Topic<a class="headerlink" href="#topic_5" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Topic Name</th>
+<th>Message Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/lower/state</code></td>
+<td><code>LowerState</code></td>
+<td>Lower-level state (includes BMS data)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="sample-code_5">Sample Code<a class="headerlink" href="#sample-code_5" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">lower_state_callback</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>    <span class="n">bms</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">bms_state</span><span class="p">()</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received BMS State&quot;</span><span class="p">)</span>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Battery Level: </span><span class="si">{</span><span class="n">bms</span><span class="o">.</span><span class="n">battery_level</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="n">middleware</span><span class="o">.</span><span class="n">subscribeLowerState</span><span class="p">(</span><span class="s2">&quot;rt/lower/state&quot;</span><span class="p">,</span> <span class="n">lower_state_callback</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="sample-output_5">Sample Output<a class="headerlink" href="#sample-output_5" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>Received BMS State #100
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>Battery Level: 85
+</span></code></pre></div>
+<h4 id="running_5">Running<a class="headerlink" href="#running_5" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>python3<span class="w"> </span>e6_bms_state_sub.py
+</span></code></pre></div>
+<h3 id="e7-voice-playback">E7: Voice Playback<a class="headerlink" href="#e7-voice-playback" title="Permanent link">&para;</a></h3>
+<p><strong>File</strong>: <code>low_level/python/e7_voice_pub.py</code></p>
+<h4 id="description_6">Description<a class="headerlink" href="#description_6" title="Permanent link">&para;</a></h4>
+<p>Send voice playback commands to the robot, supporting two modes:</p>
+<ol>
+<li><strong>File mode</strong>: Play audio files located on the robot host</li>
+<li><strong>Streaming mode</strong>: Send real-time audio stream data</li>
+</ol>
+<h4 id="qos-configuration_6">QoS Configuration<a class="headerlink" href="#qos-configuration_6" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;reliable&quot;</span><span class="p">,</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="topic_6">Topic<a class="headerlink" href="#topic_6" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Topic Name</th>
+<th>Message Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/voice/cmd</code></td>
+<td><code>VoiceCmd</code></td>
+<td>Voice command</td>
+</tr>
+</tbody>
+</table>
+<h4 id="file-mode">File Mode<a class="headerlink" href="#file-mode" title="Permanent link">&para;</a></h4>
+<p>Play audio files on the robot host.</p>
+<p><strong>Important</strong>: Audio files must exist on the robot host, not on the development machine!</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;reliable&quot;</span><span class="p">,</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="p">}</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a>
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="n">middleware</span><span class="o">.</span><span class="n">createVoiceCmdWriter</span><span class="p">(</span><span class="s2">&quot;rt/voice/cmd&quot;</span><span class="p">,</span> <span class="n">qos_config</span><span class="p">)</span>
+</span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>
+</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="c1"># ⚠️ IMPORTANT: Sleep for ~1 second before publishing</span>
+</span><span id="__span-27-15"><a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="c1"># Reason: DDS is a distributed middleware that requires time to discover entities.</span>
+</span><span id="__span-27-16"><a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a><span class="c1"># The discovery process (Entity Discovery) is conducted through network protocol handshakes,</span>
+</span><span id="__span-27-17"><a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a><span class="c1"># typically requiring 100-1000ms. If you publish immediately, the remote endpoint may not</span>
+</span><span id="__span-27-18"><a id="__codelineno-27-18" name="__codelineno-27-18" href="#__codelineno-27-18"></a><span class="c1"># have fully discovered the Writer yet, causing message loss.</span>
+</span><span id="__span-27-19"><a id="__codelineno-27-19" name="__codelineno-27-19" href="#__codelineno-27-19"></a><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+</span><span id="__span-27-20"><a id="__codelineno-27-20" name="__codelineno-27-20" href="#__codelineno-27-20"></a><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-27-21"><a id="__codelineno-27-21" name="__codelineno-27-21" href="#__codelineno-27-21"></a>
+</span><span id="__span-27-22"><a id="__codelineno-27-22" name="__codelineno-27-22" href="#__codelineno-27-22"></a><span class="c1"># File mode</span>
+</span><span id="__span-27-23"><a id="__codelineno-27-23" name="__codelineno-27-23" href="#__codelineno-27-23"></a><span class="n">voice_cmd</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">VoiceCmd</span><span class="p">()</span>
+</span><span id="__span-27-24"><a id="__codelineno-27-24" name="__codelineno-27-24" href="#__codelineno-27-24"></a><span class="n">voice_cmd</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="s2">&quot;file&quot;</span><span class="p">)</span>
+</span><span id="__span-27-25"><a id="__codelineno-27-25" name="__codelineno-27-25" href="#__codelineno-27-25"></a><span class="n">voice_cmd</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">&quot;/root/test.wav&quot;</span><span class="p">)</span>  <span class="c1"># File path on robot host</span>
+</span><span id="__span-27-26"><a id="__codelineno-27-26" name="__codelineno-27-26" href="#__codelineno-27-26"></a><span class="n">voice_cmd</span><span class="o">.</span><span class="n">data</span><span class="p">([])</span>
+</span><span id="__span-27-27"><a id="__codelineno-27-27" name="__codelineno-27-27" href="#__codelineno-27-27"></a>
+</span><span id="__span-27-28"><a id="__codelineno-27-28" name="__codelineno-27-28" href="#__codelineno-27-28"></a><span class="n">middleware</span><span class="o">.</span><span class="n">publishVoiceCmd</span><span class="p">(</span><span class="n">voice_cmd</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Supported audio formats:</p>
+<ul>
+<li>WAV</li>
+<li>FLAC</li>
+<li>MP3</li>
+</ul>
+<h4 id="streaming-mode">Streaming Mode<a class="headerlink" href="#streaming-mode" title="Permanent link">&para;</a></h4>
+<p>Send real-time audio stream data, suitable for TTS or real-time audio transmission scenarios.</p>
+<p>Audio requirements:</p>
+<ul>
+<li>Sample rate: 24kHz</li>
+<li>Bit depth: 16bit</li>
+<li>Channels: Mono</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1"># Streaming mode</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="n">voice_cmd</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">VoiceCmd</span><span class="p">()</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="n">voice_cmd</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="s2">&quot;streaming&quot;</span><span class="p">)</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="n">voice_cmd</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="n">voice_cmd</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">audio_bytes</span><span class="p">)</span>  <span class="c1"># PCM audio data</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="n">middleware</span><span class="o">.</span><span class="n">publishVoiceCmd</span><span class="p">(</span><span class="n">voice_cmd</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="running_6">Running<a class="headerlink" href="#running_6" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="c1"># File mode</span>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>python3<span class="w"> </span>e7_voice_pub.py<span class="w"> </span>file
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="c1"># Streaming mode (capture from microphone)</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>python3<span class="w"> </span>e7_voice_pub.py<span class="w"> </span>streaming
+</span></code></pre></div>
+<h3 id="e8-voice-capture">E8: Voice Capture<a class="headerlink" href="#e8-voice-capture" title="Permanent link">&para;</a></h3>
+<p><strong>File</strong>: <code>low_level/python/e8_voice_sub.py</code></p>
+<h4 id="description_7">Description<a class="headerlink" href="#description_7" title="Permanent link">&para;</a></h4>
+<p>Subscribe to audio stream data from the robot microphone.</p>
+<p>Audio specifications:</p>
+<ul>
+<li>Sample rate: 24kHz</li>
+<li>Bit depth: 16bit</li>
+<li>Channels: Mono</li>
+</ul>
+<h4 id="qos-configuration_7">QoS Configuration<a class="headerlink" href="#qos-configuration_7" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;best_effort&quot;</span><span class="p">,</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="topic_7">Topic<a class="headerlink" href="#topic_7" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Topic Name</th>
+<th>Message Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/voice/state</code></td>
+<td><code>VoiceState</code></td>
+<td>Voice state/audio stream</td>
+</tr>
+</tbody>
+</table>
+<h4 id="sample-code_6">Sample Code<a class="headerlink" href="#sample-code_6" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">voice_state_callback</span><span class="p">(</span><span class="n">voice_state_msg</span><span class="p">):</span>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received VoiceState message:&quot;</span><span class="p">)</span>
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Data size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">voice_state_msg</span><span class="o">.</span><span class="n">data_</span><span class="p">())</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-31-8"><a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a><span class="n">middleware</span><span class="o">.</span><span class="n">subscribeVoiceState</span><span class="p">(</span><span class="s2">&quot;rt/voice/state&quot;</span><span class="p">,</span> <span class="n">voice_state_callback</span><span class="p">,</span> <span class="n">qos_config</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="sample-output_6">Sample Output<a class="headerlink" href="#sample-output_6" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>Starting DDS Python VoiceState subscriber...
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>Subscribing to topic: rt/voice/state
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>VoiceState subscriber started, waiting for voice state messages...
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>Received VoiceState message:
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>  Data size: 4800 bytes
+</span></code></pre></div>
+<h4 id="running_7">Running<a class="headerlink" href="#running_7" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>python3<span class="w"> </span>e8_voice_sub.py
+</span></code></pre></div>
+<h3 id="e9-motor-command-publishing">E9: Motor Command Publishing<a class="headerlink" href="#e9-motor-command-publishing" title="Permanent link">&para;</a></h3>
+<p><strong>File</strong>: <code>low_level/python/e9_motor_cmd_pub.py</code></p>
+<h4 id="description_8">Description<a class="headerlink" href="#description_8" title="Permanent link">&para;</a></h4>
+<p>Send control commands directly to motors. This example demonstrates sinusoidal position control testing.</p>
+<h4 id="critical-safety-warning">🚨 CRITICAL SAFETY WARNING<a class="headerlink" href="#critical-safety-warning" title="Permanent link">&para;</a></h4>
+<p><strong>You MUST stop the robot's main control program before running this program!</strong></p>
+<p>Directly controlling motors without stopping the main program <strong>WILL CAUSE SERIOUS SAFETY HAZARDS</strong>, potentially resulting in:</p>
+<ul>
+<li>⚠️ <strong>Control Conflicts</strong>: Main program and your code sending conflicting commands simultaneously</li>
+<li>🤖 <strong>Robot Out of Control</strong>: Unpredictable and dangerous movements</li>
+<li>🔥 <strong>Hardware Damage</strong>: Motor overload, overheating, mechanical collisions</li>
+<li>👥 <strong>Personal Injury</strong>: Unexpected robot movements causing harm</li>
+</ul>
+<h4 id="proper-shutdown-procedure-mandatory">✅ Proper Shutdown Procedure (MANDATORY!)<a class="headerlink" href="#proper-shutdown-procedure-mandatory" title="Permanent link">&para;</a></h4>
+<p><strong>Use the <code>kill_robot</code> tool provided by the SDK</strong>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="c1"># Python version (recommended)</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="nb">cd</span><span class="w"> </span>high_level/python
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>python3<span class="w"> </span>kill_robot.py<span class="w"> </span><span class="m">192</span>.168.5.2:50051
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="c1"># C++ version</span>
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a><span class="nb">cd</span><span class="w"> </span>high_level/cpp/build
+</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a>./kill_robot<span class="w"> </span><span class="m">192</span>.168.5.2:50051
+</span></code></pre></div>
+<p>The <code>kill_robot</code> tool will safely:</p>
+<ol>
+<li>✅ Switch robot to <strong>PASSIVE</strong> state (motors disabled)</li>
+<li>⏱️ Wait <strong>5 seconds</strong> to ensure safe shutdown</li>
+<li>🚫 Terminate all controller processes</li>
+</ol>
+<p>For details, see: <a href="../../getting-started/quickstart/#safety-shutdown-robot-controller">shutdown section</a></p>
+<h4 id="pre-execution-checklist">🛡️ Pre-Execution Checklist<a class="headerlink" href="#pre-execution-checklist" title="Permanent link">&para;</a></h4>
+<p>Before running motor control programs, confirm:</p>
+<ul>
+<li>[ ] Main control program stopped using <code>kill_robot</code> tool</li>
+<li>[ ] Robot in safe position (flat ground, away from obstacles)</li>
+<li>[ ] Area clear of personnel and valuables</li>
+<li>[ ] Understand what commands your code will send</li>
+<li>[ ] Emergency stop ready (Ctrl+C)</li>
+</ul>
+<h4 id="publishsubscribe-topics">Publish/Subscribe Topics<a class="headerlink" href="#publishsubscribe-topics" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Topic Name</th>
+<th>Type</th>
+<th>Message Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rt/lower/cmd</code></td>
+<td>Publish</td>
+<td><code>LowerCmd</code></td>
+<td>Motor control command</td>
+</tr>
+<tr>
+<td><code>rt/lower/state</code></td>
+<td>Subscribe</td>
+<td><code>LowerState</code></td>
+<td>Motor state feedback</td>
+</tr>
+</tbody>
+</table>
+<h4 id="motor-command-parameters">Motor Command Parameters<a class="headerlink" href="#motor-command-parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Unit</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mode</code></td>
+<td>uint8</td>
+<td>-</td>
+<td>Control mode</td>
+</tr>
+<tr>
+<td><code>q</code></td>
+<td>float</td>
+<td>rad</td>
+<td>Target position</td>
+</tr>
+<tr>
+<td><code>dq</code></td>
+<td>float</td>
+<td>rad/s</td>
+<td>Target velocity</td>
+</tr>
+<tr>
+<td><code>tau</code></td>
+<td>float</td>
+<td>Nm</td>
+<td>Feedforward torque</td>
+</tr>
+<tr>
+<td><code>kp</code></td>
+<td>float</td>
+<td>-</td>
+<td>Position gain</td>
+</tr>
+<tr>
+<td><code>kd</code></td>
+<td>float</td>
+<td>-</td>
+<td>Velocity gain</td>
+</tr>
+</tbody>
+</table>
+<h4 id="control-formula">Control Formula<a class="headerlink" href="#control-formula" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>τ = kp × (q_des - q) + kd × (dq_des - dq) + τ_ff
+</span></code></pre></div>
+<p>Where:</p>
+<ul>
+<li><code>τ</code> - Final output torque</li>
+<li><code>q_des</code>, <code>dq_des</code> - Desired position and velocity</li>
+<li><code>q</code>, <code>dq</code> - Actual position and velocity</li>
+<li><code>τ_ff</code> - Feedforward torque</li>
+<li><code>kp</code>, <code>kd</code> - Gain parameters</li>
+</ul>
+<h4 id="motor-offset-from-e9-motor-control-example">Motor Offset (from E9 motor control example)<a class="headerlink" href="#motor-offset-from-e9-motor-control-example" title="Permanent link">&para;</a></h4>
+<p>The E9 example uses a fixed motor-zero offset table to convert between hardware angle and logical joint angle.</p>
+<ul>
+<li>Hardware index mapping used by the 12 actuated joints:</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="n">ABS2HW</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">]</span>
+</span></code></pre></div>
+<ul>
+<li>Offset table (length 16, indexed by hardware motor ID):</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="n">MOTOR_OFFSET</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>    <span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a>    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a>    <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-37-6"><a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a><span class="p">]</span>
+</span></code></pre></div>
+<p>Usage in control loop:</p>
+<ul>
+<li>Read side (hardware -&gt; logical): <code>q_real = q_hw - MOTOR_OFFSET[hw]</code></li>
+<li>Command side (logical -&gt; hardware): <code>q_cmd = q_target + MOTOR_OFFSET[hw]</code></li>
+</ul>
+<h4 id="sample-code_7">Sample Code<a class="headerlink" href="#sample-code_7" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dds_middleware_python</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dds</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a><span class="c1"># Motor index mapping</span>
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a><span class="n">NUM_MOTORS</span> <span class="o">=</span> <span class="mi">12</span>
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a><span class="n">ABS2HW</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">]</span>
+</span><span id="__span-38-7"><a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a><span class="n">MOTOR_OFFSET</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-38-8"><a id="__codelineno-38-8" name="__codelineno-38-8" href="#__codelineno-38-8"></a>    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-38-9"><a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a>    <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.17</span><span class="p">,</span> <span class="mf">0.0</span>
+</span><span id="__span-38-10"><a id="__codelineno-38-10" name="__codelineno-38-10" href="#__codelineno-38-10"></a><span class="p">]</span>
+</span><span id="__span-38-11"><a id="__codelineno-38-11" name="__codelineno-38-11" href="#__codelineno-38-11"></a>
+</span><span id="__span-38-12"><a id="__codelineno-38-12" name="__codelineno-38-12" href="#__codelineno-38-12"></a><span class="n">middleware</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">PyDDSMiddleware</span><span class="p">(</span><span class="s2">&quot;config/dds_config.yaml&quot;</span><span class="p">)</span>
+</span><span id="__span-38-13"><a id="__codelineno-38-13" name="__codelineno-38-13" href="#__codelineno-38-13"></a>
+</span><span id="__span-38-14"><a id="__codelineno-38-14" name="__codelineno-38-14" href="#__codelineno-38-14"></a><span class="n">qos_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-38-15"><a id="__codelineno-38-15" name="__codelineno-38-15" href="#__codelineno-38-15"></a>    <span class="s2">&quot;reliability&quot;</span><span class="p">:</span> <span class="s2">&quot;reliable&quot;</span><span class="p">,</span>
+</span><span id="__span-38-16"><a id="__codelineno-38-16" name="__codelineno-38-16" href="#__codelineno-38-16"></a>    <span class="s2">&quot;history_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;keep_last&quot;</span><span class="p">,</span>
+</span><span id="__span-38-17"><a id="__codelineno-38-17" name="__codelineno-38-17" href="#__codelineno-38-17"></a>    <span class="s2">&quot;history_depth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-38-18"><a id="__codelineno-38-18" name="__codelineno-38-18" href="#__codelineno-38-18"></a>    <span class="s2">&quot;durability&quot;</span><span class="p">:</span> <span class="s2">&quot;volatile&quot;</span>
+</span><span id="__span-38-19"><a id="__codelineno-38-19" name="__codelineno-38-19" href="#__codelineno-38-19"></a><span class="p">}</span>
+</span><span id="__span-38-20"><a id="__codelineno-38-20" name="__codelineno-38-20" href="#__codelineno-38-20"></a>
+</span><span id="__span-38-21"><a id="__codelineno-38-21" name="__codelineno-38-21" href="#__codelineno-38-21"></a><span class="n">middleware</span><span class="o">.</span><span class="n">createLowerCmdWriter</span><span class="p">(</span><span class="s2">&quot;rt/lower/cmd&quot;</span><span class="p">,</span> <span class="n">qos_config</span><span class="p">)</span>
+</span><span id="__span-38-22"><a id="__codelineno-38-22" name="__codelineno-38-22" href="#__codelineno-38-22"></a>
+</span><span id="__span-38-23"><a id="__codelineno-38-23" name="__codelineno-38-23" href="#__codelineno-38-23"></a><span class="c1"># Create sinusoidal control command</span>
+</span><span id="__span-38-24"><a id="__codelineno-38-24" name="__codelineno-38-24" href="#__codelineno-38-24"></a><span class="k">def</span><span class="w"> </span><span class="nf">create_swing_cmd</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">q_init</span><span class="p">):</span>
+</span><span id="__span-38-25"><a id="__codelineno-38-25" name="__codelineno-38-25" href="#__codelineno-38-25"></a>    <span class="n">cmd</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">LowerCmd</span><span class="p">()</span>
+</span><span id="__span-38-26"><a id="__codelineno-38-26" name="__codelineno-38-26" href="#__codelineno-38-26"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUM_MOTORS</span><span class="p">):</span>
+</span><span id="__span-38-27"><a id="__codelineno-38-27" name="__codelineno-38-27" href="#__codelineno-38-27"></a>        <span class="n">hw</span> <span class="o">=</span> <span class="n">ABS2HW</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span id="__span-38-28"><a id="__codelineno-38-28" name="__codelineno-38-28" href="#__codelineno-38-28"></a>        <span class="n">qdes</span> <span class="o">=</span> <span class="n">q_init</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span> <span class="o">+</span> <span class="n">MOTOR_OFFSET</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span>
+</span><span id="__span-38-29"><a id="__codelineno-38-29" name="__codelineno-38-29" href="#__codelineno-38-29"></a>        <span class="n">cmd</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-38-30"><a id="__codelineno-38-30" name="__codelineno-38-30" href="#__codelineno-38-30"></a>        <span class="n">cmd</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">qdes</span><span class="p">)</span>
+</span><span id="__span-38-31"><a id="__codelineno-38-31" name="__codelineno-38-31" href="#__codelineno-38-31"></a>        <span class="n">cmd</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span><span class="o">.</span><span class="n">dq</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+</span><span id="__span-38-32"><a id="__codelineno-38-32" name="__codelineno-38-32" href="#__codelineno-38-32"></a>        <span class="n">cmd</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span><span class="o">.</span><span class="n">tau</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+</span><span id="__span-38-33"><a id="__codelineno-38-33" name="__codelineno-38-33" href="#__codelineno-38-33"></a>        <span class="n">cmd</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span><span class="o">.</span><span class="n">kp</span><span class="p">(</span><span class="mf">30.0</span><span class="p">)</span>
+</span><span id="__span-38-34"><a id="__codelineno-38-34" name="__codelineno-38-34" href="#__codelineno-38-34"></a>        <span class="n">cmd</span><span class="p">[</span><span class="n">hw</span><span class="p">]</span><span class="o">.</span><span class="n">kd</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)</span>
+</span><span id="__span-38-35"><a id="__codelineno-38-35" name="__codelineno-38-35" href="#__codelineno-38-35"></a>    <span class="k">return</span> <span class="n">cmd</span>
+</span></code></pre></div>
+<h4 id="running_8">Running<a class="headerlink" href="#running_8" title="Permanent link">&para;</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="nb">cd</span><span class="w"> </span>low_level/python
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>python3<span class="w"> </span>e9_motor_cmd_pub.py
+</span></code></pre></div>
+<h4 id="sample-output_7">Sample Output<a class="headerlink" href="#sample-output_7" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>Waiting for initial position collection...
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>Initial position collection completed: -0.0500 0.8500 -1.7000 ...
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>Starting control loop
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a>[0] Initialization phase
+</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a>[10] Starting swing
+</span><span id="__span-40-6"><a id="__codelineno-40-6" name="__codelineno-40-6" href="#__codelineno-40-6"></a>[5000] Swing completed, entering damping mode
+</span></code></pre></div>
+<h2 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">&para;</a></h2>
+<h3 id="q-not-receiving-any-data">Q: Not receiving any data?<a class="headerlink" href="#q-not-receiving-any-data" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Check if <code>CYCLONEDDS_URI</code> environment variable is set</li>
+<li>Check if network interface configuration is correct</li>
+<li>Use <code>cyclonedds ps</code> to view available topics</li>
+</ol>
+<h3 id="q-led-control-has-no-effect">Q: LED control has no effect?<a class="headerlink" href="#q-led-control-has-no-effect" title="Permanent link">&para;</a></h3>
+<p>You must stop the main control program first. See the warning in E3 section.</p>
+<h3 id="q-motor-control-not-responding">Q: Motor control not responding?<a class="headerlink" href="#q-motor-control-not-responding" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Must stop the main control program first</li>
+<li>Confirm motor initial position collection is complete</li>
+</ol>
+<h3 id="q-severe-image-data-packet-loss">Q: Severe image data packet loss?<a class="headerlink" href="#q-severe-image-data-packet-loss" title="Permanent link">&para;</a></h3>
+<p>Use <code>best_effort</code> reliability and smaller <code>history_depth</code> to prioritize low latency.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Dobot. All rights reserved.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://dobot-robots.com/" target="_blank" rel="noopener" title="Dobot Official Website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -7,8 +7,8 @@
 //   client.line_walk(0, 3.0);        // front 3m
 //   client.walk_forward(3.0);        // same thing
 //   client.move_left(2.0);           // strafe left 2m
-//   client.rotate_walk(45, 2.0);     // walk at 45° (left turn)
-//   client.rotate_walk(-90, 1.0);    // walk at -90° (right turn)
+//   client.rotate_walk(-45, 2.0);    // walk at -45° (left turn)
+//   client.rotate_walk(90, 1.0);     // walk at 90° (right turn)
 
 #include "robot_client.h"
 
@@ -27,11 +27,11 @@ int main(int argc, char** argv)
     // Demonstrate rotate_walk with signed angles
     if (ok) {
         std::cout << "\nRotate Walk Demo:" << std::endl;
-        std::cout << "  45° (left turn): ";
-        client.rotate_walk(45, 1.0, 80, true);
+        std::cout << "  -45° (left turn): ";
+        client.rotate_walk(-45, 1.0, 80, true);
 
-        std::cout << "  -90° (right turn): ";
-        client.rotate_walk(-90, 1.0, 80, true);
+        std::cout << "  90° (right turn): ";
+        client.rotate_walk(90, 1.0, 80, true);
     }
 
     return ok ? 0 : 1;

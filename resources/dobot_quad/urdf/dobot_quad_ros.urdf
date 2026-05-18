@@ -64,6 +64,7 @@
     <child link="link_front_left_hip"/>
     <axis xyz="1 0 0"/>
     <limit effort="23" lower="-0.6632" upper="0.6632" velocity="21"/>
+    <armature value="0.01"/>
   </joint>
   <link name="link_front_left_thigh">
     <inertial>
@@ -96,6 +97,7 @@
     <child link="link_front_left_thigh"/>
     <axis xyz="0 1 0"/>
     <limit effort="23" lower="-2.618" upper="2.618" velocity="23"/>
+    <armature value="0.01"/>
   </joint>
   <link name="link_front_left_calf">
     <inertial>
@@ -131,6 +133,7 @@
     <child link="link_front_left_calf"/>
     <axis xyz="0 1 0"/>
     <limit effort="55" lower="-2.53" upper="2.53" velocity="21"/>
+    <armature value="0.025"/>
   </joint>
   <link name="link_front_left_foot">
     <inertial>
@@ -179,6 +182,7 @@
     <child link="link_front_right_hip"/>
     <axis xyz="1 0 0"/>
     <limit effort="23" lower="-0.6632" upper="0.6632" velocity="21"/>
+    <armature value="0.01"/>
   </joint>
   <link name="link_front_right_thigh">
     <inertial>
@@ -211,6 +215,7 @@
     <child link="link_front_right_thigh"/>
     <axis xyz="0 1 0"/>
     <limit effort="23" lower="-2.618" upper="2.618" velocity="23"/>
+    <armature value="0.01"/>
   </joint>
   <link name="link_front_right_calf">
     <inertial>
@@ -246,6 +251,7 @@
     <child link="link_front_right_calf"/>
     <axis xyz="0 1 0"/>
     <limit effort="55" lower="-2.53" upper="2.53" velocity="21"/>
+    <armature value="0.025"/>
   </joint>
   <link name="link_front_right_foot">
     <inertial>
@@ -294,6 +300,7 @@
     <child link="link_rear_left_hip"/>
     <axis xyz="1 0 0"/>
     <limit effort="23" lower="-0.6632" upper="0.6632" velocity="21"/>
+    <armature value="0.01"/>
   </joint>
   <link name="link_rear_left_thigh">
     <inertial>
@@ -326,6 +333,7 @@
     <child link="link_rear_left_thigh"/>
     <axis xyz="0 1 0"/>
     <limit effort="23" lower="-2.618" upper="2.618" velocity="21"/>
+    <armature value="0.01"/>
   </joint>
   <link name="link_rear_left_calf">
     <inertial>
@@ -361,6 +369,7 @@
     <child link="link_rear_left_calf"/>
     <axis xyz="0 1 0"/>
     <limit effort="55" lower="-2.53" upper="2.53" velocity="21"/>
+    <armature value="0.025"/>
   </joint>
   <link name="link_rear_left_foot">
     <inertial>
@@ -409,6 +418,7 @@
     <child link="link_rear_right_hip"/>
     <axis xyz="1 0 0"/>
     <limit effort="23" lower="-0.6632" upper="0.6632" velocity="21"/>
+    <armature value="0.01"/>
   </joint>
   <link name="link_rear_right_thigh">
     <inertial>
@@ -441,6 +451,7 @@
     <child link="link_rear_right_thigh"/>
     <axis xyz="0 1 0"/>
     <limit effort="23" lower="-2.618" upper="2.618" velocity="21"/>
+    <armature value="0.01"/>
   </joint>
   <link name="link_rear_right_calf">
     <inertial>
@@ -476,6 +487,7 @@
     <child link="link_rear_right_calf"/>
     <axis xyz="0 1 0"/>
     <limit effort="55" lower="-2.53" upper="2.53" velocity="21"/>
+    <armature value="0.025"/>
   </joint>
   <link name="link_rear_right_foot">
     <inertial>

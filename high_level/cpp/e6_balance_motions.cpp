@@ -22,6 +22,11 @@ int main(int argc, char** argv)
     robot::Client client(argc > 1 ? argv[1] : "192.168.5.2:50051");
     robot::enable_safety_ready(client);
 
+    if (client.is_quad_wheel()) {
+        std::cerr << "Balance motions are not supported on MINI_QUAD_WHEEL." << std::endl;
+        return 1;
+    }
+
     client.balance_stand();
 
     std::cout << "\n=== Balance Motions Demo ===" << std::endl;

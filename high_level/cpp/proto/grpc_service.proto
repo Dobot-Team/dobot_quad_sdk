@@ -85,6 +85,7 @@ message GetRobotStateResponse {
   string current_state = 4;
   int32 current_speed_ratio = 5;
   bool obstacle_avoidance_enabled = 6;
+  string robot_type = 7;
 }
 
 message SetSpeedRatioRequest {

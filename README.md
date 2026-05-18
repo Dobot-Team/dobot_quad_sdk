@@ -1,11 +1,14 @@
 <div align="center">
 
-<h1>🤖 Dobot Quad SDK</h1>
+<img src="assets/cover.png" alt="Dobot Quad SDK" style="max-width: 400px; margin-bottom: 20px;" />
+
+<h1>Dobot Quad SDK</h1>
 
 **Quadruped Robot Development Kit**  
-High-performance robot control via CycloneDDS & gRPC
+High-performance robot control via CycloneDDS & gRPC  
+Supports both legged and wheel-legged configurations
 
-[简体中文](README.zh-CN.md) · [English](README.md) · [📖 RobotClient API](doc/robot_client_api.md) · [📖 High-Level Docs](doc/high_level_api.md) · [📖 Low-Level Docs](doc/low_level_api.md)
+[简体中文](README.zh-CN.md) · [English](README.md) · [📖 High-Level Docs](docs/docs/api/high_level.md) · [📖 Low-Level Docs](docs/docs/api/low_level.md)
 
 [![Platform](https://img.shields.io/badge/Platform-Linux-blue?style=flat-square)](https://www.linux.org/)
 [![Architecture](https://img.shields.io/badge/Arch-x86__64%20%7C%20ARM64-green?style=flat-square)](https://github.com)
@@ -65,6 +68,7 @@ export CYCLONEDDS_HOME="/usr/local/"
 **Python:**
 
 ```bash
+sudo apt install -y cyclonedds-dev
 cd dist && pip install dds_middleware_python-*.whl
 pip install cyclonedds opencv-python
 ```
@@ -135,13 +139,16 @@ The SDK provides two independent control layers, each supporting C++ and Python:
 
 Depends on the robot's main control program. Provides state machine management and motion planning:
 
-| Feature                      | Description                                  |
-| ---------------------------- | -------------------------------------------- |
-| Get Available Motions        | Query all motions and parameters             |
-| State Switch (Manual / Auto) | Follow state machine rules or auto-find path |
-| Velocity Sequence            | Send walking velocity commands               |
-| Robot State Query            | Joints, pose, battery, etc.                  |
-| Balance Motion Control       | Posture control in balance stand             |
+| Feature                      | Description                                      |
+| ---------------------------- | ------------------------------------------------ |
+| Get Available Motions        | Query all motions and parameters                 |
+| State Switch (Manual / Auto) | Follow state machine rules or auto-find path     |
+| Velocity Sequence            | Send walking velocity commands                   |
+| Robot State Query            | Joints, pose, battery, etc.                      |
+| Balance Motion Control       | Posture control in balance stand (legged only)   |
+| Wheel/Leg Mode Detection     | Check robot type via `is_quad_wheel()`           |
+| Wheel Locomotion             | `wheel_loco()`, `change_mode()` for wheel-legged |
+| Wheel-Specific Motions       | `drift()`, `handstand()` (wheel-legged only)     |
 
 📖 [RobotClient API Docs](doc/robot_client_api.md) · [High-Level API Docs](doc/high_level_api.md)
 
@@ -189,7 +196,7 @@ dobot_quad_sdk/
 ├── low_level/           # DDS-based low-level control
 │   ├── cpp/             # C++ subscribers/publishers + examples
 │   └── python/          # Python subscribers/publishers + examples
-├── resources/           # Robot URDF model files
+├── resources/           # Robot URDF models (legged & wheel-legged)
 ├── doc/                 # API documentation
 └── utils/               # Utility scripts
 ```

@@ -16,6 +16,8 @@ from dobot_quad.robot_client import (
     VALID_STATES,
     VALID_BALANCE_MOTIONS,
     VALID_GAITS,
+    VALID_WHEEL_STATES,
+    VALID_WHEEL_GAITS,
 )
 
 
@@ -24,4 +26,6 @@ __all__ = [
     "VALID_STATES",
     "VALID_BALANCE_MOTIONS",
     "VALID_GAITS",
+    "VALID_WHEEL_STATES",
+    "VALID_WHEEL_GAITS",
 ]

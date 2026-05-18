@@ -29,9 +29,16 @@ int main(int argc, char** argv)
     }
 
     // Interactive mode
-    const char* states[] = {"emergency", "ready", "stand_down", "balance_stand", "walk", "rl", "flying_trot", "wave",
-        "dance0", "jump", "recovery", "change_mode"};
-    constexpr int n = sizeof(states) / sizeof(states[0]);
+    const bool is_wheel = client.is_quad_wheel();
+
+    const char* quad_states[] = {"emergency", "ready", "stand_down", "balance_stand", "walk", "rl", "flying_trot",
+        "wave", "dance0", "jump", "recovery", "change_mode"};
+    const char* wheel_states[] = {"emergency", "ready", "stand_down", "wheel_loco", "drift", "handstand",
+        "change_mode"};
+
+    const char** states = is_wheel ? wheel_states : quad_states;
+    const int n = is_wheel ? static_cast<int>(sizeof(wheel_states) / sizeof(wheel_states[0]))
+                           : static_cast<int>(sizeof(quad_states) / sizeof(quad_states[0]));
 
     std::cout << "Available states:" << std::endl;
     for (int i = 0; i < n; ++i)

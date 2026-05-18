@@ -13,6 +13,11 @@ from dobot_quad import RobotClient
 def main():
     robot = RobotClient(sys.argv[1] if len(sys.argv) > 1 else "192.168.5.2:50051")
     robot.enable_safety_ready()
+
+    if robot.is_quad_wheel():
+        print("Balance motions are not supported on MINI_QUAD_WHEEL.")
+        return 1
+
     robot.balance_stand()
 
     print("\n=== Balance Motions Demo ===")
@@ -77,7 +82,9 @@ def main():
     robot.dynamic_pose(1.0, roll_deg=30.0, pitch_deg=15.0, yaw_deg=20.0, height_m=-0.12)
 
     print("\n[Static pose - composite]")
-    robot.static_pose(5.0, roll_deg=-30.0, pitch_deg=-15.0, yaw_deg=-20.0, height_m=-0.12)
+    robot.static_pose(
+        5.0, roll_deg=-30.0, pitch_deg=-15.0, yaw_deg=-20.0, height_m=-0.12
+    )
 
     robot.balance_neutral()
 
@@ -90,9 +97,15 @@ def main():
 
     # --- Part 8: Static pose variations ---
     print("\n[Static pose variations]")
-    robot.static_pose(1.5, roll_deg=-18.0, pitch_deg=-10.0, yaw_deg=-12.0, height_m=-0.07)
-    robot.static_pose(3.0, roll_deg=-25.0, pitch_deg=-13.0, yaw_deg=-18.0, height_m=-0.10)
-    robot.static_pose(5.0, roll_deg=-30.0, pitch_deg=-15.0, yaw_deg=-20.0, height_m=-0.12)
+    robot.static_pose(
+        1.5, roll_deg=-18.0, pitch_deg=-10.0, yaw_deg=-12.0, height_m=-0.07
+    )
+    robot.static_pose(
+        3.0, roll_deg=-25.0, pitch_deg=-13.0, yaw_deg=-18.0, height_m=-0.10
+    )
+    robot.static_pose(
+        5.0, roll_deg=-30.0, pitch_deg=-15.0, yaw_deg=-20.0, height_m=-0.12
+    )
     robot.balance_neutral()
 
     # --- Part 9: Mixed sequence (single-axis balance then composite pose) ---
@@ -110,9 +123,13 @@ def main():
     # --- Part 10: Rapid composite pose sequence (demonstrate min-to-max range) ---
     print("\n[Rapid composite pose sequence]")
     robot.dynamic_pose(1.0, roll_deg=10.0, pitch_deg=5.0, yaw_deg=8.0, height_m=-0.04)
-    robot.static_pose(1.5, roll_deg=-15.0, pitch_deg=-8.0, yaw_deg=-10.0, height_m=-0.06)
+    robot.static_pose(
+        1.5, roll_deg=-15.0, pitch_deg=-8.0, yaw_deg=-10.0, height_m=-0.06
+    )
     robot.dynamic_pose(3.0, roll_deg=25.0, pitch_deg=12.0, yaw_deg=18.0, height_m=-0.10)
-    robot.static_pose(5.0, roll_deg=-30.0, pitch_deg=-15.0, yaw_deg=-20.0, height_m=-0.12)
+    robot.static_pose(
+        5.0, roll_deg=-30.0, pitch_deg=-15.0, yaw_deg=-20.0, height_m=-0.12
+    )
     robot.balance_neutral()
 
     print("\nDone.")

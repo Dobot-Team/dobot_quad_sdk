@@ -129,14 +129,14 @@ inline float clamp_amplitude(float a, float lo = -1.0f, float hi = 1.0f)
 inline float clamp_balance_value(float v, const std::string& axis)
 {
     if (axis == "height")
-        return std::max(-0.12f, std::min(0.0f, v)); // only downward
+        return std::max(-0.08f, std::min(0.0f, v)); // only downward
     if (axis == "yaw")
-        return std::max(-20.0f, std::min(20.0f, v)); // degrees
+        return std::max(-11.5f, std::min(11.5f, v)); // degrees
     if (axis == "roll")
-        return std::max(-30.0f, std::min(30.0f, v)); // degrees
+        return std::max(-17.0f, std::min(17.0f, v)); // degrees
     if (axis == "pitch")
-        return std::max(-15.0f, std::min(15.0f, v)); // degrees
-    return std::max(-15.0f, std::min(15.0f, v));     // fallback
+        return std::max(-11.5f, std::min(11.5f, v)); // degrees
+    return std::max(-11.5f, std::min(11.5f, v));     // fallback
 }
 
 /// Clamp single-axis/balance-sequence duration to [0.5, 5] seconds.
@@ -232,6 +232,24 @@ public:
             std::cerr << "RPC error: " << st.error_message() << std::endl;
         return res;
     }
+
+    /// Get the robot type string (e.g. "miniQuad" or "miniQuadW").
+    /// Cached after first successful query.
+    std::string get_robot_type()
+    {
+        if (robot_type_.empty()) {
+            auto res = get_state();
+            if (res.success())
+                robot_type_ = res.robot_type();
+        }
+        return robot_type_;
+    }
+
+    /// Check if connected robot is MINI_QUAD (点足).
+    bool is_quad() { return get_robot_type() == "miniQuad"; }
+
+    /// Check if connected robot is MINI_QUAD_WHEEL (轮足).
+    bool is_quad_wheel() { return get_robot_type() == "miniQuadW"; }
 
     /// Get just the current FSM state name.
     std::string get_current_state_name()
@@ -464,6 +482,15 @@ public:
     }
 
     // =====================================================================
+    // State Switching – MINI_QUAD_WHEEL (轮足) wrappers
+    // =====================================================================
+
+    bool wheel_loco(bool sp = true) { return set_target_state_with_delay_("wheel_loco", 2, sp); }
+    bool drift(bool sp = true) { return set_target_state_with_delay_("drift", 2, sp); }
+    bool climb(bool sp = true) { return set_target_state_with_delay_("climb", 2, sp); }
+    bool handstand(bool sp = true) { return set_target_state_with_delay_("handstand", 2, sp); }
+
+    // =====================================================================
     // Velocity Sequence
     // =====================================================================
 
@@ -492,8 +519,10 @@ public:
             m->set_motion_id("flying_trot_velocity_seq");
         else if (gait == "walk")
             m->set_motion_id("walk_velocity_seq");
+        else if (gait == "wheel_loco")
+            m->set_motion_id("wheel_loco_velocity_seq");
         else
-            throw std::invalid_argument("Unknown gait '" + gait + "'. Valid: walk, flying_trot");
+            throw std::invalid_argument("Unknown gait '" + gait + "'. Valid: walk, flying_trot, wheel_loco");
 
         set_param(m, "velocity_sequence", vel_seq);
         if (stand_down_after)
@@ -667,7 +696,7 @@ public:
     }
 
     /// Move in given heading angle: rotate first, then walk forward.
-    /// @param angle_deg Rotation angle [-180, 180]. Negative = clockwise (right), Positive = counter-clockwise (left).
+    /// @param angle_deg Rotation angle [-180, 180]. Negative = counter-clockwise (left), Positive = clockwise (right).
     /// @param distance_m Distance to walk [0, 3] meters.
     /// @param speed_ratio Speed ratio [10, 100] or -1 to use current base.
     bool rotate_walk(float angle_deg = 0.0f, float distance_m = 0.0f, int speed_ratio = -1, bool show_progress = true)
@@ -675,8 +704,8 @@ public:
         angle_deg = clamp_angle_signed(angle_deg);
         distance_m = clamp_distance(distance_m);
 
-        bool ok = (angle_deg >= 0.0f) ? rotate("left", angle_deg, show_progress)
-                                      : rotate("right", -angle_deg, show_progress);
+        bool ok = (angle_deg >= 0.0f) ? rotate("right", angle_deg, show_progress)
+                                      : rotate("left", -angle_deg, show_progress);
         if (!ok)
             return false;
         return walk_forward(distance_m, speed_ratio, show_progress);
@@ -798,6 +827,7 @@ private:
     std::unique_ptr<grpc_comm::gRPCService::Stub> stub_;
     int speed_ratio_ = 50;           ///< Last-known speed ratio from Set RPC response
     bool obstacle_avoidance_ = true; ///< Last-known OA state from Set RPC response
+    std::string robot_type_;         ///< Cached robot type from GetRobotState
 };
 
 // =========================================================================

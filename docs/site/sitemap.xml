@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://dobot-quad-sdk.readthedocs.io/</loc>
+        <lastmod>2026-05-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dobot-quad-sdk.readthedocs.io/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://dobot-quad-sdk.readthedocs.io/zh/"/>
+    </url>
+    <url>
+        <loc>https://dobot-quad-sdk.readthedocs.io/changelog/</loc>
+        <lastmod>2026-05-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dobot-quad-sdk.readthedocs.io/changelog/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://dobot-quad-sdk.readthedocs.io/zh/changelog/"/>
+    </url>
+    <url>
+        <loc>https://dobot-quad-sdk.readthedocs.io/api/high_level/</loc>
+        <lastmod>2026-05-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dobot-quad-sdk.readthedocs.io/api/high_level/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://dobot-quad-sdk.readthedocs.io/zh/api/high_level/"/>
+    </url>
+    <url>
+        <loc>https://dobot-quad-sdk.readthedocs.io/api/low_level/</loc>
+        <lastmod>2026-05-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dobot-quad-sdk.readthedocs.io/api/low_level/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://dobot-quad-sdk.readthedocs.io/zh/api/low_level/"/>
+    </url>
+    <url>
+        <loc>https://dobot-quad-sdk.readthedocs.io/getting-started/installation/</loc>
+        <lastmod>2026-05-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dobot-quad-sdk.readthedocs.io/getting-started/installation/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://dobot-quad-sdk.readthedocs.io/zh/getting-started/installation/"/>
+    </url>
+    <url>
+        <loc>https://dobot-quad-sdk.readthedocs.io/getting-started/quickstart/</loc>
+        <lastmod>2026-05-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dobot-quad-sdk.readthedocs.io/getting-started/quickstart/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://dobot-quad-sdk.readthedocs.io/zh/getting-started/quickstart/"/>
+    </url>
+    <url>
+        <loc>https://dobot-quad-sdk.readthedocs.io/zh/</loc>
+        <lastmod>2026-05-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://dobot-quad-sdk.readthedocs.io/zh/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dobot-quad-sdk.readthedocs.io/"/>
+    </url>
+    <url>
+        <loc>https://dobot-quad-sdk.readthedocs.io/zh/changelog/</loc>
+        <lastmod>2026-05-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://dobot-quad-sdk.readthedocs.io/zh/changelog/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dobot-quad-sdk.readthedocs.io/changelog/"/>
+    </url>
+    <url>
+        <loc>https://dobot-quad-sdk.readthedocs.io/zh/api/high_level/</loc>
+        <lastmod>2026-05-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://dobot-quad-sdk.readthedocs.io/zh/api/high_level/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dobot-quad-sdk.readthedocs.io/api/high_level/"/>
+    </url>
+    <url>
+        <loc>https://dobot-quad-sdk.readthedocs.io/zh/api/low_level/</loc>
+        <lastmod>2026-05-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://dobot-quad-sdk.readthedocs.io/zh/api/low_level/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dobot-quad-sdk.readthedocs.io/api/low_level/"/>
+    </url>
+    <url>
+        <loc>https://dobot-quad-sdk.readthedocs.io/zh/getting-started/installation/</loc>
+        <lastmod>2026-05-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://dobot-quad-sdk.readthedocs.io/zh/getting-started/installation/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dobot-quad-sdk.readthedocs.io/getting-started/installation/"/>
+    </url>
+    <url>
+        <loc>https://dobot-quad-sdk.readthedocs.io/zh/getting-started/quickstart/</loc>
+        <lastmod>2026-05-09</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://dobot-quad-sdk.readthedocs.io/zh/getting-started/quickstart/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://dobot-quad-sdk.readthedocs.io/getting-started/quickstart/"/>
+    </url>
+</urlset>

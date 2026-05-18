@@ -1,11 +1,14 @@
 <div align="center">
 
-<h1>🤖 Dobot Quad SDK</h1>
+<img src="assets/cover.png" alt="Dobot Quad SDK" style="max-width: 400px; margin-bottom: 20px;" />
+
+<h1>Dobot Quad SDK</h1>
 
 **四足机器人开发套件**  
-基于 CycloneDDS & gRPC 的高性能机器人控制框架
+基于 CycloneDDS & gRPC 的高性能机器人控制框架  
+同时支持点足与轮足构型
 
-[简体中文](README.zh-CN.md) · [English](README.md) · [📖 接口文档](doc/robot_client_api.zh-CN.md) · [📖 高层文档](doc/high_level_api.zh-CN.md) · [📖 底层文档](doc/low_level_api.zh-CN.md)
+[简体中文](README.zh-CN.md) · [English](README.md) · [📖 高层文档](docs/docs/api/high_level.zh.md) · [📖 底层文档](docs/docs/api/low_level.zh.md)
 
 [![Platform](https://img.shields.io/badge/Platform-Linux-blue?style=flat-square)](https://www.linux.org/)
 [![Architecture](https://img.shields.io/badge/Arch-x86__64%20%7C%20ARM64-green?style=flat-square)](https://github.com)
@@ -65,6 +68,7 @@ export CYCLONEDDS_HOME="/usr/local/"
 **Python：**
 
 ```bash
+sudo apt install -y cyclonedds-dev
 cd dist && pip install dds_middleware_python-*.whl
 pip install cyclonedds opencv-python
 ```
@@ -135,13 +139,16 @@ SDK 提供两层独立的控制接口，均支持 C++ 和 Python：
 
 依赖机器人主控程序，提供状态机管理和运动规划：
 
-| 功能                  | 说明                       |
-| --------------------- | -------------------------- |
-| 获取可用动作          | 查询所有动作及参数         |
-| 状态切换（手动/自动） | 按状态机规则切换或自动寻路 |
-| 速度序列控制          | 发送行走速度指令           |
-| 机器人状态查询        | 关节、姿态、电池等         |
-| 平衡动作控制          | 平衡站立模式下的姿态控制   |
+| 功能                  | 说明                                         |
+| --------------------- | -------------------------------------------- |
+| 获取可用动作          | 查询所有动作及参数                           |
+| 状态切换（手动/自动） | 按状态机规则切换或自动寻路                   |
+| 速度序列控制          | 发送行走速度指令                             |
+| 机器人状态查询        | 关节、姿态、电池等                           |
+| 平衡动作控制          | 平衡站立模式下的姿态控制（仅点足）           |
+| 轮足/点足构型检测     | 通过 `is_quad_wheel()` 判断机器人类型        |
+| 轮足运动模式          | `wheel_loco()`、`change_mode()` 切换运动模式 |
+| 轮足专属动作          | `drift()`、`handstand()` 等（仅轮足）        |
 
 📖 [RobotClient 接口文档](doc/robot_client_api.zh-CN.md) · [高层控制 API 文档](doc/high_level_api.zh-CN.md)
 
@@ -189,7 +196,7 @@ dobot_quad_sdk/
 ├── low_level/           # 基于 DDS 的底层控制
 │   ├── cpp/             # C++ 订阅/发布 + 示例
 │   └── python/          # Python 订阅/发布 + 示例
-├── resources/           # 机器人 URDF 模型文件
+├── resources/           # 机器人 URDF 模型（点足 & 轮足）
 ├── doc/                 # API 文档
 ├── slam/                # SLAM 相关工具
 └── utils/               # 实用脚本
