@@ -694,10 +694,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#v120-robot-bow-action" class="md-nav__link">
+  <a href="#v120-robot-bow-choreo-action-dds-middleware-update" class="md-nav__link">
     <span class="md-ellipsis">
       
-        v1.2.0 — Robot Bow Action
+        v1.2.0 — Robot Bow / Choreo Action &amp; DDS Middleware Update
       
     </span>
   </a>
@@ -794,10 +794,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#v120-robot-bow-action" class="md-nav__link">
+  <a href="#v120-robot-bow-choreo-action-dds-middleware-update" class="md-nav__link">
     <span class="md-ellipsis">
       
-        v1.2.0 — Robot Bow Action
+        v1.2.0 — Robot Bow / Choreo Action &amp; DDS Middleware Update
       
     </span>
   </a>
@@ -880,9 +880,14 @@
 
 
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
-<h2 id="v120-robot-bow-action">v1.2.0 — Robot Bow Action<a class="headerlink" href="#v120-robot-bow-action" title="Permanent link">&para;</a></h2>
+<h2 id="v120-robot-bow-choreo-action-dds-middleware-update">v1.2.0 — Robot Bow / Choreo Action &amp; DDS Middleware Update<a class="headerlink" href="#v120-robot-bow-choreo-action-dds-middleware-update" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Added robot bow action support</li>
+<li>Added <code>choreo</code> state support for quadruped robots.</li>
+<li>Added Python <code>RobotClient.choreo()</code> and C++ <code>RobotClient::choreo()</code> / <code>RobotClient::set_choreo()</code> APIs.</li>
+<li>Added <code>choreo</code> to the auto state-switching examples and state-switching tests.</li>
+<li>Updated bundled DDS middleware packages from <code>0.22.10</code> to <code>0.23.3</code> for <code>amd64</code> and <code>arm64</code>.</li>
+<li>Updated C++ and Python <code>e7_voice_pub</code> examples for the <code>VoiceCmd</code> schema used by <code>dds-middleware &gt;= 0.23.x</code>.</li>
+<li>Regenerated English and Chinese API documentation and static site pages.</li>
 </ul>
 <h2 id="v110-documentation-migration-dds-middleware-update">v1.1.0 — Documentation Migration &amp; DDS Middleware Update<a class="headerlink" href="#v110-documentation-migration-dds-middleware-update" title="Permanent link">&para;</a></h2>
 <ul>

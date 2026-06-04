@@ -1,8 +1,13 @@
 # Changelog
 
-## v1.2.0 — Robot Bow Action
+## v1.2.0 — Robot Bow / Choreo Action & DDS Middleware Update
 
-- Added robot bow action support
+- Added `choreo` state support for quadruped robots.
+- Added Python `RobotClient.choreo()` and C++ `RobotClient::choreo()` / `RobotClient::set_choreo()` APIs.
+- Added `choreo` to the auto state-switching examples and state-switching tests.
+- Updated bundled DDS middleware packages from `0.22.10` to `0.23.3` for `amd64` and `arm64`.
+- Updated C++ and Python `e7_voice_pub` examples for the `VoiceCmd` schema used by `dds-middleware >= 0.23.x`.
+- Regenerated English and Chinese API documentation and static site pages.
 
 ## v1.1.0 — Documentation Migration & DDS Middleware Update
 

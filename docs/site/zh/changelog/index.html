@@ -694,10 +694,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#v120" class="md-nav__link">
+  <a href="#v120-dds" class="md-nav__link">
     <span class="md-ellipsis">
       
-        v1.2.0 — 机器人作揖功能
+        v1.2.0 — 机器人作揖 / 编舞动作 &amp; DDS 中间件更新
       
     </span>
   </a>
@@ -794,10 +794,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#v120" class="md-nav__link">
+  <a href="#v120-dds" class="md-nav__link">
     <span class="md-ellipsis">
       
-        v1.2.0 — 机器人作揖功能
+        v1.2.0 — 机器人作揖 / 编舞动作 &amp; DDS 中间件更新
       
     </span>
   </a>
@@ -880,9 +880,14 @@
 
 
 <h1 id="_1">更新日志<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<h2 id="v120">v1.2.0 — 机器人作揖功能<a class="headerlink" href="#v120" title="Permanent link">&para;</a></h2>
+<h2 id="v120-dds">v1.2.0 — 机器人作揖 / 编舞动作 &amp; DDS 中间件更新<a class="headerlink" href="#v120-dds" title="Permanent link">&para;</a></h2>
 <ul>
-<li>新增机器人作揖功能</li>
+<li>新增四足机器人 <code>choreo</code> 状态支持。</li>
+<li>新增 Python <code>RobotClient.choreo()</code> 和 C++ <code>RobotClient::choreo()</code> / <code>RobotClient::set_choreo()</code> 接口。</li>
+<li>在自动状态切换示例和状态切换测试中加入 <code>choreo</code> 状态。</li>
+<li>将内置 DDS 中间件包从 <code>0.22.10</code> 更新到 <code>0.23.3</code>，支持 <code>amd64</code> 和 <code>arm64</code>。</li>
+<li>更新 C++ 和 Python <code>e7_voice_pub</code> 示例，适配 <code>dds-middleware &gt;= 0.23.x</code> 使用的 <code>VoiceCmd</code> 消息结构。</li>
+<li>重新生成英文、中文 API 文档和静态网页。</li>
 </ul>
 <h2 id="v110-dds">v1.1.0 — 文档迁移 &amp; DDS中间件更新<a class="headerlink" href="#v110-dds" title="Permanent link">&para;</a></h2>
 <ul>

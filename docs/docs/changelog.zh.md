@@ -1,8 +1,13 @@
 # 更新日志
 
-## v1.2.0 — 机器人作揖功能
+## v1.2.0 — 机器人作揖 / 编舞动作 & DDS 中间件更新
 
-- 新增机器人作揖功能
+- 新增四足机器人 `choreo` 状态支持。
+- 新增 Python `RobotClient.choreo()` 和 C++ `RobotClient::choreo()` / `RobotClient::set_choreo()` 接口。
+- 在自动状态切换示例和状态切换测试中加入 `choreo` 状态。
+- 将内置 DDS 中间件包从 `0.22.10` 更新到 `0.23.3`，支持 `amd64` 和 `arm64`。
+- 更新 C++ 和 Python `e7_voice_pub` 示例，适配 `dds-middleware >= 0.23.x` 使用的 `VoiceCmd` 消息结构。
+- 重新生成英文、中文 API 文档和静态网页。
 
 ## v1.1.0 — 文档迁移 & DDS中间件更新
 
