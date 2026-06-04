@@ -438,6 +438,8 @@ public:
     bool rl(bool sp = true) { return set_target_state_with_delay_("rl", 2, sp); }
     bool set_flying_trot(bool sp = true) { return set_target_state_with_delay_("flying_trot", 2, sp); }
     bool flying_trot(bool sp = true) { return set_target_state_with_delay_("flying_trot", 2, sp); }
+    bool set_choreo(bool sp = true) { return set_target_state_with_delay_("choreo", 2, sp); }
+    bool choreo(bool sp = true) { return set_target_state_with_delay_("choreo", 2, sp); }
     bool set_dance0(bool sp = true) { return dance0(sp); }
     bool dance0(bool sp = true) { return dance0(13, sp); }
     bool dance0(int duration_sec, bool sp = true)

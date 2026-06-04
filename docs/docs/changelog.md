@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.2.0 — Robot Bow Action
+
+- Added robot bow action support
+
 ## v1.1.0 — Documentation Migration & DDS Middleware Update
 
 - Migrated doc-related documentation to `docs` directory, added static webpage generation

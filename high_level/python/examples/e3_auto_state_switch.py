@@ -13,6 +13,7 @@ STATES = [
     "walk",
     "rl",
     "flying_trot",
+    "choreo",
     "wave",
     "dance0",
     "jump",

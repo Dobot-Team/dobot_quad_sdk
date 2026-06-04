@@ -66,6 +66,7 @@ class TestPredefinedStates:
         ("balance_stand", "balance_stand"),
         ("walk", "walk"),
         ("flying_trot", "flying_trot"),
+        ("choreo", "choreo"),
         ("dance0", "dance0"),
         ("wave", "wave"),
         ("jump", "jump"),
@@ -142,6 +143,7 @@ class TestStatePostSleep:
     @pytest.mark.parametrize("method_name, expected", [
         ("stand_down", 2.0),
         ("balance_stand", 2.0),
+        ("choreo", 2.0),
         ("jump", 3.0),
         ("recovery", 4.0),
     ])

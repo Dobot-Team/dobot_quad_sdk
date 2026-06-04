@@ -49,6 +49,7 @@ VALID_STATES = frozenset(
         "walk",
         "flying_trot",
         "rl",
+        "choreo",
         "dance0",
         "wave",
         "jump",
@@ -468,6 +469,10 @@ class RobotClient:
         return self._set_state_with_delay(
             "flying_trot", DEFAULT_STATE_POST_SLEEP_SECONDS, show_progress
         )
+
+    def choreo(self, show_progress=True):
+        """切换到 CHOREO 编舞状态。"""
+        return self._set_state_with_delay("choreo", DEFAULT_STATE_POST_SLEEP_SECONDS, show_progress)
 
     def dance0(self, show_progress=True, duration=DEFAULT_DANCE_SECONDS):
         duration = self._validate_dance_duration(duration)

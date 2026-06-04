@@ -243,12 +243,13 @@ SDK 通过 `get_robot_type()` 自动检测连接的机器人类型（点足 `min
 | 6   | `walk()`                  | 切换到行走模式       |                         |
 | 7   | `rl()`                    | 切换到 RL 模式       |                         |
 | 8   | `flying_trot()`           | 切换到奔跑模式       |                         |
-| 9   | `change_mode()`           | 行走⇄奔跑平滑切换    | :material-new-box: 新增 |
-| 10  | `dance()`                 | 跳舞（别名：dance0） |                         |
-| 11  | `jump()`                  | 跳跃                 |                         |
-| 12  | `wave_hand(duration=5.0)` | 打招呼（别名：wave） |                         |
-| 13  | `backflip()`              | 后空翻               |                         |
-| 14  | `recovery()`              | 恢复/自救            |                         |
+| 9   | `choreo()`                | 切换到编舞状态       |                         |
+| 10  | `change_mode()`           | 行走⇄奔跑平滑切换    | :material-new-box: 新增 |
+| 11  | `dance()`                 | 跳舞（别名：dance0） |                         |
+| 12  | `jump()`                  | 跳跃                 |                         |
+| 13  | `wave_hand(duration=5.0)` | 打招呼（别名：wave） |                         |
+| 14  | `backflip()`              | 后空翻               |                         |
+| 15  | `recovery()`              | 恢复/自救            |                         |
 
 **轮足机器人（miniQuadW）有效状态 / 函数列表：**
 

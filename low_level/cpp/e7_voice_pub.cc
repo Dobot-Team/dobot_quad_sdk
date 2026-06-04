@@ -1,58 +1,37 @@
 #include "dds_middleware.hpp"
 #include "voice_cmd.hpp"
+#include <atomic>
 #include <chrono>
+#include <cstdint>
 #include <cstdio>
 #include <iostream>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <vector>
-#include <queue>
-#include <mutex>
-#include <atomic>
 
 using namespace dds_middleware;
 using namespace dobotmh4::msg::dds_;
 
-// Thread-safe queue for audio buffers
-class AudioQueue
+// Populate the std_msgs Header with the current wall-clock timestamp.
+// The refactored VoiceCmd_ IDL (dds-middleware >= 0.23.x) carries a Header,
+// matching the canonical voice_cmd_publisher example.
+static void fill_header(VoiceCmd_& voice_cmd)
 {
-public:
-    AudioQueue(size_t max_size = 2)
-        : max_size_(max_size)
-    {
-    }
+    auto now = std::chrono::system_clock::now().time_since_epoch();
+    auto sec = std::chrono::duration_cast<std::chrono::seconds>(now).count();
+    auto nsec = std::chrono::duration_cast<std::chrono::nanoseconds>(now).count() % 1000000000;
+    voice_cmd.header().stamp_().sec_(static_cast<int32_t>(sec));
+    voice_cmd.header().stamp_().nanosec_(static_cast<uint32_t>(nsec));
+    voice_cmd.header().frame_id_("voice_cmd");
+}
 
-    void push(std::vector<uint8_t> data)
-    {
-        std::lock_guard<std::mutex> lock(mutex_);
-        if (queue_.size() >= max_size_) {
-            queue_.pop(); // Drop oldest if full
-        }
-        queue_.push(std::move(data));
-    }
-
-    bool try_pop(std::vector<uint8_t>& data)
-    {
-        std::lock_guard<std::mutex> lock(mutex_);
-        if (queue_.empty()) {
-            return false;
-        }
-        data = std::move(queue_.front());
-        queue_.pop();
-        return true;
-    }
-
-private:
-    std::queue<std::vector<uint8_t>> queue_;
-    std::mutex mutex_;
-    size_t max_size_;
-};
-
-// Background thread for continuous low-latency audio capture
+// Background thread that continuously captures PCM audio from the microphone
+// (24kHz, mono, 16bit) and keeps only the most recent chunk for low latency.
 class AudioCaptureThread
 {
 public:
-    AudioCaptureThread(int chunk_duration_ms = 100)
+    explicit AudioCaptureThread(int chunk_duration_ms = 100)
         : chunk_duration_ms_(chunk_duration_ms)
         , running_(true)
     {
@@ -60,26 +39,22 @@ public:
 
     void run()
     {
-        int duration_sec_factor = chunk_duration_ms_; // e.g., 100 = 0.1 seconds
-
         FILE* pipe = popen("arecord -q -t raw -f S16_LE -c1 -r24000", "r");
         if (!pipe) {
             std::cerr << "arecord not found or failed to start" << std::endl;
             return;
         }
 
-        // Calculate bytes per chunk (24kHz, 16bit, mono = 2 bytes per sample)
-        // For 100ms: 24000 * 0.1 * 2 = 4800 bytes
+        // 24kHz * 16bit mono = 2 bytes/sample, e.g. 100ms -> 4800 bytes
         int bytes_per_chunk = (24000 * chunk_duration_ms_ / 1000) * 2;
-
         std::vector<uint8_t> buffer(bytes_per_chunk);
-        size_t read_bytes = 0;
 
         while (running_) {
-            read_bytes = fread(buffer.data(), 1, bytes_per_chunk, pipe);
+            size_t read_bytes = fread(buffer.data(), 1, bytes_per_chunk, pipe);
             if (read_bytes > 0) {
-                std::vector<uint8_t> chunk(buffer.begin(), buffer.begin() + read_bytes);
-                audio_queue_.push(std::move(chunk));
+                std::lock_guard<std::mutex> lock(mutex_);
+                latest_.assign(buffer.begin(), buffer.begin() + read_bytes);
+                has_data_ = true;
             } else if (feof(pipe)) {
                 break;
             }
@@ -88,105 +63,90 @@ public:
         pclose(pipe);
     }
 
-    bool get_audio(std::vector<uint8_t>& data) { return audio_queue_.try_pop(data); }
+    bool get_audio(std::vector<uint8_t>& data)
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!has_data_) {
+            return false;
+        }
+        data = std::move(latest_);
+        has_data_ = false;
+        return true;
+    }
 
     void stop() { running_ = false; }
 
 private:
-    AudioQueue audio_queue_;
     int chunk_duration_ms_;
     std::atomic<bool> running_;
+    std::mutex mutex_;
+    std::vector<uint8_t> latest_;
+    bool has_data_ = false;
 };
-
-// Capture audio chunk from microphone using arecord (24kHz, mono, 16bit PCM)
-static std::vector<uint8_t> capture_audio_chunk()
-{
-    std::vector<uint8_t> data;
-    FILE* pipe = popen("arecord -q -t raw -f S16_LE -c1 -r24000 -d0.1", "r");
-    if (!pipe) {
-        std::cerr << "arecord not found or failed to start, unable to perform streaming" << std::endl;
-        return data;
-    }
-
-    std::vector<uint8_t> buffer(4096);
-    size_t read_bytes = 0;
-    while ((read_bytes = fread(buffer.data(), 1, buffer.size(), pipe)) > 0) {
-        data.insert(data.end(), buffer.begin(), buffer.begin() + static_cast<long>(read_bytes));
-    }
-    pclose(pipe);
-    return data;
-}
 
 int main(int argc, char** argv)
 {
     std::string mode = (argc > 1) ? argv[1] : "file"; // "file" or "streaming"
 
-    std::shared_ptr<DDSMiddleware> middleware = std::make_shared<DDSMiddleware>(0);
+    auto middleware = std::make_shared<DDSMiddleware>(0);
 
     QoSProfile qos;
     qos.reliability = ReliabilityPolicy::RELIABLE;
     qos.history = HistoryPolicy::KEEP_LAST;
-    qos.history_depth = 5; // Align with dds_publisher.py
+    qos.history_depth = 5;
     qos.durability = DurabilityPolicy::VOLATILE;
 
     auto publisher = middleware->create_publisher<VoiceCmd_>("rt/voice/cmd", qos);
 
-    std::cout << "Mode: " << mode << std::endl;
-    std::cout << "QoS: RELIABLE, KEEP_LAST(5), VOLATILE" << std::endl;
+    std::cout << "Mode: " << mode << ", QoS: RELIABLE, KEEP_LAST(5), VOLATILE" << std::endl;
 
     if (mode == "file") {
-        // std::string file_path = "/root/test1.wav";
         std::string file_path = "/root/test2.flac";
-        // std::string file_path = "/root/test3.mp3";
 
-        std::cout << "File mode: publish local file paths cyclically" << std::endl;
         VoiceCmd_ voice_cmd;
+        fill_header(voice_cmd);
+        voice_cmd.priority(VoicePriority_::kNormal); // kNormal: ordinary audio file
+        voice_cmd.task_id("e7_voice_pub");
         voice_cmd.type("file");
         voice_cmd.path(file_path);
         voice_cmd.data().clear();
-        sleep(1);
+        voice_cmd.flag(false); // stream-end flag, unused in file mode
+
+        std::this_thread::sleep_for(std::chrono::seconds(1)); // wait for DDS discovery
         publisher->publish(voice_cmd);
-
-        std::cout << "Published VoiceCmd (file)" << std::endl;
-        std::cout << "  Path: " << voice_cmd.path() << std::endl;
-        std::cout << "  Data size: 0 bytes" << std::endl;
-        std::cout << "---------------------------" << std::endl;
-
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
-
-    if (mode == "streaming") {
+        std::cout << "Published VoiceCmd (file): " << voice_cmd.path() << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1)); // let the sample flush before exit
+    } else if (mode == "streaming") {
         std::cout << "Streaming mode: capture and publish from microphone (low-latency)" << std::endl;
 
-        // Start background audio capture thread
         AudioCaptureThread capture_thread(100); // 100ms chunks
         std::thread audio_thread(&AudioCaptureThread::run, &capture_thread);
 
         std::vector<uint8_t> audio;
         while (true) {
-            // Get audio from capture queue (non-blocking)
-            if (capture_thread.get_audio(audio)) {
-                VoiceCmd_ voice_cmd;
-                voice_cmd.type("streaming");
-                voice_cmd.path("");
-                voice_cmd.data(audio);
-
-                publisher->publish(voice_cmd);
-
-                std::cout << "Published VoiceCmd (streaming)" << std::endl;
-                std::cout << "  Data size: " << voice_cmd.data().size() << " bytes" << std::endl;
-                std::cout << "---------------------------" << std::endl;
-                // No sleep - publish immediately when audio is available
-            } else {
-                // No audio available, brief sleep before retry
-                std::this_thread::sleep_for(std::chrono::milliseconds(10)); // 10ms instead of 200ms
+            if (!capture_thread.get_audio(audio)) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                continue;
             }
+
+            VoiceCmd_ voice_cmd;
+            fill_header(voice_cmd);
+            voice_cmd.priority(VoicePriority_::kNormal); // kNormal: ordinary audio stream
+            voice_cmd.task_id("e7_voice_pub");
+            voice_cmd.type("streaming");
+            voice_cmd.path("");
+            voice_cmd.data(audio);
+            voice_cmd.flag(false); // false: stream not finished yet
+
+            publisher->publish(voice_cmd);
+            std::cout << "Published VoiceCmd (streaming): " << voice_cmd.data().size() << " bytes" << std::endl;
         }
 
         capture_thread.stop();
         audio_thread.join();
+    } else {
+        std::cout << "Unknown mode, use 'file' or 'streaming'" << std::endl;
     }
 
-    std::cout << "Unknown mode, use 'file' or 'streaming'" << std::endl;
     return 0;
 }

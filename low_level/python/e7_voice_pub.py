@@ -3,7 +3,7 @@
 Voice Command Publisher
 
 Supports two modes:
-1. file mode: publish local file paths
+1. file mode: publish a local audio file path once
 2. streaming mode: capture audio from microphone in real-time and publish
 """
 
@@ -16,153 +16,117 @@ import dds_middleware_python as dds
 
 
 class AudioCaptureThread(threading.Thread):
-    """Background thread for continuous low-latency audio capture"""
+    """Background thread for continuous low-latency audio capture (24kHz, mono, 16bit)."""
 
     def __init__(self, chunk_duration_ms=100):
         super().__init__(daemon=True)
         self.chunk_duration_ms = chunk_duration_ms
-        self.audio_queue = queue.Queue(maxsize=2)  # Small buffer to avoid lag
+        self.audio_queue = queue.Queue(maxsize=2)  # small buffer to avoid lag
         self.running = True
 
     def run(self):
-        """Continuously capture audio chunks from microphone"""
-        duration_sec = self.chunk_duration_ms / 1000.0
-
+        process = subprocess.Popen(
+            ["arecord", "-q", "-t", "raw", "-f", "S16_LE", "-c", "1", "-r", "24000"],
+            stdout=subprocess.PIPE,
+            bufsize=0,  # unbuffered for lowest latency
+        )
+        # 24kHz * 16bit mono = 2 bytes/sample
+        bytes_per_chunk = int(24000 * self.chunk_duration_ms / 1000 * 2)
         try:
-            # Start arecord process that will run continuously
-            process = subprocess.Popen(
-                ["arecord", "-q", "-t", "raw", "-f", "S16_LE", "-c", "1", "-r", "24000"],
-                stdout=subprocess.PIPE,
-                bufsize=0  # Unbuffered for lowest latency
-            )
-
-            # Calculate bytes per chunk (24kHz, 16bit, mono = 2 bytes per sample)
-            bytes_per_chunk = int(24000 * duration_sec * 2)
-
             while self.running:
                 chunk = process.stdout.read(bytes_per_chunk)
                 if not chunk:
                     break
-
-                # Drop old chunks if queue is full to maintain real-time performance
-                try:
-                    self.audio_queue.put_nowait(bytearray(chunk))
-                except queue.Full:
-                    # Remove oldest chunk and add new one
-                    try:
-                        self.audio_queue.get_nowait()
-                    except queue.Empty:
-                        pass
-                    try:
-                        self.audio_queue.put_nowait(bytearray(chunk))
-                    except queue.Full:
-                        pass
-
+                # Drop the oldest chunk if the queue is full to stay real-time.
+                if self.audio_queue.full():
+                    self.audio_queue.get_nowait()
+                self.audio_queue.put_nowait(bytearray(chunk))
         except Exception as e:
             print(f"Audio capture thread error: {e}")
         finally:
-            try:
-                process.terminate()
-            except:
-                pass
+            process.terminate()
 
     def get_audio(self):
-        """Get next available audio chunk (non-blocking)"""
+        """Return the next available audio chunk, or None if the queue is empty."""
         try:
             return self.audio_queue.get_nowait()
         except queue.Empty:
             return None
 
     def stop(self):
-        """Stop the capture thread"""
         self.running = False
 
 
-# def capture_audio_chunk():
-#     """
-#     Capture ~100ms of PCM audio from microphone using arecord (24kHz, mono, 16bit)
-#     """
-#     try:
-#         # Capture 100ms of audio (shorter duration = less latency)
-#         result = subprocess.run(
-#             ["arecord", "-q", "-t", "raw", "-f", "S16_LE", "-c", "1", "-r", "24000", "-d", "0.1"],
-#             capture_output=True,
-#             timeout=1
-#         )
-#         return bytearray(result.stdout)
-#     except Exception as e:
-#         print(f"Microphone capture failed: {e}")
-#         return bytearray()
+def make_header():
+    """Build a std_msgs Header stamped with the current time.
+
+    The refactored VoiceCmd (dds-middleware >= 0.23.x) carries a Header,
+    matching the canonical voice publisher examples.
+    """
+    header = dds.Header()
+    stamp = dds.Time()
+    now = time.time()
+    stamp.sec(int(now))
+    stamp.nanosec(int((now - int(now)) * 1e9))
+    header.stamp(stamp)
+    header.frame_id("voice_cmd")
+    return header
 
 
 def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "file"
 
-    # Create DDS middleware instance
     middleware = dds.PyDDSMiddleware(0)
-
-    # Configure QoS
     qos_config = {
         "reliability": "reliable",
         "history_kind": "keep_last",
         "history_depth": 5,
-        "durability": "volatile"
+        "durability": "volatile",
     }
-
-    # Create VoiceCmd publisher
     middleware.createVoiceCmdWriter("rt/voice/cmd", qos_config)
 
-    print(f"Mode: {mode}")
-    print("QoS: RELIABLE, KEEP_LAST(5), VOLATILE")
+    print(f"Mode: {mode}, QoS: RELIABLE, KEEP_LAST(5), VOLATILE")
 
     if mode == "file":
-        # file_path = "/root/test1.wav"
         file_path = "/root/test2.flac"
-        # file_path = "/root/test3.mp3"
 
-        print("File mode: publish local file paths cyclically")
         voice_cmd = dds.VoiceCmd()
+        voice_cmd.header(make_header())
+        voice_cmd.priority(dds.VoicePriority.kNormal)  # kNormal: ordinary audio file
+        voice_cmd.task_id("e7_voice_pub")
         voice_cmd.type("file")
         voice_cmd.path(file_path)
         voice_cmd.data([])
-        # sleep 1 second for dds discovery
-        time.sleep(1)
+        voice_cmd.flag(False)  # stream-end flag, unused in file mode
+
+        time.sleep(1)  # wait for DDS discovery
         middleware.publishVoiceCmd(voice_cmd)
-
-        print("Published VoiceCmd (file)")
-        print(f"  Path: {voice_cmd.path()}")
-        print(f"  Data size: 0 bytes")
-        print("---------------------------")
-
+        print(f"Published VoiceCmd (file): {voice_cmd.path()}")
 
     elif mode == "streaming":
         print("Streaming mode: capture and publish from microphone (low-latency)")
 
-        # Start background audio capture thread
         capture_thread = AudioCaptureThread(chunk_duration_ms=100)
         capture_thread.start()
 
         try:
             while True:
-                # Get audio from capture queue (non-blocking)
                 audio = capture_thread.get_audio()
-
                 if audio is None:
-                    # No audio available, sleep briefly and try again
-                    time.sleep(0.01)  # 10ms instead of 200ms
+                    time.sleep(0.01)
                     continue
 
                 voice_cmd = dds.VoiceCmd()
+                voice_cmd.header(make_header())
+                voice_cmd.priority(dds.VoicePriority.kNormal)  # kNormal: ordinary audio stream
+                voice_cmd.task_id("e7_voice_pub")
                 voice_cmd.type("streaming")
                 voice_cmd.path("")
                 voice_cmd.data(list(audio))
+                voice_cmd.flag(False)  # False: stream not finished yet
 
                 middleware.publishVoiceCmd(voice_cmd)
-
-                print("Published VoiceCmd (streaming)")
-                print(f"  Data size: {len(voice_cmd.data())} bytes")
-                print("---------------------------")
-                # No sleep - publish immediately when audio is available
+                print(f"Published VoiceCmd (streaming): {len(voice_cmd.data())} bytes")
 
         except KeyboardInterrupt:
             print("Stopping streaming...")

@@ -243,12 +243,13 @@ Switches state by name (case-insensitive). Invalid names throw `ValueError`.
 | 6   | `walk()`                  | Switch to walk mode            |                        |
 | 7   | `rl()`                    | Switch to RL mode              |                        |
 | 8   | `flying_trot()`           | Switch to running mode         |                        |
-| 9   | `change_mode()`           | Walk ⇄ Run smooth switch       | :material-new-box: New |
-| 10  | `dance()`                 | Dance (alias: dance0)          |                        |
-| 11  | `jump()`                  | Jump                           |                        |
-| 12  | `wave_hand(duration=5.0)` | Wave hand (alias: wave)        |                        |
-| 13  | `backflip()`              | Backflip                       |                        |
-| 14  | `recovery()`              | Recovery/self-rescue           |                        |
+| 9   | `choreo()`                | Switch to choreography state   |                        |
+| 10  | `change_mode()`           | Walk ⇄ Run smooth switch       | :material-new-box: New |
+| 11  | `dance()`                 | Dance (alias: dance0)          |                        |
+| 12  | `jump()`                  | Jump                           |                        |
+| 13  | `wave_hand(duration=5.0)` | Wave hand (alias: wave)        |                        |
+| 14  | `backflip()`              | Backflip                       |                        |
+| 15  | `recovery()`              | Recovery/self-rescue           |                        |
 
 **Wheeled Robot (miniQuadW) Valid States / Function List:**
 
