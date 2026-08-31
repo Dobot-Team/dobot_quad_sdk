@@ -150,7 +150,7 @@ SDK 提供两层独立的控制接口，均支持 C++ 和 Python：
 | 轮足运动模式          | `wheel_loco()`、`change_mode()` 切换运动模式 |
 | 轮足专属动作          | `drift()`、`handstand()` 等（仅轮足）        |
 
-📖 [RobotClient 接口文档](doc/robot_client_api.zh-CN.md) · [高层控制 API 文档](doc/high_level_api.zh-CN.md)
+📖 [高层控制 API 文档](docs/docs/api/high_level.zh.md)
 
 ### 底层控制层 (DDS)
 
@@ -162,7 +162,7 @@ SDK 提供两层独立的控制接口，均支持 C++ 和 Python：
 | IMU / 电机 / 电池     | 实时传感器数据 |
 | LED / 语音 / 电机指令 | 执行器控制     |
 
-📖 [底层控制 API 文档](doc/low_level_api.zh-CN.md)
+📖 [底层控制 API 文档](docs/docs/api/low_level.zh.md)
 
 > ⚠️ 使用底层电机控制 (E9) 前，**必须**先用 `kill_robot` 工具停止主控程序。见下文。
 
