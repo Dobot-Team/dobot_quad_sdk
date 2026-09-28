@@ -150,7 +150,7 @@ Depends on the robot's main control program. Provides state machine management a
 | Wheel Locomotion             | `wheel_loco()`, `change_mode()` for wheel-legged |
 | Wheel-Specific Motions       | `drift()`, `handstand()` (wheel-legged only)     |
 
-📖 [RobotClient API Docs](doc/robot_client_api.md) · [High-Level API Docs](doc/high_level_api.md)
+📖 [High-Level API Docs](docs/docs/api/high_level.md)
 
 ### Low-Level Control (DDS)
 
@@ -162,7 +162,7 @@ Does NOT depend on the main control program. Direct hardware access:
 | IMU / Motor / Battery   | Real-time sensor data      |
 | LED / Voice / Motor Cmd | Actuator control           |
 
-📖 [Low-Level API Docs](doc/low_level_api.md)
+📖 [Low-Level API Docs](docs/docs/api/low_level.md)
 
 > ⚠️ Before using direct motor control (E9), you **must** stop the robot's main control program with the `kill_robot` tool. See below.
 
