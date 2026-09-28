@@ -31,6 +31,11 @@ import grpc
 import signal
 import sys
 import time
+import warnings
+
+from enum import IntEnum
+from dataclasses import dataclass
+from typing import List, Optional, Tuple, Union
 
 from .proto import grpc_service_pb2 as pb
 from .proto import grpc_service_pb2_grpc as pb_grpc
@@ -49,7 +54,7 @@ VALID_STATES = frozenset(
         "walk",
         "flying_trot",
         "rl",
-        "choreo",
+        "gongxi",
         "dance0",
         "wave",
         "jump",
@@ -68,6 +73,36 @@ VALID_BALANCE_MOTIONS = frozenset(
         "balance_neutral",
     }
 )
+
+#: Valid choreography atomic action names (MINI_QUAD only).
+#: Each is a server-side motion id; the server transparently handles any
+#: state switching the action needs and returns to WALK when it finishes.
+VALID_ATOMIC_ACTIONS = frozenset(
+    {
+        "twirl_jump",   # 跳跃转体 (mimic, 0.7s)
+        "diag_step",    # 对角迈步 (mimic, 5.9s)
+        "hop_step",     # 前腿蹦跳迈步 (mimic, 3.0s)
+        "groove",       # 摇摆律动 (8s)
+        "bounce",       # 点头弹跳 (6s)
+        "body_wave",    # 身体波浪 (8s)
+        "hip_circle",   # 扭屁股/臀画圆 (8s)
+        "head_circle",  # 扭头/头画圆 (8s)
+    }
+)
+
+#: Post-trigger sleep per atomic action: action duration + ~1s settle margin.
+#: The server stream finishes on arrival at the action state; the action body
+#: runs during this sleep and the robot returns to WALK by itself.
+ATOMIC_ACTION_POST_SLEEP_SECONDS = {
+    "twirl_jump": 2.0,
+    "diag_step": 7.0,
+    "hop_step": 4.0,
+    "groove": 9.0,
+    "bounce": 7.0,
+    "body_wave": 9.0,
+    "hip_circle": 9.0,
+    "head_circle": 9.0,
+}
 
 #: Valid gait names for velocity_sequence.
 VALID_GAITS = frozenset({"walk", "flying_trot"})
@@ -118,9 +153,103 @@ MAX_DANCE_SECONDS = 128.0
 DEFAULT_WAVE_SECONDS = 5.0
 FIXED_WAVE_TAIL_SECONDS = 2.0
 
+
+
+class Leg(IntEnum):
+    """Leg and fill-light identifiers (maps to proto LegName)."""
+
+    FL = 1          # Front-left leg light
+    FR = 2          # Front-right leg light
+    RL = 3          # Rear-left leg light
+    RR = 4          # Rear-right leg light
+    FILL_FRONT = 5  # Front fill light
+    FILL_BACK = 6   # Rear fill light
+
+
+class Color(IntEnum):
+    """Predefined LED colors (converted to RGB via _color_to_rgb)."""
+
+    OFF = 0
+    RED = 1
+    ORANGE = 2
+    YELLOW = 3
+    GREEN = 4
+    CYAN = 5
+    BLUE = 6
+    PURPLE = 7
+    WHITE = 8
+
+
+@dataclass
+class LegLedConfig:
+    """Per-leg RGB and brightness entry for batch SetLeds requests."""
+
+    leg: Leg
+    r: int = 0              # Red channel [0, 255]
+    g: int = 0              # Green channel [0, 255]
+    b: int = 0              # Blue channel [0, 255]
+    brightness: int = -1    # [0, 255]; -1 keeps cached brightness
+
+
+
 # =====================================================================
 # Validation Utilities (reusable across all API methods)
 # =====================================================================
+
+def _color_to_rgb(color: Color) -> Tuple[int, int, int]:
+    """Convert a predefined Color to an (r, g, b) tuple."""
+    mapping = {
+        Color.OFF: (0, 0, 0),
+        Color.RED: (255, 0, 0),
+        Color.ORANGE: (255, 165, 0),
+        Color.YELLOW: (255, 255, 0),
+        Color.GREEN: (0, 255, 0),
+        Color.CYAN: (0, 255, 255),
+        Color.BLUE: (0, 0, 255),
+        Color.PURPLE: (128, 0, 128),
+        Color.WHITE: (255, 255, 255),
+    }
+    return mapping.get(color, (0, 0, 0))
+
+
+# Main leg lights in stable wire order for SetLeds padding.
+_MAIN_LEGS: Tuple[Leg, ...] = (Leg.FL, Leg.FR, Leg.RL, Leg.RR)
+
+
+def _is_leg_light(leg: Leg) -> bool:
+    """Return True if leg is one of the four main leg lights."""
+    return leg in _MAIN_LEGS
+
+
+def _validate_leg_light(leg: Leg) -> None:
+    """Reject fill lights for leg-LED set APIs."""
+    if not _is_leg_light(leg):
+        raise ValueError(
+            "Leg LED set APIs only support FL, FR, RL, RR; "
+            "fill lights (FILL_FRONT/FILL_BACK) are not supported"
+        )
+
+
+def _leg_name(leg: Leg) -> str:
+    return leg.name if hasattr(leg, "name") else str(leg)
+
+
+def _scale_rgb_by_brightness(r: int, g: int, b: int, brightness: int) -> Tuple[int, int, int]:
+    """Bake brightness into RGB for hardware that ignores the brightness field.
+
+    Logical color (r,g,b) is kept in the client cache; only the wire payload is scaled:
+    channel' = round(channel * brightness / 255).
+    """
+    bri = int(_clamp(brightness, 0, 255))
+    if bri >= 255:
+        return int(r), int(g), int(b)
+    if bri <= 0:
+        return 0, 0, 0
+    return (
+        (int(r) * bri + 127) // 255,
+        (int(g) * bri + 127) // 255,
+        (int(b) * bri + 127) // 255,
+    )
 
 
 def _clamp(value, lo, hi):
@@ -146,8 +275,8 @@ def clamp_angle(angle):
 def clamp_angle_signed(angle):
     """Clamp angle to [-180, 180] degrees for rotate_walk.
 
-    Negative angles represent clockwise (right turn).
-    Positive angles represent counter-clockwise (left turn).
+    Negative angles represent counter-clockwise (left turn).
+    Positive angles represent clockwise (right turn).
     """
     return _clamp(float(angle), -180.0, 180.0)
 
@@ -186,6 +315,10 @@ def clamp_pose_duration(duration):
 #: Aliases for state names (source -> canonical name registered on server).
 STATE_ALIASES = {
     "emergency": "passive",
+    # ``choreo`` was renamed to ``gongxi`` in v1.3.0. The alias is kept so that
+    # legacy ``set_target_state("choreo")`` calls keep working; the dedicated
+    # ``choreo()`` method below additionally emits a DeprecationWarning.
+    "choreo": "gongxi",
 }
 
 
@@ -203,6 +336,24 @@ def validate_state(state_name):
     all_valid = VALID_STATES | VALID_WHEEL_STATES
     if norm not in all_valid:
         raise ValueError(f"Unknown state '{state_name}'. " f"Valid states: {sorted(all_valid)}")
+    return norm
+
+
+def validate_atomic_action(action_name):
+    """Validate and normalize an atomic action name (case-insensitive).
+
+    Returns:
+        Lowercased action name.
+
+    Raises:
+        ValueError: If action_name is not in VALID_ATOMIC_ACTIONS.
+    """
+    norm = action_name.strip().lower()
+    if norm not in VALID_ATOMIC_ACTIONS:
+        raise ValueError(
+            f"Unknown atomic action '{action_name}'. "
+            f"Valid actions: {sorted(VALID_ATOMIC_ACTIONS)}"
+        )
     return norm
 
 
@@ -284,6 +435,9 @@ class RobotClient:
     def __init__(self, addr="192.168.5.2:50051"):
         self.channel = grpc.insecure_channel(addr)
         self.stub = pb_grpc.gRPCServiceStub(self.channel)
+        # 视频子系统需要裸 IP（RTSP :8554 / go2rtc :1984 / GControll :22000）
+        self._host = str(addr).rsplit(":", 1)[0].strip("[]")
+        self._video_manager = None
         # Seed local state from server, then ensure OA is on.
         # We track these locally because GetRobotState is eventually
         # consistent and may return stale values right after a Set* RPC.
@@ -291,6 +445,7 @@ class RobotClient:
         self._speed_ratio = res.current_speed_ratio if res.success else 50
         self._obstacle_avoidance = True
         self._robot_type = None
+        self._led_cache: dict[Leg, tuple[int, int, int, int]] = {}
         # self.set_obstacle_avoidance(True)
 
     # =================================================================
@@ -357,6 +512,242 @@ class RobotClient:
         self._obstacle_avoidance = resp.current_enabled
         return resp
 
+
+    def set_legs_rgb(
+        self,
+        configs: List[LegLedConfig],
+        default_brightness: int = -1,
+        verbose: bool = False
+    ) -> bool:
+        """Batch-set RGB and brightness for leg lights FL/FR/RL/RR (single RPC).
+
+        Current-version rule (all-or-nothing user control): every SetLeds always
+        carries all four main legs in FL/FR/RL/RR order.
+
+          * Legs present in ``configs`` use the given RGB/brightness.
+          * Legs already in the client cache (previous user set) are resent
+            unchanged so incremental APIs (e.g. set_leg_brightness) keep other
+            legs lit.
+          * Legs never set in this session are padded as RGB=0 (off).
+
+        Brightness is applied by baking into wire RGB
+        (channel * brightness / 255). The wire ``brightness`` field is always
+        sent as 255, because some firmwares ignore dimming via that field and
+        may keep prior intensity when brightness==0 while still applying RGB.
+        The client cache keeps logical (unscaled) RGB + brightness so hue is
+        preserved across set_leg_brightness calls.
+
+        Fill lights (FILL_FRONT/FILL_BACK) are rejected. Duplicate legs in
+        ``configs``: last entry wins.
+
+        Args:
+            configs: Per-leg color/brightness entries.
+            default_brightness: Fallback when config.brightness == -1; uses
+                cache or 255 if unset.
+            verbose: Print full command dump and status messages.
+
+        Returns:
+            True if the server accepted the request, False on RPC error.
+
+        Raises:
+            ValueError: If any RGB channel is outside [0, 255], or if a fill
+                light target is used.
+        """
+        if not configs:
+            return True
+
+        # Resolve explicit overrides (last duplicate wins).
+        explicit: dict[Leg, tuple[int, int, int, int, str]] = {}
+        for cfg in configs:
+            _validate_leg_light(cfg.leg)
+
+            if not (0 <= cfg.r <= 255) or not (0 <= cfg.g <= 255) or not (0 <= cfg.b <= 255):
+                raise ValueError(f"RGB values must be 0-255, got ({cfg.r},{cfg.g},{cfg.b})")
+
+            if cfg.brightness >= 0:
+                final_brightness = int(_clamp(cfg.brightness, 0, 255))
+            else:
+                if default_brightness >= 0:
+                    final_brightness = int(_clamp(default_brightness, 0, 255))
+                else:
+                    cached = self._led_cache.get(cfg.leg)
+                    if cached:
+                        final_brightness = cached[0]
+                    else:
+                        final_brightness = 255
+
+            explicit[cfg.leg] = (final_brightness, cfg.r, cfg.g, cfg.b, "explicit")
+
+        req = pb.SetLedsRequest()
+        dump_lines: List[str] = []
+
+        for leg in _MAIN_LEGS:
+            if leg in explicit:
+                bri, r, g, b, source = explicit[leg]
+            elif leg in self._led_cache:
+                bri, r, g, b = self._led_cache[leg]
+                source = "cache"
+            else:
+                bri, r, g, b = 255, 0, 0, 0
+                source = "pad-off"
+
+            self._led_cache[leg] = (bri, r, g, b)
+
+            wire_r, wire_g, wire_b = _scale_rgb_by_brightness(r, g, b, bri)
+            # Always 255 on the wire: dimming is conveyed solely via scaled RGB.
+            wire_brightness = 255
+
+            cmd = req.commands.add()
+            cmd.leg = leg.value
+            cmd.brightness = wire_brightness
+            cmd.r = wire_r
+            cmd.g = wire_g
+            cmd.b = wire_b
+
+            dump_lines.append(
+                f"  {_leg_name(leg)}: logical rgb({r},{g},{b}) bri={bri} "
+                f"-> wire rgb({wire_r},{wire_g},{wire_b}) brightness={wire_brightness} "
+                f"[{source}]"
+            )
+
+        if verbose:
+            print(f"[LED] SetLeds commands ({len(req.commands)}):")
+            for line in dump_lines:
+                print(line)
+
+        try:
+            resp = self.stub.SetLeds(req)
+            if not resp.accepted:
+                if verbose:
+                    print(f"[LED] Batch rejected: {resp.message}")
+                return False
+            if verbose:
+                print("[LED] Batch accepted.")
+            return True
+        except grpc.RpcError as e:
+            print(f"[LED] gRPC error: {e.code().name} - {e.details()}")
+            return False
+    
+    def set_leg_rgb(
+        self,
+        leg: Leg,
+        r: int,
+        g: int,
+        b: int,
+        brightness: int = -1,
+        verbose: bool = False
+    ) -> bool:
+        """Set RGB for a single leg light (FL/FR/RL/RR only).
+
+        Args:
+            leg: Target leg light (not fill lights).
+            r, g, b: Color channels [0, 255].
+            brightness: [0, 255]; -1 keeps cached brightness (default 255).
+            verbose: Print status messages.
+        """
+        return self.set_legs_rgb(
+            [LegLedConfig(leg=leg, r=r, g=g, b=b, brightness=brightness)],
+            default_brightness=-1,
+            verbose=verbose
+        )
+
+    def set_leg_color(
+        self,
+        leg: Leg,
+        color: Color,
+        verbose: bool = False
+    ) -> bool:
+        """Set a predefined color on a single leg (brightness from cache)."""
+        r, g, b = _color_to_rgb(color)
+        return self.set_leg_rgb(leg, r, g, b, brightness=-1, verbose=verbose)
+
+    def set_leg_brightness(
+        self,
+        leg: Leg,
+        brightness: int,
+        verbose: bool = False
+    ) -> bool:
+        """Adjust brightness only; hue is taken from cache (white if unset)."""
+        cached = self._led_cache.get(leg)
+        if cached:
+            _, r, g, b = cached
+        else:
+            r, g, b = 255, 255, 255
+        return self.set_leg_rgb(leg, r, g, b, brightness=brightness, verbose=verbose)
+
+    def set_all_legs_rgb(
+        self,
+        r: int,
+        g: int,
+        b: int,
+        brightness: int = 255,
+        verbose: bool = False
+    ) -> bool:
+        """Set all four main leg lights (FL/FR/RL/RR) to the same RGB."""
+        configs = [
+            LegLedConfig(leg=Leg.FL, r=r, g=g, b=b, brightness=brightness),
+            LegLedConfig(leg=Leg.FR, r=r, g=g, b=b, brightness=brightness),
+            LegLedConfig(leg=Leg.RL, r=r, g=g, b=b, brightness=brightness),
+            LegLedConfig(leg=Leg.RR, r=r, g=g, b=b, brightness=brightness),
+        ]
+        return self.set_legs_rgb(configs, verbose=verbose)
+
+    def set_all_legs_color(
+        self,
+        color: Color,
+        brightness: int = 255,
+        verbose: bool = False
+    ) -> bool:
+        """Set all four main leg lights to a predefined color."""
+        r, g, b = _color_to_rgb(color)
+        return self.set_all_legs_rgb(r, g, b, brightness, verbose)
+
+    def turn_off_leg(self, leg: Leg, verbose: bool = False) -> bool:
+        """Turn a leg light off (RGB=0) while keeping user control and cached brightness."""
+        cached = self._led_cache.get(leg)
+        brightness = cached[0] if cached else 255
+        return self.set_leg_rgb(leg, 0, 0, 0, brightness=brightness, verbose=verbose)
+
+    def reset_legs(
+        self,
+        legs: Optional[List[Leg]] = None,
+        verbose: bool = False
+    ) -> bool:
+        """Release LED control to the robot's default logic.
+
+        Args:
+            legs: Legs to reset; None or empty list resets all legs and fill lights.
+            verbose: Print status messages.
+
+        Returns:
+            True if the server accepted the request, False on RPC error.
+        """
+        req = pb.ResetLedsRequest()
+        if legs:
+            for leg in legs:
+                req.legs.append(leg.value)
+
+        try:
+            resp = self.stub.ResetLeds(req)
+            if not resp.accepted:
+                if verbose:
+                    print(f"[LED] Reset rejected: {resp.message}")
+                return False
+
+            if legs:
+                for leg in legs:
+                    self._led_cache.pop(leg, None)
+            else:
+                self._led_cache.clear()
+
+            if verbose:
+                target = "all legs" if not legs else f"{len(legs)} leg(s)"
+                print(f"[LED] Control released for {target}.")
+            return True
+        except grpc.RpcError as e:
+            print(f"[LED] gRPC error on reset: {e.code().name} - {e.details()}")
+            return False
+    
     # =================================================================
     # Core RPC: Execution
     # =================================================================
@@ -470,9 +861,23 @@ class RobotClient:
             "flying_trot", DEFAULT_STATE_POST_SLEEP_SECONDS, show_progress
         )
 
+    def gongxi(self, show_progress=True):
+        """切换到 GONGXI 状态。"""
+        return self._set_state_with_delay("gongxi", 11.5, show_progress)
+
     def choreo(self, show_progress=True):
-        """切换到 CHOREO 编舞状态。"""
-        return self._set_state_with_delay("choreo", DEFAULT_STATE_POST_SLEEP_SECONDS, show_progress)
+        """[已废弃] v1.2.0 的旧方法名，等价于 :meth:`gongxi`。
+
+        ``choreo`` 状态自 v1.3.0 起更名为 ``gongxi``（恭喜/作揖）。本方法仅为
+        兼容旧代码保留，调用时会发出 ``DeprecationWarning``，并将在后续版本中移除。
+        """
+        warnings.warn(
+            "RobotClient.choreo() has been renamed to gongxi(); "
+            "use gongxi() instead. choreo() will be removed in a future release.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.gongxi(show_progress=show_progress)
 
     def dance0(self, show_progress=True, duration=DEFAULT_DANCE_SECONDS):
         duration = self._validate_dance_duration(duration)
@@ -515,6 +920,58 @@ class RobotClient:
     def change_mode(self, show_progress=True):
         """切换腿部构型（膝盖模式切换）。"""
         return self.execute("change_mode", show_progress=show_progress)
+
+    # =================================================================
+    # Choreography Atomic Actions (MINI_QUAD only)
+    # =================================================================
+
+    def atomic_action(self, action_name: str, show_progress=True):
+        """Trigger a choreography atomic action by name. Case-insensitive.
+
+        The server handles any state switching the action needs and returns
+        to WALK when the action finishes; this call sleeps through the
+        action duration (plus settle margin) after a successful trigger.
+
+        Raises:
+            ValueError: If action_name is not a valid atomic action.
+        """
+        norm = validate_atomic_action(action_name)
+        res = self.execute(norm, show_progress=show_progress)
+        if self._is_success(res):
+            time.sleep(ATOMIC_ACTION_POST_SLEEP_SECONDS[norm])
+        return res
+
+    def twirl_jump(self, show_progress=True):
+        """跳跃转体（mimic 策略，约 0.7s）。"""
+        return self.atomic_action("twirl_jump", show_progress)
+
+    def diag_step(self, show_progress=True):
+        """对角迈步（mimic 策略，约 5.9s）。"""
+        return self.atomic_action("diag_step", show_progress)
+
+    def hop_step(self, show_progress=True):
+        """前腿蹦跳迈步（mimic 策略，约 3.0s）。"""
+        return self.atomic_action("hop_step", show_progress)
+
+    def groove(self, show_progress=True):
+        """摇摆律动（WBC 体动，8s）。"""
+        return self.atomic_action("groove", show_progress)
+
+    def bounce(self, show_progress=True):
+        """点头弹跳（WBC 体动，6s）。"""
+        return self.atomic_action("bounce", show_progress)
+
+    def body_wave(self, show_progress=True):
+        """身体波浪（WBC 体动，8s）。"""
+        return self.atomic_action("body_wave", show_progress)
+
+    def hip_circle(self, show_progress=True):
+        """扭屁股（臀画圆，WBC 体动，8s）。"""
+        return self.atomic_action("hip_circle", show_progress)
+
+    def head_circle(self, show_progress=True):
+        """扭头（头画圆，WBC 体动，8s）。"""
+        return self.atomic_action("head_circle", show_progress)
 
     # =================================================================
     # State Switching – MINI_QUAD_WHEEL (轮足)
@@ -627,19 +1084,19 @@ class RobotClient:
         )
 
     def balance_pitch(self, value, duration=2.0, mode="dynamic", show_progress=True):
-        """Pitch (nod). value in degrees, >0: forward, <0: backward. [-15, 15]"""
+        """Pitch (nod). value in degrees, >0: forward, <0: backward. [-11.5, 11.5]"""
         return self._balance_motion("balance_pitch", value, duration, mode, show_progress)
 
     def balance_yaw(self, value, duration=2.0, mode="dynamic", show_progress=True):
-        """Yaw (look). value in degrees, >0: right, <0: left. [-20, 20]"""
+        """Yaw (look). value in degrees, >0: right, <0: left. [-11.5, 11.5]"""
         return self._balance_motion("balance_yaw", value, duration, mode, show_progress)
 
     def balance_roll(self, value, duration=2.0, mode="dynamic", show_progress=True):
-        """Roll (lean). value in degrees, >0: left, <0: right. [-30, 30]"""
+        """Roll (lean). value in degrees, >0: left, <0: right. [-17.0, 17.0]"""
         return self._balance_motion("balance_roll", value, duration, mode, show_progress)
 
     def balance_height(self, value, duration=2.0, mode="dynamic", show_progress=True):
-        """Height. value in meters, <0: squat. [-0.12, 0.0]"""
+        """Height. value in meters, <0: squat. [-0.08, 0.0]"""
         return self._balance_motion("balance_height", value, duration, mode, show_progress)
 
     def balance_neutral(self, duration=0.5, show_progress=True):
@@ -724,7 +1181,7 @@ class RobotClient:
 
         Args:
             direction: "left"/"right" or 0/1.
-            angle: degrees [0, 360].
+            angle: degrees [0, 3600].
 
         Raises:
             ValueError: If direction is invalid.
@@ -783,10 +1240,10 @@ class RobotClient:
 
         Args:
             duration: 持续时间（秒），钳位到 [1, 5]。
-            roll_deg:   横滚角度（度）[-30, 30]，0 不动。
-            pitch_deg:  俯仰角度（度）[-15, 15]，0 不动。
-            yaw_deg:    偏航角度（度）[-20, 20]，>0 向右，<0 向左，0 不动。
-            height_m:   高度偏移（米）[-0.12, 0.0]，0 不动。
+            roll_deg:   横滚角度（度）[-17.0, 17.0]，0 不动。
+            pitch_deg:  俯仰角度（度）[-11.5, 11.5]，0 不动。
+            yaw_deg:    偏航角度（度）[-11.5, 11.5]，>0 向右，<0 向左，0 不动。
+            height_m:   高度偏移（米）[-0.08, 0.0]，0 不动。
         """
         return self._pose_motion(
             "dynamic_pose",
@@ -811,10 +1268,10 @@ class RobotClient:
 
         Args:
             duration: 保持时间（秒），钳位到 [1, 5]。
-            roll_deg:   横滚角度（度）[-30, 30]，0 不动。
-            pitch_deg:  俯仰角度（度）[-15, 15]，0 不动。
-            yaw_deg:    偏航角度（度）[-20, 20]，>0 向右，<0 向左，0 不动。
-            height_m:   高度偏移（米）[-0.12, 0.0]，0 不动。
+            roll_deg:   横滚角度（度）[-17.0, 17.0]，0 不动。
+            pitch_deg:  俯仰角度（度）[-11.5, 11.5]，0 不动。
+            yaw_deg:    偏航角度（度）[-11.5, 11.5]，>0 向右，<0 向左，0 不动。
+            height_m:   高度偏移（米）[-0.08, 0.0]，0 不动。
         """
         return self._pose_motion(
             "static_pose",
@@ -882,7 +1339,39 @@ class RobotClient:
             time.sleep(delay_seconds)
         return res
 
+    # =================================================================
+    # Camera video streaming (robot.video)
+    # =================================================================
+
+    @property
+    def video(self):
+        """Camera video streaming (``robot.video``).
+
+        Independent of motion control: video goes over RTSP, not through the gRPC
+        channel, so big media packets never hold up your motion commands. The
+        object is created on first use, so programs that do not use the camera
+        pay nothing for it.
+
+        The SDK only switches the stream on and watches it: ``open()`` blocks
+        until data is really flowing and returns an RTSP address; pulling,
+        decoding and muxing are up to your own player.
+
+        Usage::
+
+            uri = robot.video.open(CameraId.FRONT_RGB)   # blocks until data flows
+            # open uri with OpenCV / ffmpeg / VLC
+            robot.video.close(CameraId.FRONT_RGB)
+        """
+        if self._video_manager is None:
+            from .video import VideoStreamManager
+
+            self._video_manager = VideoStreamManager(self._host)
+        return self._video_manager
+
     def close(self):
+        if self._video_manager is not None:
+            self._video_manager.close_all()
+            self._video_manager = None
         self.channel.close()
 
     def __enter__(self):

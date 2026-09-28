@@ -66,7 +66,7 @@ class TestPredefinedStates:
         ("balance_stand", "balance_stand"),
         ("walk", "walk"),
         ("flying_trot", "flying_trot"),
-        ("choreo", "choreo"),
+        ("gongxi", "gongxi"),
         ("dance0", "dance0"),
         ("wave", "wave"),
         ("jump", "jump"),
@@ -117,6 +117,44 @@ class TestRemovedMethods:
         assert not hasattr(robot, name), f"{name} should not exist"
 
 
+class TestDeprecatedChoreoAlias:
+    """§5.5 choreo() — v1.2.0 name kept as a deprecated alias for gongxi()."""
+
+    def test_choreo_warns_and_forwards_to_gongxi(self, robot):
+        """choreo() must warn and send the renamed gongxi motion id."""
+        robot._mock_stub.ExecuteSequence.return_value = iter(
+            [_make_progress_final(True)])
+        with pytest.warns(DeprecationWarning, match="gongxi"):
+            robot.choreo(show_progress=False)
+        req = robot._mock_stub.ExecuteSequence.call_args.args[0]
+        assert req.sequence.motions[0].motion_id == "gongxi"
+
+    def test_choreo_keeps_gongxi_post_sleep(self, robot):
+        """The alias must inherit the 11.5s gongxi post-trigger delay."""
+        robot._mock_sleep.reset_mock()
+        robot._mock_stub.ExecuteSequence.return_value = iter(
+            [_make_progress_final(True)])
+        with pytest.warns(DeprecationWarning):
+            robot.choreo(show_progress=False)
+        robot._mock_sleep.assert_called_once_with(11.5)
+
+    def test_choreo_returns_underlying_result(self, robot):
+        """A forwarding alias must not swallow the gongxi() return value."""
+        robot._mock_stub.ExecuteSequence.return_value = iter(
+            [_make_progress_final(True)])
+        with pytest.warns(DeprecationWarning):
+            res = robot.choreo(show_progress=False)
+        assert res is not None
+
+    def test_set_target_state_accepts_legacy_choreo(self, robot):
+        """set_target_state("choreo") is mapped to gongxi (silent alias)."""
+        robot._mock_stub.ExecuteSequence.return_value = iter(
+            [_make_progress_final(True)])
+        robot.set_target_state("choreo", show_progress=False)
+        req = robot._mock_stub.ExecuteSequence.call_args.args[0]
+        assert req.sequence.motions[0].motion_id == "gongxi"
+
+
 class TestChangeMode:
     """§5.3 change_mode — switch knee configuration."""
 
@@ -143,7 +181,7 @@ class TestStatePostSleep:
     @pytest.mark.parametrize("method_name, expected", [
         ("stand_down", 2.0),
         ("balance_stand", 2.0),
-        ("choreo", 2.0),
+        ("gongxi", 11.5),
         ("jump", 3.0),
         ("recovery", 4.0),
     ])
@@ -163,14 +201,14 @@ class TestStatePostSleep:
 
 
 class TestDanceConfigurableDuration:
-    """dance / dance0 support configurable duration with constraints [1, 14]."""
+    """dance / dance0 support configurable duration with constraints [4, 128]."""
 
-    def test_dance_default_13_seconds(self, robot):
+    def test_dance_default_duration(self, robot):
         robot._mock_sleep.reset_mock()
         robot._mock_stub.ExecuteSequence.return_value = iter(
             [_make_progress_final(True)])
         robot.dance(show_progress=False)
-        robot._mock_sleep.assert_called_once_with(13.0)
+        robot._mock_sleep.assert_called_once_with(126.5)
 
     def test_dance_custom_duration(self, robot):
         robot._mock_sleep.reset_mock()
@@ -179,7 +217,7 @@ class TestDanceConfigurableDuration:
         robot.dance(5, show_progress=False)
         robot._mock_sleep.assert_called_once_with(5.0)
 
-    @pytest.mark.parametrize("bad_duration", [0, 0.5, 14.5, 20, -1])
+    @pytest.mark.parametrize("bad_duration", [0, 0.5, 3.9, 128.5, 200, -1])
     def test_dance_invalid_duration_raises(self, robot, bad_duration):
         with pytest.raises(ValueError, match="dance duration must be in"):
             robot.dance(bad_duration, show_progress=False)

@@ -79,6 +79,13 @@ def _make_progress_final(success=True, msg=""):
     return p
 
 
+def _make_set_leds_response(accepted=True, message=""):
+    resp = MagicMock()
+    resp.accepted = accepted
+    resp.message = message
+    return resp
+
+
 # ---------------------------------------------------------------------------
 # Core fixture: a RobotClient with a fully-mocked gRPC stub
 # ---------------------------------------------------------------------------
@@ -98,6 +105,8 @@ def mock_stub():
                                                       message="")
     # ExecuteSequence returns an iterable of progress messages
     stub.ExecuteSequence.return_value = iter([_make_progress_final(True)])
+    stub.SetLeds.return_value = _make_set_leds_response(True)
+    stub.ResetLeds.return_value = _make_set_leds_response(True)
     return stub
 
 

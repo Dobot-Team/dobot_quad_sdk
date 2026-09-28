@@ -1,10 +1,10 @@
 """test_balance.py — Balance & Dynamic Pose tests (§9, §10).
 
 Covers:
-  - Individual balance methods (value clamped per axis, duration clamped [0.5, 10])
+  - Individual balance methods (value clamped per axis, duration clamped [0.5, 5])
   - balance_sequence (motion_id validation, value clamping)
   - _balance_motion validation
-  - dynamic_pose (duration clamped [0.5, 10]s, value per axis)
+  - dynamic_pose (duration clamped [1, 5]s, value per axis)
   - dance alias
 """
 
@@ -70,13 +70,13 @@ class TestBalanceMotionValidation:
     @pytest.mark.parametrize(
         "val_in, expected",
         [
-            (-50.0, -15.0),
-            (-15.0, -15.0),
+            (-50.0, -11.5),
+            (-11.5, -11.5),
             (-10.0, -10.0),
             (0.0, 0.0),
-            (15.0, 15.0),
-            (20.0, 15.0),
-            (50.0, 15.0),
+            (11.5, 11.5),
+            (20.0, 11.5),
+            (50.0, 11.5),
         ],
     )
     def test_pitch_value_clamped(self, robot, val_in, expected):
@@ -96,8 +96,8 @@ class TestBalanceMotionValidation:
     @pytest.mark.parametrize(
         "val_in, expected",
         [
-            (-0.20, -0.12),
-            (-0.12, -0.12),
+            (-0.20, -0.08),
+            (-0.08, -0.08),
             (-0.05, -0.05),
             (0.0, 0.0),
             (0.05, 0.0),
@@ -169,16 +169,16 @@ class TestBalanceSequence:
                 show_progress=False,
             )
 
-    # value clamping inside balance_sequence (balance_roll [-30,30])
+    # value clamping inside balance_sequence (balance_roll [-17, 17])
     @pytest.mark.parametrize(
         "val_in, expected",
         [
-            (-50.0, -30.0),
-            (-30.0, -30.0),
+            (-50.0, -17.0),
+            (-17.0, -17.0),
             (-10.0, -10.0),
             (0.0, 0.0),
-            (20.0, 20.0),
-            (50.0, 30.0),
+            (20.0, 17.0),
+            (50.0, 17.0),
         ],
     )
     def test_value_clamped_in_sequence(self, robot, val_in, expected):
@@ -200,7 +200,7 @@ class TestBalanceSequence:
 class TestDynamicPose:
     """§10 dynamic_pose — multi-axis pose with value/duration/mode.
 
-    Duration clamped to [0.5, 10]s.
+    Duration clamped to [1, 5]s.
     """
 
     def test_normal_duration(self, robot):
