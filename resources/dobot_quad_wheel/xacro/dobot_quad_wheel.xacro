@@ -55,8 +55,8 @@
       link="link_trunk" />
   </joint>
   <xacro:include filename="$(find dobot_quad_wheel)/xacro/leg_dobot_quad_collision_complete.xacro"/>
-  <xacro:leg_dobot_quad name="front_left"  hip_x="0.2525" hip_y="0.07"  x_sign="1" y_sign="1"/>
-  <xacro:leg_dobot_quad name="front_right" hip_x="0.2525" hip_y="-0.07" x_sign="1" y_sign="-1"/>
-  <xacro:leg_dobot_quad name="rear_left"  hip_x="-0.2525" hip_y="0.07" x_sign="-1" y_sign="1"/>
-  <xacro:leg_dobot_quad name="rear_right" hip_x="-0.2525" hip_y="-0.07" x_sign="-1" y_sign="-1"/>
+  <xacro:leg_dobot_quad name="front_left"  hip_x="0.2525" hip_y="0.062"  x_sign="1" y_sign="1"/>
+  <xacro:leg_dobot_quad name="front_right" hip_x="0.2525" hip_y="-0.062" x_sign="1" y_sign="-1"/>
+  <xacro:leg_dobot_quad name="rear_left"  hip_x="-0.2525" hip_y="0.062" x_sign="-1" y_sign="1"/>
+  <xacro:leg_dobot_quad name="rear_right" hip_x="-0.2525" hip_y="-0.062" x_sign="-1" y_sign="-1"/>
 </robot>
