@@ -5,7 +5,7 @@ This guide covers the installation of Dobot Quad SDK for both high-level (gRPC) 
 ## 1. Prerequisites
 
 - **OS**: Ubuntu 22.04
-- **Python**: 3.10+
+- **Python**: 3.10+ with **pip 23 or newer** (`python3 -m pip install -U pip`)
 - **CMake**: 3.16+
 - **Compiler**: GCC/G++ 9+
 - **OpenCV**: 4.5.4 (tested)
@@ -25,6 +25,15 @@ This guide covers the installation of Dobot Quad SDK for both high-level (gRPC) 
 cd high_level/python
 pip install .          # or pip install -e . for development
 ```
+
+!!! warning "Upgrade pip first on Ubuntu 22.04"
+    The pip shipped with Ubuntu 22.04 (22.0.2) is too old to read the project
+    metadata:
+
+    ```bash
+    python3 -m pip install -U pip     # need pip 23 or newer
+    cd high_level/python && pip install .
+    ```
 
 ### C++
 
@@ -49,7 +58,7 @@ export CYCLONEDDS_HOME="/usr/local/"
 
 ### Configure DDS Network Interface
 
-Edit [cyclonedds.xml](../../cyclonedds.xml) (place this file from the project onto the machine using the SDK, and replace `<USER_PORT_INTERFACE>` with your network interface name such as `enp2s0`):
+Edit [cyclonedds.xml](https://github.com/Dobot-Team/dobot_quad_sdk/blob/main/cyclonedds.xml) (place this file from the project onto the machine using the SDK, and replace `<USER_PORT_INTERFACE>` with your network interface name such as `enp2s0`):
 
 ```xml
 <NetworkInterfaces>"<USER_PORT_INTERFACE>"</NetworkInterfaces>

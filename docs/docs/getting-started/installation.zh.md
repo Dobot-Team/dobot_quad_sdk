@@ -5,7 +5,7 @@
 ## 一、环境要求
 
 - **系统**: Ubuntu 22.04
-- **Python**: 3.10+
+- **Python**: 3.10+，且 **pip ≥ 23**（升级：`python3 -m pip install -U pip`）
 - **CMake**: 3.16+
 - **编译器**: GCC/G++ 9+
 - **OpenCV**: 4.5.4 (测试版本)
@@ -25,6 +25,16 @@
 cd high_level/python
 pip install .          # 开发模式: pip install -e .
 ```
+
+!!! warning "Ubuntu 22.04 上的 pip 要先升级"
+    系统自带的 pip 22.0.2 太老，读不出本项目的元数据，构建会**静默产出一个空的
+    `UNKNOWN-0.0.0`**（终端还显示 `Successfully installed UNKNOWN`），随后
+    `import dobot_quad` 依旧报 `ModuleNotFoundError`。先升级 pip 再装：
+
+    ```bash
+    python3 -m pip install -U pip     # 需要 pip ≥ 23
+    cd high_level/python && pip install .
+    ```
 
 ### C++
 
@@ -49,7 +59,7 @@ export CYCLONEDDS_HOME="/usr/local/"
 
 ### 配置 DDS 网络接口
 
-编辑 [cyclonedds.xml](../../cyclonedds.xml)（将项目中的此文件放到使用SDK的机器上，将 `<USER_PORT_INTERFACE>` 替换为你的网卡名，如 `enp2s0`）：
+编辑 [cyclonedds.xml](https://github.com/Dobot-Team/dobot_quad_sdk/blob/main/cyclonedds.xml)（将项目中的此文件放到使用SDK的机器上，将 `<USER_PORT_INTERFACE>` 替换为你的网卡名，如 `enp2s0`）：
 
 ```xml
 <NetworkInterfaces>"<USER_PORT_INTERFACE>"</NetworkInterfaces>

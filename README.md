@@ -146,9 +146,14 @@ Depends on the robot's main control program. Provides state machine management a
 | Velocity Sequence            | Send walking velocity commands                   |
 | Robot State Query            | Joints, pose, battery, etc.                      |
 | Balance Motion Control       | Posture control in balance stand (legged only)   |
+| Composite Pose Control       | Dynamic & static pose (roll/pitch/yaw/height)    |
+| LED Control                  | Per-leg RGB control with predefined colors       |
+| Atomic Choreography          | Single-motion actions (twirl, groove, bounce...) |
 | Wheel/Leg Mode Detection     | Check robot type via `is_quad_wheel()`           |
 | Wheel Locomotion             | `wheel_loco()`, `change_mode()` for wheel-legged |
 | Wheel-Specific Motions       | `drift()`, `handstand()` (wheel-legged only)     |
+| Safety Handler               | Auto-recovery on Ctrl+C interruption             |
+| Camera Video Streaming       | `robot.video.open()` returns an RTSP address      |
 
 📖 [High-Level API Docs](docs/docs/api/high_level.md)
 
@@ -197,8 +202,9 @@ dobot_quad_sdk/
 │   ├── cpp/             # C++ subscribers/publishers + examples
 │   └── python/          # Python subscribers/publishers + examples
 ├── resources/           # Robot URDF models (legged & wheel-legged)
-├── doc/                 # API documentation
-└── utils/               # Utility scripts
+├── docs/                # API documentation (MkDocs)
+├── dist/                # Pre-built DDS middleware packages
+└── utils/               # Utility scripts (audio convert, recovery)
 ```
 
 ---

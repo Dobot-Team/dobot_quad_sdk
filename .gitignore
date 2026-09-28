@@ -13,3 +13,13 @@
 **/*.egg-info/
 
 **/.cache
+
+**/.claude
+
+# 本地离线预览站点产物（双击 HTML 用），不进仓库
+docs/site-offline/
+
+# 覆盖率产物
+**/.coverage
+**/coverage.xml
+**/htmlcov/

@@ -25,6 +25,11 @@ cd high_level/cpp/build
 ./e1_get_available_motions
 ```
 
+Camera examples live in the same directory (`./e12_video_stream --pull`). The
+video feature is header-only: `#include "video/video_client.h"` next to
+`robot_client.h` and link `Threads::Threads` - see
+[Camera Video Streaming](../api/high_level.md#215-camera-video-streaming).
+
 ## 3. Running Low-Level Examples
 
 !!! note "DDS Environment Required"

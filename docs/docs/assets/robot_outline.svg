@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  本体图（示意图 / 俯视）
+  - 相机编号：camera0 / camera1（纯 RGB）、camera2 / camera3（深度相机，含 RGB 输出）
+  - 同时标注 RTSP 推流名（与 DDS 话题编号不同，整体偏移 1）
+  - 电机编号：每条腿 4 个关节电机，共 16 个
+
+  ⚠️ 本图为**示意**用途，用于说明编号与位置的对应关系；
+     正式对外文档建议替换为**产品实物图 / 渲染图**并在其上标注。
+     相机与电机在机身上的具体安装位置（上下/左右排列）请以实物为准。
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700"
+     font-family="-apple-system, 'Segoe UI', 'Noto Sans CJK SC', 'Source Han Sans SC', 'Microsoft YaHei', sans-serif">
+
+  <defs>
+    <style>
+      .title   { font-size: 20px; font-weight: 700; fill: #1a1a1a; }
+      .sub     { font-size: 13px; fill: #666; }
+      .body    { fill: #e8eef7; stroke: #4a6fa5; stroke-width: 2.5; }
+      .leg     { fill: #d6e0ee; stroke: #4a6fa5; stroke-width: 2; }
+      .camRGB  { fill: #ffe0b2; stroke: #e08a00; stroke-width: 2.5; }
+      .camDep  { fill: #cfe8d5; stroke: #2e8b57; stroke-width: 2.5; }
+      .lbl     { font-size: 13px; fill: #1a1a1a; font-weight: 600; }
+      .lbl-s   { font-size: 11px; fill: #444; }
+      .lbl-w   { font-size: 11px; fill: #666; }
+      .motor   { font-size: 12px; fill: #2f4f6f; font-weight: 600; }
+      .leader  { stroke: #999; stroke-width: 1.2; stroke-dasharray: 4 3; fill: none; }
+      .front   { font-size: 15px; font-weight: 700; fill: #c0392b; letter-spacing: 2px; }
+      .panel   { fill: #fafafa; stroke: #ddd; stroke-width: 1; }
+      .panel-h { font-size: 13px; font-weight: 700; fill: #333; }
+      .panel-t { font-size: 12px; fill: #333; }
+      .legend  { font-size: 12px; fill: #333; }
+    </style>
+  </defs>
+
+  <rect width="900" height="700" fill="#ffffff"/>
+  <text class="title" x="40" y="42">本体图 — 相机 / 电机编号对照（俯视示意）</text>
+  <text class="sub"  x="40" y="64">相机编号（DDS 话题）与 RTSP 推流名为两套编号，本机型整体偏移 1，请勿跨层推断</text>
+
+  <!-- ================= 前 / 后 方向 ================= -->
+  <text class="front" x="450" y="118" text-anchor="middle">▲ 前 FRONT</text>
+  <text class="lbl-w" x="450" y="620" text-anchor="middle">▼ 后 REAR</text>
+
+  <!-- ================= 机身 ================= -->
+  <rect class="body" x="300" y="230" width="300" height="190" rx="26"/>
+  <text class="lbl-w" x="450" y="330" text-anchor="middle">机身</text>
+
+  <!-- ================= 四条腿 ================= -->
+  <!-- 左前 -->
+  <rect class="leg" x="215" y="205" width="75" height="115" rx="14"/>
+  <text class="motor" x="252" y="258" text-anchor="middle">0–3</text>
+  <text class="lbl-s" x="252" y="276" text-anchor="middle">左前腿</text>
+  <!-- 右前 -->
+  <rect class="leg" x="610" y="205" width="75" height="115" rx="14"/>
+  <text class="motor" x="647" y="258" text-anchor="middle">4–7</text>
+  <text class="lbl-s" x="647" y="276" text-anchor="middle">右前腿</text>
+  <!-- 左后 -->
+  <rect class="leg" x="215" y="330" width="75" height="115" rx="14"/>
+  <text class="motor" x="252" y="383" text-anchor="middle">8–11</text>
+  <text class="lbl-s" x="252" y="401" text-anchor="middle">左后腿</text>
+  <!-- 右后 -->
+  <rect class="leg" x="610" y="330" width="75" height="115" rx="14"/>
+  <text class="motor" x="647" y="383" text-anchor="middle">12–15</text>
+  <text class="lbl-s" x="647" y="401" text-anchor="middle">右后腿</text>
+
+  <!-- ================= 相机：前 ================= -->
+  <!-- camera0 : 前置 RGB -->
+  <circle class="camRGB" cx="360" cy="230" r="16"/>
+  <text class="lbl" x="360" y="236" text-anchor="middle" style="font-size:11px;">c0</text>
+  <path class="leader" d="M360 214 L360 166"/>
+  <text class="lbl" x="360" y="160" text-anchor="middle">camera0 · 前置 RGB</text>
+  <text class="lbl-w" x="360" y="146" text-anchor="middle">纯 RGB 相机</text>
+
+  <!-- camera2 : 前置深度 -->
+  <circle class="camDep" cx="540" cy="230" r="16"/>
+  <text class="lbl" x="540" y="236" text-anchor="middle" style="font-size:11px;">c2</text>
+  <path class="leader" d="M540 214 L540 166"/>
+  <text class="lbl" x="540" y="160" text-anchor="middle">camera2 · 前置深度相机</text>
+  <text class="lbl-w" x="540" y="146" text-anchor="middle">深度 + RGB</text>
+
+  <!-- ================= 相机：后 ================= -->
+  <!-- camera1 : 后置 RGB -->
+  <circle class="camRGB" cx="360" cy="420" r="16"/>
+  <text class="lbl" x="360" y="426" text-anchor="middle" style="font-size:11px;">c1</text>
+  <path class="leader" d="M360 436 L360 486"/>
+  <text class="lbl" x="360" y="502" text-anchor="middle">camera1 · 后置 RGB</text>
+  <text class="lbl-w" x="360" y="517" text-anchor="middle">纯 RGB 相机</text>
+
+  <!-- camera3 : 后置深度 -->
+  <circle class="camDep" cx="540" cy="420" r="16"/>
+  <text class="lbl" x="540" y="426" text-anchor="middle" style="font-size:11px;">c3</text>
+  <path class="leader" d="M540 436 L540 486"/>
+  <text class="lbl" x="540" y="502" text-anchor="middle">camera3 · 后置深度相机</text>
+  <text class="lbl-w" x="540" y="517" text-anchor="middle">深度 + RGB</text>
+
+  <!-- ================= 图例 ================= -->
+  <rect class="panel" x="40" y="540" width="240" height="136" rx="8"/>
+  <text class="panel-h" x="56" y="563">图例</text>
+  <circle class="camRGB" cx="66" cy="584" r="8"/>
+  <text class="legend" x="84" y="589">纯 RGB 相机（camera0 / camera1）</text>
+  <circle class="camDep" cx="66" cy="612" r="8"/>
+  <text class="legend" x="84" y="617">深度相机（camera2 / camera3）</text>
+
+  <!-- ================= 对照表 ================= -->
+  <rect class="panel" x="300" y="540" width="560" height="136" rx="8"/>
+  <text class="panel-h" x="316" y="562">编号对照（已真机验证）</text>
+
+  <text class="panel-t" x="316" y="584" font-weight="700" fill="#555">物理相机</text>
+  <text class="panel-t" x="452" y="584" font-weight="700" fill="#555">DDS 话题编号</text>
+  <text class="panel-t" x="632" y="584" font-weight="700" fill="#555">RTSP 推流名</text>
+
+  <text class="panel-t" x="316" y="604">前置 RGB（主）</text>
+  <text class="panel-t" x="452" y="604">camera0</text>
+  <text class="panel-t" x="632" y="604">camera1</text>
+
+  <text class="panel-t" x="316" y="624">后置 RGB（主）</text>
+  <text class="panel-t" x="452" y="624">camera1</text>
+  <text class="panel-t" x="632" y="624">camera2</text>
+
+  <text class="panel-t" x="316" y="644">前置深度 / 后置深度</text>
+  <text class="panel-t" x="452" y="644">camera2 / camera3</text>
+  <text class="panel-t" x="632" y="644">无推流</text>
+  <text class="panel-t" x="316" y="664" font-size="11" fill="#888">深度相机亦输出 RGB（同编号的 image_compressed）</text>
+</svg>

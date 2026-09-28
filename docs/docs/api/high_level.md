@@ -243,7 +243,7 @@ Switches state by name (case-insensitive). Invalid names throw `ValueError`.
 | 6   | `walk()`                  | Switch to walk mode            |                        |
 | 7   | `rl()`                    | Switch to RL mode              |                        |
 | 8   | `flying_trot()`           | Switch to running mode         |                        |
-| 9   | `choreo()`                | Switch to choreography state   |                        |
+| 9   | `gongxi()`                | Switch to gongxi (congratulations gesture) state | Formerly `choreo()`    |
 | 10  | `change_mode()`           | Walk ⇄ Run smooth switch       | :material-new-box: New |
 | 11  | `dance()`                 | Dance (alias: dance0)          |                        |
 | 12  | `jump()`                  | Jump                           |                        |
@@ -266,6 +266,15 @@ Switches state by name (case-insensitive). Invalid names throw `ValueError`.
 
 !!! warning "Note"
 All state switching methods have removed `set_` prefix. Use `robot.balance_stand()` instead of `robot.set_balance_stand()`.
+
+!!! note "Renamed: `choreo()` → `gongxi()`"
+    The `choreo` state was renamed to `gongxi` in v1.3.0. Old code keeps working:
+
+    - Python `robot.choreo()` and C++ `client.choreo()` / `client.set_choreo()`
+      forward to `gongxi()` and emit a deprecation warning.
+    - `robot.set_target_state("choreo")` is accepted and mapped to `gongxi`.
+
+    Please migrate to `gongxi()`; the deprecated names will be removed in a future release.
 
 ### 2.5.2 change_mode()
 
@@ -359,7 +368,7 @@ Rotation interfaces are only available in the **WHEEL_LOCO** state on the wheele
 | Parameter   | Type         | Range                 | Description        |
 | ----------- | ------------ | --------------------- | ------------------ |
 | `direction` | string / int | "left"/"right" or 0/1 | Rotation direction |
-| `angle`     | float        | [0, 360]°             | Rotation angle     |
+| `angle`     | float        | [0, 3600]°             | Rotation angle     |
 
 Shortcut functions: `rotate_left(angle)`, `rotate_right(angle)`
 
@@ -394,10 +403,10 @@ Balance action interfaces (balance_pitch / balance_yaw / balance_roll / balance_
 
 | Function                                | value Range  | Description                              |
 | --------------------------------------- | ------------ | ---------------------------------------- |
-| `balance_pitch(value, duration, mode)`  | [-15, 15]°   | Pitch. >0 forward lean, <0 backward lean |
-| `balance_yaw(value, duration, mode)`    | [-20, 20]°   | Yaw. >0 look right, <0 look left         |
-| `balance_roll(value, duration, mode)`   | [-30, 30]°   | Roll. >0 left lean, <0 right lean        |
-| `balance_height(value, duration, mode)` | [-0.12, 0] m | Height. <0 squat                         |
+| `balance_pitch(value, duration, mode)`  | [-11.5, 11.5]°   | Pitch. >0 forward lean, <0 backward lean |
+| `balance_yaw(value, duration, mode)`    | [-11.5, 11.5]°   | Yaw. >0 look right, <0 look left         |
+| `balance_roll(value, duration, mode)`   | [-17.0, 17.0]°   | Roll. >0 left lean, <0 right lean        |
+| `balance_height(value, duration, mode)` | [-0.08, 0] m     | Height. <0 squat                         |
 | `balance_neutral(duration)`             | —            | Return to neutral                        |
 
 | Parameter  | Type   | Range                | Description                                                                              |
@@ -414,8 +423,8 @@ Balance action interfaces (balance_pitch / balance_yaw / balance_roll / balance_
 
     ```python
     robot.balance_sequence([
-        ("balance_pitch",  20.0, 2.0, "dynamic"),   # Forward lean 20°
-        ("balance_pitch", -20.0, 2.0, "dynamic"),   # Backward lean 20°
+        ("balance_pitch",  11.5, 2.0, "dynamic"),   # Forward lean 11.5°
+        ("balance_pitch", -11.5, 2.0, "dynamic"),   # Backward lean 11.5°
         ("balance_neutral", 0.0, 0.5, "dynamic"),   # Return to neutral
     ])
     ```
@@ -424,8 +433,8 @@ Balance action interfaces (balance_pitch / balance_yaw / balance_roll / balance_
 
     ```cpp
     client.balance_sequence({
-        {"balance_pitch",   20.0f, 2.0f, "dynamic"},
-        {"balance_pitch",  -20.0f, 2.0f, "dynamic"},
+        {"balance_pitch",   11.5f, 2.0f, "dynamic"},
+        {"balance_pitch",  -11.5f, 2.0f, "dynamic"},
         {"balance_neutral",  0.0f, 0.5f, "dynamic"},
     });
     ```
@@ -437,10 +446,10 @@ Includes dynamic_pose / static_pose. Simultaneously controls roll, pitch, yaw, h
 | Parameter   | Range        | Description                                 |
 | ----------- | ------------ | ------------------------------------------- |
 | `duration`  | [1, 5] s     | Duration (seconds)                          |
-| `roll_deg`  | [-30, 30]°   | Roll angle, 0 = no change                   |
-| `pitch_deg` | [-15, 15]°   | Pitch angle, 0 = no change                  |
-| `yaw_deg`   | [-20, 20]°   | Yaw angle, >0 right, <0 left, 0 = no change |
-| `height_m`  | [-0.12, 0] m | Height increment, 0 = no change             |
+| `roll_deg`  | [-17.0, 17.0]°   | Roll angle, 0 = no change                   |
+| `pitch_deg` | [-11.5, 11.5]°   | Pitch angle, 0 = no change                  |
+| `yaw_deg`   | [-11.5, 11.5]°   | Yaw angle, >0 right, <0 left, 0 = no change |
+| `height_m`  | [-0.08, 0] m     | Height increment, 0 = no change             |
 
 !!! tip "Difference"
 `dynamic_pose` — Sine sweep to target;
@@ -500,7 +509,242 @@ Registers **Ctrl+C** handler. When **Ctrl+C** is pressed, cancels current motion
     ```
 
 !!! warning "Note"
+    Handler only triggers on Ctrl+C (SIGINT). Normal program exit **will not** call `ready()`.
+
+## 2.13 LED Control Interface
+
+Control the robot's four leg RGB lights from the high-level API. Setting any leg light overrides the robot's built-in lighting logic; calling `reset_legs()` restores default lighting behavior.
+
+### Leg Identifiers
+
+| Identifier | Description |
+|-----------|-------------|
+| `Leg.FL` | Front-left leg |
+| `Leg.FR` | Front-right leg |
+| `Leg.RL` | Rear-left leg |
+| `Leg.RR` | Rear-right leg |
+
+### Color Constants
+
+```python
+Color.OFF, Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN,
+Color.CYAN, Color.BLUE, Color.PURPLE, Color.WHITE
+```
+
+=== "Python"
+
+    ```python
+    from dobot_quad import Leg, Color
+
+    # Set all legs to red
+    robot.set_all_legs_color(Color.RED)
+
+    # Set front legs to blue, rear legs to green
+    robot.set_legs_rgb([Leg.FL, Leg.FR], Color.BLUE)
+    robot.set_legs_rgb([Leg.RL, Leg.RR], Color.GREEN)
+
+    # Set single leg with raw RGB
+    robot.set_leg_rgb(Leg.FL, 255, 0, 128)
+
+    # Brightness control
+    robot.set_leg_brightness(Leg.RR, 128)  # 50%
+
+    # Restore default lighting
+    robot.reset_legs()
+    ```
+
+=== "C++"
+
+    ```cpp
+    #include "robot_client.h"
+    using namespace robot;
+
+    // Set all legs to red
+    client.set_all_legs_color(Color::RED);
+
+    // Set front legs to blue, rear legs to green
+    client.set_legs_rgb({Leg::FL, Leg::FR}, Color::BLUE);
+    client.set_legs_rgb({Leg::RL, Leg::RR}, Color::GREEN);
+
+    // Set single leg with raw RGB
+    client.set_leg_rgb(Leg::FL, 255, 0, 128);
+
+    // Brightness control
+    client.set_leg_brightness(Leg::RR, 128);  // 50%
+
+    // Restore default lighting
+    client.reset_legs();
+    ```
+
+## 2.14 Atomic Choreography Actions (MINI_QUAD only)
+
+Eight single-motion choreography actions that automatically handle state transitions. Each action returns the robot to `WALK` mode when finished.
+
+| Method | Description | Duration |
+|--------|-------------|----------|
+| `twirl_jump()` | Twirl jump | ~0.7s |
+| `diag_step()` | Diagonal step | ~5.9s |
+| `hop_step()` | Front-leg hop step | ~3s |
+| `groove()` | Rhythmic sway | ~8s |
+| `bounce()` | Nod and bounce | ~6s |
+| `body_wave()` | Body wave motion | ~8s |
+| `hip_circle()` | Hip circle | ~8s |
+| `head_circle()` | Head circle | ~8s |
+
+=== "Python"
+
+    ```python
+    robot.twirl_jump()
+    robot.groove()
+    robot.hip_circle()
+
+    # Generic interface
+    robot.atomic_action("body_wave")
+    ```
+
+=== "C++"
+
+    ```cpp
+    client.twirl_jump();
+    client.groove();
+    client.hip_circle();
+
+    // Generic interface
+    client.atomic_action("body_wave");
+    ```
+
+!!! info "Wheel-Legged (MINI_QUAD_WHEEL)"
+    These actions are only available on the legged quadruped (`is_quad() == True`).
+
+### enable_safety_ready()
+
+Registers **Ctrl+C** handler. When **Ctrl+C** is pressed, cancels current motion and switches to `ready` state before process exit.
+
+=== "Python"
+
+    ```python
+    robot.enable_safety_ready()
+    ```
+
+=== "C++"
+
+    ```cpp
+    robot::enable_safety_ready(client)
+    ```
+
+!!! warning "Note"
 Handler only triggers on Ctrl+C (SIGINT). Normal program exit **will not** call `ready()`.
+
+## 2.15 Camera Video Streaming
+
+To watch the robot's cameras live, start the stream with `open()` - it returns an
+**RTSP address you can play directly**. How you show or decode the picture is up to
+you: OpenCV, ffmpeg, VLC and GStreamer all open that address as-is. The SDK never
+decodes and never hands out frames.
+
+Cameras: `CameraId.FRONT_RGB` (front) and `CameraId.REAR_RGB` (rear).
+
+=== "Python"
+
+    ```python
+    from dobot_quad import CameraId, RobotClient
+
+    robot = RobotClient("192.168.5.2:50051")
+    uri = robot.video.open(CameraId.FRONT_RGB)   # starts the stream, returns once data flows
+    print(uri)                                   # rtsp://192.168.5.2:8554/camera1
+
+    # Hand the address to any player / decoder, for example
+    #   cv2.VideoCapture(uri, cv2.CAP_FFMPEG)
+    #   ffplay -rtsp_transport tcp -fflags nobuffer -flags low_delay <uri>
+
+    robot.video.close(CameraId.FRONT_RGB)        # release this camera when done
+    ```
+
+=== "C++"
+
+    ```cpp
+    #include "robot_client.h"
+    #include "video/video_client.h"     // the video API lives in this header
+
+    robot::Client client("192.168.5.2:50051");
+    std::string uri = client.video().open(robot::video::CameraId::FrontRgb);
+    std::cout << uri << std::endl;              // rtsp://192.168.5.2:8554/camera1
+
+    client.video().close(robot::video::CameraId::FrontRgb);
+    ```
+
+    Using the video API means one extra header (`video/video_client.h`) and one extra
+    link entry (`Threads::Threads`); the module is header-only, so there is no other
+    library and no gRPC involved. Python needs nothing extra - the API is on the
+    existing client as `robot.video`.
+
+!!! tip "OpenCV: set the low-latency options"
+    OpenCV only takes decoder options through an environment variable, and it has to be set
+    **before** the `VideoCapture` is created - otherwise the picture lags noticeably:
+
+    ```python
+    import os
+
+    os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = (
+        "rtsp_transport;tcp|fflags;nobuffer|flags;low_delay|max_delay;0"
+        "|reorder_queue_size;0|probesize;32|analyzeduration;0")
+    ```
+
+    In C++ the same variable (`setenv(...)`); with a player, the equivalent is
+    `ffplay -rtsp_transport tcp -fflags nobuffer -flags low_delay <uri>`.
+
+Ready-to-run examples (two camera windows, and frame grabbing without a display) are
+in [Typical Scenarios](../scenarios.md#1-watch-both-cameras-on-your-pc).
+
+### 2.15.1 The complete API
+
+`robot.video` has 8 methods; day to day you only need the first two. The methods that
+take a camera use one `camera` argument (`CameraId.FRONT_RGB` / `CameraId.REAR_RGB`):
+
+| Method | Purpose |
+| ------ | ------- |
+| `open()` | **Starts the stream and returns the RTSP address.** It returns once the camera is really sending data (usually instantly, at most ~8 s). Calling it again for the same camera is cheap (**it only raises a reference count**) and returns the same address. |
+| `close()` | Releases this camera and **pairs one-to-one with `open()`**: the stream stops only when the count reaches zero and nobody else is watching. Always call it before you exit. |
+| `close_all()` | Releases all local state (**it does not stop the robot's stream**). Recommended on the way out of your program. |
+| `list_cameras()` | Lists the available cameras (`CameraId` values). |
+| `is_streaming()` | Whether this camera is streaming right now. |
+| <code style="white-space:nowrap">get_stream_info()</code> | Reads address, who started the stream, bitrate and the last error message. Still readable after `close()`. |
+| <code style="white-space:nowrap">on_state_change()</code> | Registers a callback for stream events (lost, stopped elsewhere, recovered). Callbacks run on the SDK's own thread - do not call `open()` from one. |
+| `stop_stream()` | Stops immediately, even while somebody else is watching. Use `close()` when in doubt. |
+
+There are only two data objects: `CameraStreamInfo` (returned by `get_stream_info()`)
+and `StreamEvent` (the callback argument). Errors raise `VideoError` and its subclasses.
+
+### 2.15.2 Behaviours worth knowing
+
+- **`open()` and `close()` pair one-to-one (reference count).** Opening the same camera twice
+  means calling `close()` twice; a single `close()` leaves the stream running and emits no event -
+  that is the counting, not a failure.
+- **The first frame takes 1-2 seconds.** The address `open()` returns is ready to play, but your
+  own decoder still has to do the RTSP handshake and buffering: measured 1-2 s to the first frame
+  (OpenCV 1.1-1.3 s), then a steady ~30 fps and ~2.8 Mbps.
+- **The stream may already be running.** If the camera is already pushing (for example
+  the phone app is watching), `open()` adopts that stream instead of starting a new one -
+  but only after `bytes_recv` has been seen to **grow** between two samples (measured
+  ~0.3 s), so a stream that merely has a producer is not taken for granted.
+- **A stuck stream is never adopted.** Right after `stop_stream()` the streaming service may
+  still list a producer that is closing down (`bytes_recv` is a historical value and no longer
+  grows). `open()` does not borrow it: it issues its own `start` (measured ~0.5 s) rather than
+  handing your player an address that answers 404.
+- **`close()` never cuts somebody else's picture.** It stops the stream only when no
+  other watcher (phone app, player) is left; use `stop_stream()` to force it.
+- **Dropped streams heal themselves.** Network hiccups or an external stop are resumed
+  or restarted automatically, and reported through `on_state_change()`;
+  `get_stream_info().message` says what happened.
+- **Network.** The picture goes over RTSP on port 8554 and the on/off service on port
+  22000, so the host running your program must be able to reach the robot (a quick
+  `ping <ip>` settles it).
+- **The exception type tells you what went wrong.** An unreachable robot
+  (`port_unreachable`) raises `VideoConnectionError`, "no data arrived in time"
+  (`no_data`) raises `VideoTimeoutError`, a bad camera id raises
+  `UnsupportedCameraError`; everything else (stalled, stopped elsewhere, cancelled) stays
+  the base `VideoError`. Catching `VideoError` still works - the subclasses are there so
+  you can branch on them.
 
 ## 3. Example Programs
 
@@ -927,19 +1171,64 @@ Arduino-style sequential blocking calls — each function blocks until motion co
     client.set_obstacle_avoidance("off");
     ```
 
+### E11: LED Control Demo
+
+=== "Python"
+
+    ```python
+    from dobot_quad import Leg, Color
+
+    # Set all legs green
+    robot.set_all_legs_color(Color.GREEN)
+
+    # Front legs white, rear legs blue
+    robot.set_legs_rgb([Leg.FL, Leg.FR], Color.WHITE)
+    robot.set_legs_rgb([Leg.RL, Leg.RR], Color.BLUE)
+
+    # Restore default lighting
+    robot.reset_legs()
+    ```
+
+=== "C++"
+
+    ```cpp
+    // Set all legs green
+    client.set_all_legs_color(Color::GREEN);
+
+    // Front legs white, rear legs blue
+    client.set_legs_rgb({Leg::FL, Leg::FR}, Color::WHITE);
+    client.set_legs_rgb({Leg::RL, Leg::RR}, Color::BLUE);
+
+    // Restore default lighting
+    client.reset_legs();
+    ```
+
+### E12: Camera Video Streaming
+
+    ```bash
+    # Python
+    python examples/e12_video_stream.py 192.168.5.2:50051 --pull
+    # C++
+    ./e12_video_stream 192.168.5.2:50051 --camera front --pull
+    ```
+
+`--pull` opens the returned address with ffmpeg, which shows that the address can
+be played by any standard player. The script itself is a few lines of API calls
+(see [2.15](#215-camera-video-streaming)).
+
 ## Parameter Quick Reference
 
 | Parameter                           | Range                                                | Functions                                                                     |
 | ----------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- |
 | speed_ratio                         | [10, 100]                                            | set_speed_ratio; optional override: line_walk, velocity_sequence, rotate_walk |
 | distance                            | **[0, 3] m**                                         | walk_forward, walk_backward, move_left, move_right, rotate_walk               |
-| angle (rotate)                      | [0, 360]°                                            | rotate, rotate_left, rotate_right                                             |
+| angle (rotate)                      | [0, 3600]°                                            | rotate, rotate_left, rotate_right                                             |
 | angle (rotate_walk)                 | **[-180, 180]°**                                     | rotate_walk                                                                   |
 | turns                               | **[1, 10]**                                          | circle                                                                        |
-| balance value (rpy)                 | roll: [-30, 30]°, pitch: [-15, 15]°, yaw: [-20, 20]° | balance_pitch/yaw/roll, balance_sequence                                      |
-| balance value (height)              | [-0.12, 0] m                                         | balance_height, balance_sequence                                              |
+| balance value (rpy)                 | roll: [-17.0, 17.0]°, pitch: [-11.5, 11.5]°, yaw: [-11.5, 11.5]° | balance_pitch/yaw/roll, balance_sequence                                      |
+| balance value (height)              | [-0.08, 0] m                                         | balance_height, balance_sequence                                              |
 | balance duration                    | [0.5, 5] s                                           | All balance\_\* functions                                                     |
-| dynamic_pose / static_pose angles   | roll: [-30, 30]°, pitch: [-15, 15]°, yaw: [-20, 20]° | dynamic_pose, static_pose                                                     |
-| dynamic_pose / static_pose height   | [-0.12, 0] m                                         | dynamic_pose, static_pose                                                     |
+| dynamic_pose / static_pose angles   | roll: [-17.0, 17.0]°, pitch: [-11.5, 11.5]°, yaw: [-11.5, 11.5]° | dynamic_pose, static_pose                                                     |
+| dynamic_pose / static_pose height   | [-0.08, 0] m                                         | dynamic_pose, static_pose                                                     |
 | dynamic_pose / static_pose duration | [1, 5] s                                             | dynamic_pose, static_pose                                                     |
 | obstacle_avoidance                  | bool / "on" / "off"                                  | set_obstacle_avoidance                                                        |

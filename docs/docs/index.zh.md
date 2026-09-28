@@ -9,7 +9,7 @@
 
 ## 一、套件架构
 
-![SDK整体架构](./index/structure.png){ align=center }
+<img src="../index/structure.png" alt="SDK整体架构" style="display: block; margin: 0 auto;" />
 
 ### 1. 高层控制 (gRPC) [高层 API 参考](api/high_level.md)
 
@@ -36,3 +36,24 @@
 - **实时通信** - 低延迟数据传输
 - **跨平台** - 支持 x86_64 和 ARM64 架构
 - **丰富示例** - 即用的示例程序
+
+## 三、机器人本体
+
+<!-- 产品图：轮足机型的俯视编号实拍图；点足机型编号相同（见 getting-started/robot_outline.zh.md）。 -->
+<!-- 注意：i18n 插件不会把 assets/ 复制到各语言目录，所以中文页里的图片路径
+     要多退一级指向站点根（英文页保持原样）。改回 ../assets/ 会让图挂掉。 -->
+<img src="../assets/wheel_back.jpg" alt="俯视：电机编号" style="max-width: 620px;" />
+
+机身共有 **4 个相机模组**：2 个纯 RGB 相机（前置 / 后置，可推流）与 2 个深度相机；
+另有 **12 个关节电机**（轮足机型为 16 个），每条腿一个 RGB 灯。
+
+| 部件 | SDK 能做什么 |
+| ---- | ------------ |
+| 前 / 后 RGB 相机 | `robot.video.open()` 返回 RTSP 地址（见[典型场景](scenarios.md)） |
+| 深度相机 | 不推流，只能通过底层 DDS 话题取 |
+| 腿灯 | 高层接口 `set_legs_rgb()` / `set_leg_color()` |
+| 关节电机 | 底层 DDS 指令；电机编号见[本体图](getting-started/robot_outline.md) |
+
+编号（相机 `camera0..3`、电机 `0..15`）与物理位置的对应关系见
+[本体图](getting-started/robot_outline.md)。
+

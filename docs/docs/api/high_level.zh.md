@@ -243,7 +243,7 @@ SDK 通过 `get_robot_type()` 自动检测连接的机器人类型（点足 `min
 | 6   | `walk()`                  | 切换到行走模式       |                         |
 | 7   | `rl()`                    | 切换到 RL 模式       |                         |
 | 8   | `flying_trot()`           | 切换到奔跑模式       |                         |
-| 9   | `choreo()`                | 切换到编舞状态       |                         |
+| 9   | `gongxi()`                | 切换到恭喜（作揖）状态 | 原名 `choreo()`         |
 | 10  | `change_mode()`           | 行走⇄奔跑平滑切换    | :material-new-box: 新增 |
 | 11  | `dance()`                 | 跳舞（别名：dance0） |                         |
 | 12  | `jump()`                  | 跳跃                 |                         |
@@ -266,6 +266,15 @@ SDK 通过 `get_robot_type()` 自动检测连接的机器人类型（点足 `min
 
 !!! warning "注意"
 所有状态切换方法已移除 `set_` 前缀。请使用 `robot.balance_stand()` 而非 `robot.set_balance_stand()`。
+
+!!! note "更名：`choreo()` → `gongxi()`"
+    `choreo` 状态自 v1.3.0 起更名为 `gongxi`。旧代码仍然可用：
+
+    - Python `robot.choreo()` 与 C++ `client.choreo()` / `client.set_choreo()` 会转发到
+      `gongxi()`，并发出废弃告警。
+    - `robot.set_target_state("choreo")` 会被接受并映射为 `gongxi`。
+
+    请尽快改用 `gongxi()`；废弃名称将在后续版本中移除。
 
 ### 5.2 change_mode()
 
@@ -359,7 +368,7 @@ SDK 通过 `get_robot_type()` 自动检测连接的机器人类型（点足 `min
 | 参数        | 类型         | 范围                  | 说明     |
 | ----------- | ------------ | --------------------- | -------- |
 | `direction` | string / int | "left"/"right" 或 0/1 | 旋转方向 |
-| `angle`     | float        | [0, 360]°             | 旋转角度 |
+| `angle`     | float        | [0, 3600]°             | 旋转角度 |
 
 快捷函数：`rotate_left(angle)`，`rotate_right(angle)`
 
@@ -394,10 +403,10 @@ SDK 通过 `get_robot_type()` 自动检测连接的机器人类型（点足 `min
 
 | 函数                                    | value 范围   | 说明                   |
 | --------------------------------------- | ------------ | ---------------------- |
-| `balance_pitch(value, duration, mode)`  | [-15, 15]°   | 俯仰。>0 前倾，<0 后仰 |
-| `balance_yaw(value, duration, mode)`    | [-20, 20]°   | 偏航。>0 右看，<0 左看 |
-| `balance_roll(value, duration, mode)`   | [-30, 30]°   | 横滚。>0 左倾，<0 右倾 |
-| `balance_height(value, duration, mode)` | [-0.12, 0] m | 高度。<0 下蹲          |
+| `balance_pitch(value, duration, mode)`  | [-11.5, 11.5]°   | 俯仰。>0 前倾，<0 后仰 |
+| `balance_yaw(value, duration, mode)`    | [-11.5, 11.5]°   | 偏航。>0 右看，<0 左看 |
+| `balance_roll(value, duration, mode)`   | [-17.0, 17.0]°   | 横滚。>0 左倾，<0 右倾 |
+| `balance_height(value, duration, mode)` | [-0.08, 0] m     | 高度。<0 下蹲          |
 | `balance_neutral(duration)`             | —            | 回到中位               |
 
 | 参数       | 类型   | 范围                 | 说明                                                                    |
@@ -414,8 +423,8 @@ SDK 通过 `get_robot_type()` 自动检测连接的机器人类型（点足 `min
 
     ```python
     robot.balance_sequence([
-        ("balance_pitch",  20.0, 2.0, "dynamic"),   # 前倾 20°
-        ("balance_pitch", -20.0, 2.0, "dynamic"),   # 后仰 20°
+        ("balance_pitch",  11.5, 2.0, "dynamic"),   # 前倾 11.5°
+        ("balance_pitch", -11.5, 2.0, "dynamic"),   # 后仰 11.5°
         ("balance_neutral", 0.0, 0.5, "dynamic"),   # 回中位
     ])
     ```
@@ -424,8 +433,8 @@ SDK 通过 `get_robot_type()` 自动检测连接的机器人类型（点足 `min
 
     ```cpp
     client.balance_sequence({
-        {"balance_pitch",   20.0f, 2.0f, "dynamic"},
-        {"balance_pitch",  -20.0f, 2.0f, "dynamic"},
+        {"balance_pitch",   11.5f, 2.0f, "dynamic"},
+        {"balance_pitch",  -11.5f, 2.0f, "dynamic"},
         {"balance_neutral",  0.0f, 0.5f, "dynamic"},
     });
     ```
@@ -437,10 +446,10 @@ SDK 通过 `get_robot_type()` 自动检测连接的机器人类型（点足 `min
 | 参数        | 范围         | 说明                                 |
 | ----------- | ------------ | ------------------------------------ |
 | `duration`  | [1, 5] s     | 持续时间（秒）                       |
-| `roll_deg`  | [-30, 30]°   | 横滚角度，0 = 不动                   |
-| `pitch_deg` | [-15, 15]°   | 俯仰角度，0 = 不动                   |
-| `yaw_deg`   | [-20, 20]°   | 偏航角度，>0 向右，<0 向左，0 = 不动 |
-| `height_m`  | [-0.12, 0] m | 高度增量，0 = 不动                   |
+| `roll_deg`  | [-17.0, 17.0]°   | 横滚角度，0 = 不动                   |
+| `pitch_deg` | [-11.5, 11.5]°   | 俯仰角度，0 = 不动                   |
+| `yaw_deg`   | [-11.5, 11.5]°   | 偏航角度，>0 向右，<0 向左，0 = 不动 |
+| `height_m`  | [-0.08, 0] m | 高度增量，0 = 不动                   |
 
 !!! tip "区别"
 `dynamic_pose` — 正弦扫描到目标；
@@ -501,6 +510,211 @@ SDK 通过 `get_robot_type()` 自动检测连接的机器人类型（点足 `min
 
 !!! warning "注意"
 处理器仅在 Ctrl+C（SIGINT）时触发。程序正常退出**不会**调用 `ready()`。
+
+## 13. 腿灯控制接口
+
+通过高层 API 控制机器人四条腿上的 RGB 灯。设置任一腿灯即覆盖机器狗内置灯光逻辑；调用 `reset_legs()` 后恢复默认灯光。
+
+### 腿灯标识
+
+| 标识 | 说明 |
+|------|------|
+| `Leg.FL` | 左前腿 |
+| `Leg.FR` | 右前腿 |
+| `Leg.RL` | 左后腿 |
+| `Leg.RR` | 右后腿 |
+
+### 预定义颜色
+
+```python
+Color.OFF, Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN,
+Color.CYAN, Color.BLUE, Color.PURPLE, Color.WHITE
+```
+
+=== "Python"
+
+    ```python
+    from dobot_quad import Leg, Color
+
+    # 全部设为红色
+    robot.set_all_legs_color(Color.RED)
+
+    # 前腿蓝色，后腿绿色
+    robot.set_legs_rgb([Leg.FL, Leg.FR], Color.BLUE)
+    robot.set_legs_rgb([Leg.RL, Leg.RR], Color.GREEN)
+
+    # 单腿设置原始 RGB
+    robot.set_leg_rgb(Leg.FL, 255, 0, 128)
+
+    # 亮度控制
+    robot.set_leg_brightness(Leg.RR, 128)  # 50%
+
+    # 恢复默认灯光
+    robot.reset_legs()
+    ```
+
+=== "C++"
+
+    ```cpp
+    #include "robot_client.h"
+    using namespace robot;
+
+    // 全部设为红色
+    client.set_all_legs_color(Color::RED);
+
+    // 前腿蓝色，后腿绿色
+    client.set_legs_rgb({Leg::FL, Leg::FR}, Color::BLUE);
+    client.set_legs_rgb({Leg::RL, Leg::RR}, Color::GREEN);
+
+    // 单腿设置原始 RGB
+    client.set_leg_rgb(Leg::FL, 255, 0, 128);
+
+    // 亮度控制
+    client.set_leg_brightness(Leg::RR, 128);  // 50%
+
+    // 恢复默认灯光
+    client.reset_legs();
+    ```
+
+## 14. 原子编舞动作（仅点足构型）
+
+八个单一编舞动作，自动处理状态切换，完成后返回 `WALK` 模式。
+
+| 方法 | 描述 | 时长 |
+|------|------|------|
+| `twirl_jump()` | 跳跃转体 | ~0.7s |
+| `diag_step()` | 对角迈步 | ~5.9s |
+| `hop_step()` | 前腿蹦跳迈步 | ~3s |
+| `groove()` | 摇摆律动 | ~8s |
+| `bounce()` | 点头弹跳 | ~6s |
+| `body_wave()` | 身体波浪 | ~8s |
+| `hip_circle()` | 扭臀画圆 | ~8s |
+| `head_circle()` | 扭头画圆 | ~8s |
+
+=== "Python"
+
+    ```python
+    robot.twirl_jump()
+    robot.groove()
+    robot.hip_circle()
+
+    # 通用接口
+    robot.atomic_action("body_wave")
+    ```
+
+=== "C++"
+
+    ```cpp
+    client.twirl_jump();
+    client.groove();
+    client.hip_circle();
+
+    // 通用接口
+    client.atomic_action("body_wave");
+    ```
+
+!!! info "轮足构型（MINI_QUAD_WHEEL）"
+    这些动作仅支持点足构型（`is_quad() == True`）。
+
+## 15. 视频流获取
+
+想实时看到机器狗上的相机画面，可以这样做：先用 `open()` 把流开起来，它会返回一个
+**可以直接播放的 RTSP 地址**；画面怎么显示、怎么解码由你决定——OpenCV、ffmpeg、
+VLC、GStreamer 都能直接打开这个地址，SDK 不取帧、不解码。
+
+相机：`CameraId.FRONT_RGB`（前置）、`CameraId.REAR_RGB`（后置）。
+
+=== "Python"
+
+    ```python
+    from dobot_quad import CameraId, RobotClient
+
+    robot = RobotClient("192.168.5.2:50051")
+    uri = robot.video.open(CameraId.FRONT_RGB)   # 开流，等到真的在推数据才返回
+    print(uri)                                   # rtsp://192.168.5.2:8554/camera1
+
+    # 把地址交给任意播放器 / 解码器，例如
+    #   cv2.VideoCapture(uri, cv2.CAP_FFMPEG)
+    #   ffplay -rtsp_transport tcp -fflags nobuffer -flags low_delay <uri>
+
+    robot.video.close(CameraId.FRONT_RGB)        # 用完释放这一路
+    ```
+
+=== "C++"
+
+    ```cpp
+    #include "robot_client.h"
+    #include "video/video_client.h"     // 视频接口在这个头文件里
+
+    robot::Client client("192.168.5.2:50051");
+    std::string uri = client.video().open(robot::video::CameraId::FrontRgb);
+    std::cout << uri << std::endl;              // rtsp://192.168.5.2:8554/camera1
+
+    client.video().close(robot::video::CameraId::FrontRgb);
+    ```
+
+    用了视频功能就多 include 一个头 `video/video_client.h`，链接时多带一个
+    `Threads::Threads`（视频模块是纯头文件，不需要别的库，也不依赖 gRPC）。Python
+    不需要额外 include，功能就在现有的 `robot.video` 上。
+
+!!! tip "OpenCV 记得设低延迟参数"
+    OpenCV 只能通过环境变量传解码参数，且要在创建 `VideoCapture` **之前**设置，否则画面延迟会
+    明显偏大：
+
+    ```python
+    import os
+
+    os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = (
+        "rtsp_transport;tcp|fflags;nobuffer|flags;low_delay|max_delay;0"
+        "|reorder_queue_size;0|probesize;32|analyzeduration;0")
+    ```
+
+    C++ 用同一个环境变量 `setenv(...)`；用播放器时等价写法是
+    `ffplay -rtsp_transport tcp -fflags nobuffer -flags low_delay <uri>`。
+
+完整的可运行示例（两个相机窗口、无窗口取帧）见[典型场景](../scenarios.zh.md#_1)。
+
+### 15.1 全部接口
+
+`robot.video` 一共 8 个方法，日常用到的主要是前两个。凡是需要指定相机的方法都带一个
+`camera` 参数（`CameraId.FRONT_RGB` / `CameraId.REAR_RGB`）：
+
+| 方法 | 作用 |
+| ---- | ---- |
+| `open()` | **开流并返回 RTSP 地址**：等到相机真的在推数据才返回（通常一瞬间，最坏约 8 秒）。同一相机重复调用很轻（**只增加引用计数**），返回同一个地址。 |
+| `close()` | 释放这一路，**与 `open()` 一一配对**：引用计数归零、并且确认没有别人在看时才真的停流。退出前务必调用。 |
+| `close_all()` | 释放全部本地状态（**不会让机器人停流**）。程序退出时推荐用它。 |
+| `list_cameras()` | 列出可用相机（`CameraId` 列表）。 |
+| `is_streaming()` | 这一路现在是否在推流。 |
+| <code style="white-space:nowrap">get_stream_info()</code> | 读取这一路的信息：地址、谁开的流、码率、最近一次错误说明。`close()` 之后仍可读到最后一次状态。 |
+| <code style="white-space:nowrap">on_state_change()</code> | 注册流事件回调（断流 / 被外部停掉 / 已恢复）。回调跑在 SDK 的线程上，不要在回调里调用 `open()`。 |
+| `stop_stream()` | 强制停流，即使有人在看也会打断。拿不准时用 `close()`。 |
+
+返回的数据对象只有两个：`CameraStreamInfo`（`get_stream_info()` 的结果）和
+`StreamEvent`（回调参数）；出错时抛 `VideoError` 及其子类。
+
+### 15.2 几条要知道的行为
+
+- **`open()` 与 `close()` 是配对的（引用计数）。** 同一相机 `open()` 两次就要 `close()` 两次；
+  只 `close()` 一次时流会继续推、也不会有任何事件——这不是故障。
+- **首帧需要 1~2 秒。** `open()` 返回的地址已经能播，但你自己的解码器还要做 RTSP 握手和缓冲，
+  实测解出第一帧约 1~2 s（OpenCV 1.1~1.3 s），之后稳定在 ~30 fps、~2.8 Mbps。
+- **流可能已经在推了。** 如果相机已经在推流（例如手机 App 正在看画面），`open()`
+  会直接采用这条流、不会重新开一遍；代价是要先确认一个采样间隔内 `bytes_recv`
+  **在增长**（实测约 0.3 s），不是「看到有人推就算」。
+- **卡住的流不会被采用。** 刚 `stop_stream()` 之后，流服务可能还留着正在关闭的
+  producer（`bytes_recv` 是历史值、不再增长）：这时 `open()` 不会借它，而是自己
+  下发一次 `start` 接管（实测约 0.5 s），避免把一个 404 的地址交给你的播放器。
+- **`close()` 不会掐掉别人的画面。** 它只在确认没有其他人（手机 App、播放器）在看时
+  才停流；要强制停用 `stop_stream()`。
+- **断流会自愈。** 网络抖动、被外部停流等情况 SDK 会自动续流或重启，并通过
+  `on_state_change()` 通知你；`get_stream_info().message` 会说明发生了什么。
+- **网络要求。** 画面走 RTSP、端口 8554，开流用的 HTTP 服务是端口 22000 —— 运行程序的
+  机器必须能访问到机器人（先 `ping <ip>` 确认一遍）。
+- **异常类型按原因分。** 接不到机器人（`port_unreachable`）抛 `VideoConnectionError`，
+  等不到数据（`no_data`）抛 `VideoTimeoutError`，相机参数不对抛
+  `UnsupportedCameraError`；其余情况（卡住、被外部停掉、自己取消）是基类 `VideoError`。
+  只 catch `VideoError` 也照常管用，细分是为了让你能分流处理。
 
 ## 三、示例程序详解
 
@@ -927,19 +1141,63 @@ Arduino 风格的顺序阻塞调用 — 每个函数会阻塞直到动作完成�
     client.set_obstacle_avoidance("off");
     ```
 
+### E11: 腿灯控制演示
+
+=== "Python"
+
+    ```python
+    from dobot_quad import Leg, Color
+
+    # 全部设为绿色
+    robot.set_all_legs_color(Color.GREEN)
+
+    # 前腿白色，后腿蓝色
+    robot.set_legs_rgb([Leg.FL, Leg.FR], Color.WHITE)
+    robot.set_legs_rgb([Leg.RL, Leg.RR], Color.BLUE)
+
+    # 恢复默认灯光
+    robot.reset_legs()
+    ```
+
+=== "C++"
+
+    ```cpp
+    // 全部设为绿色
+    client.set_all_legs_color(Color::GREEN);
+
+    // 前腿白色，后腿蓝色
+    client.set_legs_rgb({Leg::FL, Leg::FR}, Color::WHITE);
+    client.set_legs_rgb({Leg::RL, Leg::RR}, Color::BLUE);
+
+    // 恢复默认灯光
+    client.reset_legs();
+    ```
+
+### E12: 视频流获取
+
+    ```bash
+    # Python
+    python examples/e12_video_stream.py 192.168.5.2:50051 --pull
+    # C++
+    ./e12_video_stream 192.168.5.2:50051 --camera front --pull
+    ```
+
+`--pull` 会用 ffmpeg 打开返回的地址，说明这个地址能被任意标准播放器使用。脚本
+本身只是几行 API 调用（见 [15. 视频流获取](#15)）。
+
 ## 参数范围速查表
 
 | 参数                            | 范围                                                 | 涉及函数                                                             |
 | ------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------- |
 | speed_ratio                     | [10, 100]                                            | set_speed_ratio；可选覆盖: line_walk, velocity_sequence, rotate_walk |
 | distance                        | **[0, 3] m**                                         | walk_forward, walk_backward, move_left, move_right, rotate_walk      |
-| angle (rotate)                  | [0, 360]°                                            | rotate, rotate_left, rotate_right                                    |
+| angle (rotate)                  | [0, 3600]°                                            | rotate, rotate_left, rotate_right                                    |
 | angle (rotate_walk)             | **[-180, 180]°**                                     | rotate_walk                                                          |
 | turns                           | **[1, 10]**                                          | circle                                                               |
-| balance value (rpy)             | roll: [-30, 30]°, pitch: [-15, 15]°, yaw: [-20, 20]° | balance_pitch/yaw/roll, balance_sequence                             |
-| balance value (height)          | [-0.12, 0] m                                         | balance_height, balance_sequence                                     |
+| balance value (rpy)             | roll: [-17.0, 17.0]°, pitch: [-11.5, 11.5]°, yaw: [-11.5, 11.5]° | balance_pitch/yaw/roll, balance_sequence                             |
+| balance value (height)          | [-0.08, 0] m                                         | balance_height, balance_sequence                                     |
 | balance duration                | [0.5, 5] s                                           | 所有 balance\_\* 函数                                                |
-| dynamic_pose / static_pose 角度 | roll: [-30, 30]°, pitch: [-15, 15]°, yaw: [-20, 20]° | dynamic_pose, static_pose                                            |
-| dynamic_pose / static_pose 高度 | [-0.12, 0] m                                         | dynamic_pose, static_pose                                            |
+| dynamic_pose / static_pose 角度 | roll: [-17.0, 17.0]°, pitch: [-11.5, 11.5]°, yaw: [-11.5, 11.5]° | dynamic_pose, static_pose                                            |
+| dynamic_pose / static_pose 高度 | [-0.08, 0] m                                         | dynamic_pose, static_pose                                            |
 | dynamic_pose / static_pose 时长 | [1, 5] s                                             | dynamic_pose, static_pose                                            |
 | obstacle_avoidance              | bool / "on" / "off"                                  | set_obstacle_avoidance                                               |
