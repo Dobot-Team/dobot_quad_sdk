@@ -682,10 +682,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#5-what-to-expect-measured-wired-connection" class="md-nav__link">
+  <a href="#5-what-to-expect-wired-connection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. What to expect (measured, wired connection)
+        5. What to expect (wired connection)
       
     </span>
   </a>
@@ -952,10 +952,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#5-what-to-expect-measured-wired-connection" class="md-nav__link">
+  <a href="#5-what-to-expect-wired-connection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. What to expect (measured, wired connection)
+        5. What to expect (wired connection)
       
     </span>
   </a>
@@ -1242,47 +1242,47 @@ $(pkg-config --cflags --libs opencv4) -o two_cameras</code></p>
 </span></code></pre></div>
 <p>Both cameras appear in two windows; the program exits by itself after the given
 number of seconds, or immediately when you press <code>q</code> / <code>ESC</code>.</p>
-<h3 id="5-what-to-expect-measured-wired-connection">5. What to expect (measured, wired connection)<a class="headerlink" href="#5-what-to-expect-measured-wired-connection" title="Permanent link">&para;</a></h3>
+<h3 id="5-what-to-expect-wired-connection">5. What to expect (wired connection)<a class="headerlink" href="#5-what-to-expect-wired-connection" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
 <th>Step</th>
-<th>Measured</th>
+<th>Expected</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>open(CameraId.FRONT_RGB)</code> (cold start, the SDK opens the stream)</td>
-<td>~0.5 s (521 ms measured), returns <code>rtsp://&lt;ip&gt;:8554/camera1</code></td>
+<td>~0.5 s, returns <code>rtsp://&lt;ip&gt;:8554/camera1</code></td>
 </tr>
 <tr>
 <td><code>open(CameraId.REAR_RGB)</code></td>
-<td>0.1-0.5 s, returns <code>rtsp://&lt;ip&gt;:8554/camera2</code></td>
+<td>~0.1-0.5 s, returns <code>rtsp://&lt;ip&gt;:8554/camera2</code></td>
 </tr>
 <tr>
 <td><code>open()</code> on a stream that is already running <em>and carrying data</em> (e.g. the app is watching)</td>
-<td>~0.3 s (295 ms measured): <code>bytes_recv</code> has to <strong>grow</strong> between two samples before a stream counts as running</td>
+<td>~0.3 s: <code>bytes_recv</code> has to <strong>grow</strong> between two samples before a stream counts as running</td>
 </tr>
 <tr>
 <td><code>open()</code> right after <code>stop_stream()</code> (leftover stream that no longer grows)</td>
-<td>~0.5 s (519 ms measured): the leftover stream is <strong>not</strong> adopted, the SDK issues its own <code>start</code> first</td>
+<td>~0.5 s: the leftover stream is <strong>not</strong> adopted, the SDK issues its own <code>start</code> first</td>
 </tr>
 <tr>
 <td>Opening the same camera again</td>
-<td>&lt; 1 ms (reference count only - call <code>close()</code> as many times)</td>
+<td>Milliseconds (reference count only - call <code>close()</code> as many times)</td>
 </tr>
 <tr>
 <td>First frame in your own decoder</td>
-<td>1-2 s (OpenCV 1.1-1.3 s; ffmpeg 2.0 s including process start-up)</td>
+<td>1-2 s (depends on your decoder and host performance)</td>
 </tr>
 <tr>
 <td>Resolution / rate / bitrate</td>
-<td>1280 × 720, ~30-32 fps per camera (30.9 fps measured over 6 s, no slow-down in the second half), ~2.8 Mbps; both windows at once are fine</td>
+<td>1280 × 720, ~30 fps per camera, ~2.8 Mbps; running both at once is no problem</td>
 </tr>
 </tbody>
 </table>
-<p>The SDK does not decode anything itself, so CPU cost here is your OpenCV
-decoder: on a desktop this is a few percent per camera.</p>
+<p>The SDK does not decode anything itself, so the CPU cost comes from your own OpenCV
+decoder: on a desktop this is typically a few percent per camera.</p>
 <h3 id="6-no-picture">6. No picture?<a class="headerlink" href="#6-no-picture" title="Permanent link">&para;</a></h3>
 <table>
 <thead>

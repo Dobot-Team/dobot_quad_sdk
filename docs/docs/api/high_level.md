@@ -721,15 +721,15 @@ and `StreamEvent` (the callback argument). Errors raise `VideoError` and its sub
   means calling `close()` twice; a single `close()` leaves the stream running and emits no event -
   that is the counting, not a failure.
 - **The first frame takes 1-2 seconds.** The address `open()` returns is ready to play, but your
-  own decoder still has to do the RTSP handshake and buffering: measured 1-2 s to the first frame
-  (OpenCV 1.1-1.3 s), then a steady ~30 fps and ~2.8 Mbps.
+  own decoder still has to do the RTSP handshake and buffering: expect 1-2 s before the first
+  frame appears, then a steady ~30 fps and ~2.8 Mbps.
 - **The stream may already be running.** If the camera is already pushing (for example
   the phone app is watching), `open()` adopts that stream instead of starting a new one -
-  but only after `bytes_recv` has been seen to **grow** between two samples (measured
+  but only after `bytes_recv` has been seen to **grow** between two samples (typically
   ~0.3 s), so a stream that merely has a producer is not taken for granted.
 - **A stuck stream is never adopted.** Right after `stop_stream()` the streaming service may
   still list a producer that is closing down (`bytes_recv` is a historical value and no longer
-  grows). `open()` does not borrow it: it issues its own `start` (measured ~0.5 s) rather than
+  grows). `open()` does not borrow it: it issues its own `start` (typically ~0.5 s) rather than
   handing your player an address that answers 404.
 - **`close()` never cuts somebody else's picture.** It stops the stream only when no
   other watcher (phone app, player) is left; use `stop_stream()` to force it.

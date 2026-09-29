@@ -229,20 +229,20 @@ python3 two_cameras.py 192.168.5.2:50051 30      # address, seconds
 Both cameras appear in two windows; the program exits by itself after the given
 number of seconds, or immediately when you press `q` / `ESC`.
 
-### 5. What to expect (measured, wired connection)
+### 5. What to expect (wired connection)
 
-| Step | Measured |
+| Step | Expected |
 | ---- | -------- |
-| `open(CameraId.FRONT_RGB)` (cold start, the SDK opens the stream) | ~0.5 s (521 ms measured), returns `rtsp://<ip>:8554/camera1` |
-| `open(CameraId.REAR_RGB)` | 0.1-0.5 s, returns `rtsp://<ip>:8554/camera2` |
-| `open()` on a stream that is already running *and carrying data* (e.g. the app is watching) | ~0.3 s (295 ms measured): `bytes_recv` has to **grow** between two samples before a stream counts as running |
-| `open()` right after `stop_stream()` (leftover stream that no longer grows) | ~0.5 s (519 ms measured): the leftover stream is **not** adopted, the SDK issues its own `start` first |
-| Opening the same camera again | < 1 ms (reference count only - call `close()` as many times) |
-| First frame in your own decoder | 1-2 s (OpenCV 1.1-1.3 s; ffmpeg 2.0 s including process start-up) |
-| Resolution / rate / bitrate | 1280 × 720, ~30-32 fps per camera (30.9 fps measured over 6 s, no slow-down in the second half), ~2.8 Mbps; both windows at once are fine |
+| `open(CameraId.FRONT_RGB)` (cold start, the SDK opens the stream) | ~0.5 s, returns `rtsp://<ip>:8554/camera1` |
+| `open(CameraId.REAR_RGB)` | ~0.1-0.5 s, returns `rtsp://<ip>:8554/camera2` |
+| `open()` on a stream that is already running *and carrying data* (e.g. the app is watching) | ~0.3 s: `bytes_recv` has to **grow** between two samples before a stream counts as running |
+| `open()` right after `stop_stream()` (leftover stream that no longer grows) | ~0.5 s: the leftover stream is **not** adopted, the SDK issues its own `start` first |
+| Opening the same camera again | Milliseconds (reference count only - call `close()` as many times) |
+| First frame in your own decoder | 1-2 s (depends on your decoder and host performance) |
+| Resolution / rate / bitrate | 1280 × 720, ~30 fps per camera, ~2.8 Mbps; running both at once is no problem |
 
-The SDK does not decode anything itself, so CPU cost here is your OpenCV
-decoder: on a desktop this is a few percent per camera.
+The SDK does not decode anything itself, so the CPU cost comes from your own OpenCV
+decoder: on a desktop this is typically a few percent per camera.
 
 ### 6. No picture?
 
