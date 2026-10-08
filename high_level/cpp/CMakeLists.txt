@@ -109,5 +109,17 @@ target_link_libraries(e9_combo_sequence PRIVATE proto_lib)
 add_executable(e10_config_demo e10_config_demo.cpp)
 target_link_libraries(e10_config_demo PRIVATE proto_lib)
 
+add_executable(e11_led_control e11_led_control.cpp)
+target_link_libraries(e11_led_control PRIVATE proto_lib)
+
+# ---------------------------------------------------------------------------
+# robot.video - wireless camera video (header-only, no extra dependency)
+#
+# Pure headers: POSIX sockets plus std::thread, no grpc / protobuf. There is no
+# library to link; e12 needs the gRPC client and threads, nothing else.
+# ---------------------------------------------------------------------------
+add_executable(e12_video_stream e12_video_stream.cpp)
+target_link_libraries(e12_video_stream PRIVATE proto_lib Threads::Threads)
+
 add_executable(kill_robot kill_robot.cpp)
 target_link_libraries(kill_robot PRIVATE proto_lib)

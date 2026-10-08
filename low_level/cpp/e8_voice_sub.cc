@@ -1,17 +1,18 @@
 /**
- * VoiceState Subscription Example (e9)
+ * VoiceState Subscription and Recording Example (E8)
  *
- * Functionality: Subscribe to `rt/voice/state` topic and receive audio stream data.
+ * Subscribe to the robot's microphone audio stream (rt/voice/state) and
+ * display received audio data information.
  *
  * Compilation:
- *   g++ -o e9_voice_sub e9_voice_sub.cc \
+ *   g++ -o e8_voice_sub e8_voice_sub.cc \
  *       -I/path/to/dds/include \
  *       -I/path/to/dds_middleware/include \
  *       -L/path/to/dds/lib \
  *       -lddscxx -lstdc++
  *
  * Usage:
- *   ./e9_voice_sub
+ *   ./e8_voice_sub
  */
 
 #include <iostream>

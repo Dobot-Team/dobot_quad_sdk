@@ -25,6 +25,11 @@ cd high_level/cpp/build
 ./e1_get_available_motions
 ```
 
+相机示例也在同一目录（`./e12_video_stream --pull`）。视频功能是纯头文件：在
+`robot_client.h` 旁边再 include 一个 `video/video_client.h`，链接时加
+`Threads::Threads` 即可，详见
+[视频流获取](../api/high_level.zh.md#15)。
+
 ## 三、运行底层示例
 
 !!! note "需要 DDS 环境"

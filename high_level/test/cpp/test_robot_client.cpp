@@ -20,6 +20,7 @@
 #include <gtest/gtest.h>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 
 // ==========================================================================
 // §1  make_request — request builder
@@ -341,3 +342,118 @@ TEST(BalanceValueClamp, HeightClampedToNeg010) {
   val = std::max(-0.10f, std::min(0.0f, 0.05f));
   EXPECT_FLOAT_EQ(val, 0.0f);
 }
+
+// ==========================================================================
+// §12  LED types and helpers
+// ==========================================================================
+
+TEST(LegLedConfig, Defaults) {
+  robot::LegLedConfig cfg;
+  EXPECT_EQ(cfg.r, 0);
+  EXPECT_EQ(cfg.g, 0);
+  EXPECT_EQ(cfg.b, 0);
+  EXPECT_EQ(cfg.brightness, -1);
+}
+
+TEST(Leg, EnumValuesMatchProto) {
+  EXPECT_EQ(static_cast<int>(robot::Leg::FL), grpc_comm::LEG_FL);
+  EXPECT_EQ(static_cast<int>(robot::Leg::FR), grpc_comm::LEG_FR);
+  EXPECT_EQ(static_cast<int>(robot::Leg::RL), grpc_comm::LEG_RL);
+  EXPECT_EQ(static_cast<int>(robot::Leg::RR), grpc_comm::LEG_RR);
+  EXPECT_EQ(static_cast<int>(robot::Leg::FILL_FRONT), grpc_comm::LEG_FILL_FRONT);
+  EXPECT_EQ(static_cast<int>(robot::Leg::FILL_BACK), grpc_comm::LEG_FILL_BACK);
+}
+
+TEST(LegToProto, MapsAllLegs) {
+  EXPECT_EQ(robot::leg_to_proto(robot::Leg::FL), grpc_comm::LEG_FL);
+  EXPECT_EQ(robot::leg_to_proto(robot::Leg::FR), grpc_comm::LEG_FR);
+  EXPECT_EQ(robot::leg_to_proto(robot::Leg::RL), grpc_comm::LEG_RL);
+  EXPECT_EQ(robot::leg_to_proto(robot::Leg::RR), grpc_comm::LEG_RR);
+  EXPECT_EQ(robot::leg_to_proto(robot::Leg::FILL_FRONT), grpc_comm::LEG_FILL_FRONT);
+  EXPECT_EQ(robot::leg_to_proto(robot::Leg::FILL_BACK), grpc_comm::LEG_FILL_BACK);
+}
+
+TEST(LegLightValidation, LegLightsOnly) {
+  EXPECT_TRUE(robot::is_leg_light(robot::Leg::FL));
+  EXPECT_TRUE(robot::is_leg_light(robot::Leg::RR));
+  EXPECT_FALSE(robot::is_leg_light(robot::Leg::FILL_FRONT));
+  EXPECT_FALSE(robot::is_leg_light(robot::Leg::FILL_BACK));
+}
+
+TEST(LegLightValidation, FillLightThrows) {
+  EXPECT_THROW(robot::validate_leg_light(robot::Leg::FILL_FRONT), std::invalid_argument);
+  EXPECT_THROW(robot::validate_leg_light(robot::Leg::FILL_BACK), std::invalid_argument);
+  EXPECT_NO_THROW(robot::validate_leg_light(robot::Leg::FL));
+}
+
+TEST(ScaleRgbByBrightness, BakesBrightnessIntoRgb) {
+  auto full = robot::scale_rgb_by_brightness(255, 128, 64, 255);
+  EXPECT_EQ(std::get<0>(full), 255);
+  EXPECT_EQ(std::get<1>(full), 128);
+  EXPECT_EQ(std::get<2>(full), 64);
+
+  auto zero = robot::scale_rgb_by_brightness(255, 128, 64, 0);
+  EXPECT_EQ(std::get<0>(zero), 0);
+  EXPECT_EQ(std::get<1>(zero), 0);
+  EXPECT_EQ(std::get<2>(zero), 0);
+
+  auto half = robot::scale_rgb_by_brightness(255, 0, 0, 128);
+  EXPECT_EQ(std::get<0>(half), 128);
+  EXPECT_EQ(std::get<1>(half), 0);
+  EXPECT_EQ(std::get<2>(half), 0);
+
+  auto dim = robot::scale_rgb_by_brightness(255, 0, 0, 32);
+  EXPECT_EQ(std::get<0>(dim), 32);
+}
+
+class ColorToRgbTest : public ::testing::TestWithParam<
+    std::tuple<robot::Color, uint8_t, uint8_t, uint8_t>> {};
+
+TEST_P(ColorToRgbTest, ReturnsExpectedRgb) {
+  auto color = std::get<0>(GetParam());
+  auto expected_r = std::get<1>(GetParam());
+  auto expected_g = std::get<2>(GetParam());
+  auto expected_b = std::get<3>(GetParam());
+  auto rgb = robot::color_to_rgb(color);
+  EXPECT_EQ(std::get<0>(rgb), expected_r);
+  EXPECT_EQ(std::get<1>(rgb), expected_g);
+  EXPECT_EQ(std::get<2>(rgb), expected_b);
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    AllColors, ColorToRgbTest,
+    ::testing::Values(
+        std::make_tuple(robot::Color::OFF, 0, 0, 0),
+        std::make_tuple(robot::Color::RED, 255, 0, 0),
+        std::make_tuple(robot::Color::ORANGE, 255, 165, 0),
+        std::make_tuple(robot::Color::YELLOW, 255, 255, 0),
+        std::make_tuple(robot::Color::GREEN, 0, 255, 0),
+        std::make_tuple(robot::Color::CYAN, 0, 255, 255),
+        std::make_tuple(robot::Color::BLUE, 0, 0, 255),
+        std::make_tuple(robot::Color::PURPLE, 128, 0, 128),
+        std::make_tuple(robot::Color::WHITE, 255, 255, 255)));
+
+// ==========================================================================
+// §13  Deprecated API — choreo() / set_choreo() compatibility aliases
+//
+// v1.3.0 renamed the ``choreo`` state to ``gongxi``. The old names are kept as
+// forwarding aliases marked [[deprecated]] so that v1.2.0 client code keeps
+// compiling and behaves like gongxi(). They cannot be *called* from here
+// because they need a live gRPC channel (see the file header note), so this
+// section pins the public signatures instead.
+// ==========================================================================
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
+TEST(DeprecatedChoreoAlias, SignaturesStillExist) {
+  static_assert(
+      std::is_same<decltype(&robot::Client::choreo), bool (robot::Client::*)(bool)>::value,
+      "choreo(bool) must remain as a deprecated alias of gongxi()");
+  static_assert(
+      std::is_same<decltype(&robot::Client::set_choreo), bool (robot::Client::*)(bool)>::value,
+      "set_choreo(bool) must remain as a deprecated alias of set_gongxi()");
+  SUCCEED();
+}
+
+#pragma GCC diagnostic pop

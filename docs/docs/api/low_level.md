@@ -75,10 +75,14 @@ Subscribe to compressed RGB color image data from the robot camera.
 
 #### Topic
 
-| Topic Name                           | Message Type      | Description                 |
-| ------------------------------------ | ----------------- | --------------------------- |
-| `rt/camera/camera2/image_compressed` | `CompressedImage` | Compressed RGB image(front) |
-| `rt/camera/camera3/image_compressed` | `CompressedImage` | Compressed RGB image(back)  |
+| Topic Name                           | Message Type      | Description                                  |
+| ------------------------------------ | ----------------- | -------------------------------------------- |
+| `rt/camera/camera0/image_compressed` | `CompressedImage` | Compressed RGB image (front camera)          |
+| `rt/camera/camera1/image_compressed` | `CompressedImage` | Compressed RGB image (rear camera)           |
+| `rt/camera/camera2/image_compressed` | `CompressedImage` | Compressed RGB image (front depth camera)    |
+| `rt/camera/camera3/image_compressed` | `CompressedImage` | Compressed RGB image (rear depth camera)     |
+
+> See [Robot Outline](../getting-started/robot_outline.md) for the mapping between camera numbers and physical positions.
 
 #### Image Saving
 
@@ -167,10 +171,12 @@ qos_config = {
 
 #### Topic
 
-| Topic Name                      | Message Type | Description            |
-| ------------------------------- | ------------ | ---------------------- |
-| `rt/camera/camera2/image_depth` | `Image`      | Raw depth image(front) |
-| `rt/camera/camera3/image_depth` | `Image`      | Raw depth image(back)  |
+| Topic Name                      | Message Type | Description                            |
+| ------------------------------- | ------------ | -------------------------------------- |
+| `rt/camera/camera2/image_depth` | `Image`      | Raw depth image (front depth camera, 16UC1) |
+| `rt/camera/camera3/image_depth` | `Image`      | Raw depth image (rear depth camera, 16UC1)  |
+
+> `camera0` / `camera1` are RGB-only cameras with no depth output.
 
 #### Depth Image Visualization
 
@@ -276,7 +282,7 @@ cd high_level/cpp/build
 ./kill_robot 192.168.5.2:50051
 ```
 
-The `kill_robot` tool will safely switch the robot to PASSIVE state and terminate controller processes. See [shutdown section](../../getting-started/quickstart/#safety-shutdown-robot-controller) for details.
+The `kill_robot` tool will safely switch the robot to PASSIVE state and terminate controller processes. See [shutdown section](../../getting-started/quickstart/#important-shutdown-robot-controller) for details.
 
 #### QoS Configuration
 
@@ -304,7 +310,6 @@ qos_config = {
 | `leg_light3`  | Leg light 3  | -                                            |
 | `leg_light4`  | Leg light 4  | -                                            |
 | `fill_light1` | Front light  | Illumination light at the front of the robot |
-| `fill_light2` | Fill light 2 | Currently unavailable                        |
 | `fill_light3` | Rear light   | Illumination light at the rear of the robot  |
 
 #### Sample Code
@@ -469,14 +474,18 @@ Get status data for all 16 motors directly from the low level, including positio
 
 #### Motor Numbering
 
-The robot has 16 motors, numbered 0-15, distributed across four legs:
+The robot has 16 motors, numbered 0-15, distributed across four legs. The legged and
+the wheel-legged models use the same numbering — the legged model simply has no motors
+`3`, `7`, `11`, `15` (the leg-end motors that drive the wheels), i.e. 12 motors:
 
-| Leg         | Motor IDs      |
-| ----------- | -------------- |
-| Front Left  | 0, 1, 2, 3     |
-| Front Right | 4, 5, 6, 7     |
-| Rear Left   | 8, 9, 10, 11   |
-| Rear Right  | 12, 13, 14, 15 |
+| Leg         | Wheel-legged   | Legged (point-foot) |
+| ----------- | -------------- | ------------------- |
+| Front Left  | 0, 1, 2, 3     | 0, 1, 2             |
+| Front Right | 4, 5, 6, 7     | 4, 5, 6             |
+| Rear Left   | 8, 9, 10, 11   | 8, 9, 10            |
+| Rear Right  | 12, 13, 14, 15 | 12, 13, 14          |
+
+See [Robot Outline](../getting-started/robot_outline.md) for the numbered figure.
 
 #### Sample Code
 
@@ -771,7 +780,7 @@ The `kill_robot` tool will safely:
 2. ⏱️ Wait **5 seconds** to ensure safe shutdown
 3. 🚫 Terminate all controller processes
 
-For details, see: [shutdown section](../../getting-started/quickstart/#safety-shutdown-robot-controller)
+For details, see: [shutdown section](../../getting-started/quickstart/#important-shutdown-robot-controller)
 
 #### 🛡️ Pre-Execution Checklist
 

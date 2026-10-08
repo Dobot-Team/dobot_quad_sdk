@@ -2,6 +2,43 @@ syntax = "proto3";
 
 package grpc_comm;
 
+enum LegName {
+    LEG_UNKNOWN = 0;
+    LEG_FL = 1;          
+    LEG_FR = 2;         
+    LEG_RL = 3;          
+    LEG_RR = 4;         
+    LEG_FILL_FRONT = 5;  
+    LEG_FILL_BACK = 6;  
+}
+
+message LedCommand {
+    LegName leg = 1;
+    uint32 brightness = 2;  
+    uint32 r = 3;
+    uint32 g = 4;
+    uint32 b = 5;
+}
+
+
+message SetLedsRequest {
+    repeated LedCommand commands = 1;
+}
+
+message SetLedsResponse {
+    bool accepted = 1;
+    string message = 2;
+}
+
+message ResetLedsRequest {
+    repeated LegName legs = 1; 
+}
+
+message ResetLedsResponse {
+    bool accepted = 1;
+    string message = 2;
+}
+
 message Parameter {
   string key = 1;
   oneof value {
@@ -113,4 +150,6 @@ service gRPCService {
   rpc SetSpeedRatio(SetSpeedRatioRequest) returns (SetSpeedRatioResponse);
   rpc SetObstacleAvoidance(SetObstacleAvoidanceRequest)
       returns (SetObstacleAvoidanceResponse);
+  rpc SetLeds(SetLedsRequest) returns (SetLedsResponse);
+  rpc ResetLeds(ResetLedsRequest) returns (ResetLedsResponse);
 }

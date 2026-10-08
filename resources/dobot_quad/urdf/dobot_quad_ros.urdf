@@ -59,7 +59,7 @@
     </collision>
   </link>
   <joint name="joint_front_left_abad" type="revolute">
-    <origin rpy="0 0 0" xyz="0.2525 0.07 0"/>
+    <origin rpy="0 0 0" xyz="0.2525 0.062 0"/>
     <parent link="link_trunk"/>
     <child link="link_front_left_hip"/>
     <axis xyz="1 0 0"/>
@@ -92,7 +92,7 @@
     </collision>
   </link>
   <joint name="joint_front_left_thigh_pitch" type="revolute">
-    <origin rpy="0 0 0" xyz="0.0  0.08895 0.0"/>
+    <origin rpy="0 0 0" xyz="0.0  0.097 0.0"/>
     <parent link="link_front_left_hip"/>
     <child link="link_front_left_thigh"/>
     <axis xyz="0 1 0"/>
@@ -177,7 +177,7 @@
     </collision>
   </link>
   <joint name="joint_front_right_abad" type="revolute">
-    <origin rpy="0 0 0" xyz="0.2525 -0.07 0"/>
+    <origin rpy="0 0 0" xyz="0.2525 -0.062 0"/>
     <parent link="link_trunk"/>
     <child link="link_front_right_hip"/>
     <axis xyz="1 0 0"/>
@@ -210,7 +210,7 @@
     </collision>
   </link>
   <joint name="joint_front_right_thigh_pitch" type="revolute">
-    <origin rpy="0 0 0" xyz="0.0  -0.08895 0.0"/>
+    <origin rpy="0 0 0" xyz="0.0  -0.097 0.0"/>
     <parent link="link_front_right_hip"/>
     <child link="link_front_right_thigh"/>
     <axis xyz="0 1 0"/>
@@ -295,7 +295,7 @@
     </collision>
   </link>
   <joint name="joint_rear_left_abad" type="revolute">
-    <origin rpy="0 0 0" xyz="-0.2525 0.07 0"/>
+    <origin rpy="0 0 0" xyz="-0.2525 0.062 0"/>
     <parent link="link_trunk"/>
     <child link="link_rear_left_hip"/>
     <axis xyz="1 0 0"/>
@@ -328,7 +328,7 @@
     </collision>
   </link>
   <joint name="joint_rear_left_thigh_pitch" type="revolute">
-    <origin rpy="0 0 0" xyz="-0.0  0.08895 0.0"/>
+    <origin rpy="0 0 0" xyz="-0.0  0.097 0.0"/>
     <parent link="link_rear_left_hip"/>
     <child link="link_rear_left_thigh"/>
     <axis xyz="0 1 0"/>
@@ -413,7 +413,7 @@
     </collision>
   </link>
   <joint name="joint_rear_right_abad" type="revolute">
-    <origin rpy="0 0 0" xyz="-0.2525 -0.07 0"/>
+    <origin rpy="0 0 0" xyz="-0.2525 -0.062 0"/>
     <parent link="link_trunk"/>
     <child link="link_rear_right_hip"/>
     <axis xyz="1 0 0"/>
@@ -446,7 +446,7 @@
     </collision>
   </link>
   <joint name="joint_rear_right_thigh_pitch" type="revolute">
-    <origin rpy="0 0 0" xyz="-0.0  -0.08895 0.0"/>
+    <origin rpy="0 0 0" xyz="-0.0  -0.097 0.0"/>
     <parent link="link_rear_right_hip"/>
     <child link="link_rear_right_thigh"/>
     <axis xyz="0 1 0"/>

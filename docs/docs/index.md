@@ -38,3 +38,24 @@ Does NOT depend on the main control program. Direct hardware access.
 - **Real-time Communication** - Low-latency data transmission
 - **Cross-Platform** - Supports x86_64 and ARM64 architectures
 - **Comprehensive Examples** - Ready-to-use example programs
+
+## 3. Robot Overview
+
+<!-- Product photo: the numbered top view of the wheel-legged model. The legged model
+     shares the same numbering (see getting-started/robot_outline.md). -->
+<img src="assets/wheel_back.jpg" alt="Top view with the motor numbers" style="max-width: 620px;" />
+
+The robot carries **4 camera modules** - 2 RGB cameras (front and rear, both
+streamable) and 2 depth cameras - plus **12 joint motors** (16 on the
+wheel-legged variant) and one RGB light per leg.
+
+| Part | What the SDK offers |
+| ---- | ------------------- |
+| Front / rear RGB camera | `robot.video.open()` returns an RTSP address ([Typical Scenarios](scenarios.md)) |
+| Depth cameras | not streamed; only available through the low-level DDS topics |
+| Leg lights | `set_legs_rgb()` / `set_leg_color()` in the high-level API |
+| Joint motors | low-level DDS commands, motor indices are listed in [Robot Outline](getting-started/robot_outline.md) |
+
+Numbering (camera `camera0..3`, motor `0..15`) and its mapping to physical
+positions are explained in [Robot Outline](getting-started/robot_outline.md).
+

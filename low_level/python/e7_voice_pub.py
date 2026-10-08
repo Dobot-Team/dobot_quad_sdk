@@ -1,12 +1,27 @@
 #!/usr/bin/env python3
 """
-Voice Command Publisher
+Voice Command Publisher (E7)
 
-Supports two modes:
-1. file mode: publish a local audio file path once
-2. streaming mode: capture audio from microphone in real-time and publish
+Publish audio to the robot's speaker via DDS. Supports two modes:
+1. file mode: play an audio file stored on the robot (requires file path on robot)
+2. streaming mode: capture audio from local microphone in real-time and stream to robot
+
+Usage:
+  python e7_voice_pub.py file <path_on_robot>          # Play a file on the robot
+  python e7_voice_pub.py streaming                      # Stream from local microphone
+
+Examples:
+  python e7_voice_pub.py file /home/dobot/assets/demo.wav
+  python e7_voice_pub.py streaming
+
+Notes:
+  - In file mode, the path must be accessible on the robot's filesystem.
+  - In streaming mode, you need a working microphone (arecord on Linux).
+  - Supported audio formats for file mode: WAV, FLAC, MP3, OGG (depends on robot firmware).
+  - DDS discovery typically takes 100-1000ms; the script waits 1s before first publish.
 """
 
+import os
 import sys
 import subprocess
 import time
@@ -74,7 +89,17 @@ def make_header():
 
 
 def main():
-    mode = sys.argv[1] if len(sys.argv) > 1 else "file"
+    if len(sys.argv) < 2:
+        print("Usage: python e7_voice_pub.py <mode> [args]")
+        print("  Modes:")
+        print("    file <path_on_robot>            Play an audio file on the robot")
+        print("    streaming                       Stream audio from local microphone")
+        print("  Example:")
+        print("    python e7_voice_pub.py file /home/dobot/assets/demo.wav")
+        print("    python e7_voice_pub.py streaming")
+        sys.exit(1)
+
+    mode = sys.argv[1]
 
     middleware = dds.PyDDSMiddleware(0)
     qos_config = {
@@ -88,23 +113,30 @@ def main():
     print(f"Mode: {mode}, QoS: RELIABLE, KEEP_LAST(5), VOLATILE")
 
     if mode == "file":
-        file_path = "/root/test2.flac"
+        if len(sys.argv) < 3:
+            print("Error: file mode requires a path argument.")
+            print("  python e7_voice_pub.py file <path_on_robot>")
+            sys.exit(1)
+
+        file_path = sys.argv[2]
 
         voice_cmd = dds.VoiceCmd()
         voice_cmd.header(make_header())
-        voice_cmd.priority(dds.VoicePriority.kNormal)  # kNormal: ordinary audio file
+        voice_cmd.priority(dds.VoicePriority.kNormal)
         voice_cmd.task_id("e7_voice_pub")
         voice_cmd.type("file")
         voice_cmd.path(file_path)
         voice_cmd.data([])
-        voice_cmd.flag(False)  # stream-end flag, unused in file mode
+        voice_cmd.flag(False)
 
-        time.sleep(1)  # wait for DDS discovery
+        print("Waiting for DDS discovery (1s)...")
+        time.sleep(1)
         middleware.publishVoiceCmd(voice_cmd)
         print(f"Published VoiceCmd (file): {voice_cmd.path()}")
 
     elif mode == "streaming":
         print("Streaming mode: capture and publish from microphone (low-latency)")
+        print("Press Ctrl+C to stop...")
 
         capture_thread = AudioCaptureThread(chunk_duration_ms=100)
         capture_thread.start()
@@ -118,23 +150,24 @@ def main():
 
                 voice_cmd = dds.VoiceCmd()
                 voice_cmd.header(make_header())
-                voice_cmd.priority(dds.VoicePriority.kNormal)  # kNormal: ordinary audio stream
+                voice_cmd.priority(dds.VoicePriority.kNormal)
                 voice_cmd.task_id("e7_voice_pub")
                 voice_cmd.type("streaming")
                 voice_cmd.path("")
                 voice_cmd.data(list(audio))
-                voice_cmd.flag(False)  # False: stream not finished yet
+                voice_cmd.flag(False)
 
                 middleware.publishVoiceCmd(voice_cmd)
                 print(f"Published VoiceCmd (streaming): {len(voice_cmd.data())} bytes")
 
         except KeyboardInterrupt:
-            print("Stopping streaming...")
+            print("\nStopping streaming...")
         finally:
             capture_thread.stop()
 
     else:
-        print("Unknown mode, use 'file' or 'streaming'")
+        print(f"Unknown mode '{mode}'. Use 'file' or 'streaming'.")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

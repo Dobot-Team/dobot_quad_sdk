@@ -1,17 +1,17 @@
 # Robot Client Test Suite
 
-单元测试覆盖 `dobot_quad/robot_client.py` 和 `robot_client.h` 的全部公开 API。
-
+单元测试覆盖 `dobot_quad/robot_client.py` 和 `robot_client.h` 的全部公开 API。  
 ## 运行方式
 
-### Python
+### Python 单元测试
 ```bash
 cd high_level/test/python
 pip install pytest grpcio grpcio-tools
 pytest -v
 ```
 
-### C++ (需要 gRPC 和 GTest)
+
+### C++ 单元测试 (需要 gRPC 和 GTest)
 ```bash
 cd high_level/test/cpp
 mkdir build && cd build
@@ -29,7 +29,8 @@ ctest --output-on-failure
 | RPC 参数构造 | `execute`, `line_walk`, `velocity_sequence`, `balance_sequence` 的 proto 构造正确性 | ❌ Mock |
 | 查询接口 | `get_state`, `get_motions`, `get_speed_ratio`, `get_obstacle_avoidance` 的返回值 | ❌ Mock |
 | 状态切换 | `passive`/`emergency`/`ready` 等状态方法 + `change_mode` | ❌ Mock |
-| 集成测试 | 完整流程 (connect → motion → verify state) | ✅ 需要服务端 |
+| LED 单元测试 | `test_led.py` 对 SetLeds/ResetLeds 的 mock 断言 | ❌ Mock |
+| 腿灯联调 | `led_joint_test` 连续控灯 / 颜色 / 亮度 / reset 人眼判定 | ✅ 真机或 mock |
 
 ## 文件清单
 
@@ -43,11 +44,14 @@ ctest --output-on-failure
 | `test_execution.py` | 11 | `execute` 单/多动作、元组参数、`make_velocity_string`、`velocity_sequence` (gait, stand_down_after) |
 | `test_state_switching.py` | 18+ | `set_target_state`、预定义状态（含 emergency/ready）、积木别名、`change_mode`、已移除方法检查 |
 | `test_locomotion.py` | 8 | `line_walk`、4 个方向快捷方法、speed_ratio 保存/恢复 |
-| `test_rotation.py` | 20+ | `rotate` 方向/角度钳位、`circle` 圈数钳位、`rotate_walk` 角度+距离双钳位、左右阈值 |
+| `test_rotation.py` | 20+ | `rotate` 方向/角度钳位、`circle` 圈数钳位、`rotate_walk` 角度+距离双钳位、左右快捷 |
 | `test_balance.py` | 12 | `balance_pitch/yaw/roll/height/neutral`（value/duration/mode）、`balance_sequence` 批量、`dynamic_pose`、`dance` |
+| `test_led.py` | 25+ | `set_legs_rgb`/`set_leg_rgb`/`set_leg_color`/`set_leg_brightness`/`set_all_legs_*`/`turn_off_leg`/`reset_legs`、RGB 校验、缓存行为、RPC 错误 |
+| `led_joint_test.py` | 交互联调 | TC-CONT/CTRL/COLOR/BRI/RST 等；不跑 pytest |
 
 ### C++ (`test/cpp/`)
 | 文件 | 用例数 | 覆盖内容 |
 |---|---|---|
-| `CMakeLists.txt` | — | CMake 配置 (FetchContent GoogleTest) |
-| `test_robot_client.cpp` | 40+ | `make_request` 默认值、`set_param` 三类型、`VelocityStep`/`BalanceMotion` 结构体（value/duration/mode）、`make_velocity_string` 序列化、5 组参数钳位 (speed_ratio, angle, turns, distance, duration)、方向校验、balance value 钳位 |
+| `CMakeLists.txt` | — | CMake 配置 (FetchContent GoogleTest) + `led_joint_test` 目标 |
+| `test_robot_client.cpp` | 50+ | `make_request` 默认值、`set_param` 三类型、`VelocityStep`/`BalanceMotion` 结构体（value/duration/mode）、`make_velocity_string` 序列化、5 组参数钳位 (speed_ratio, angle, turns, distance, duration)、方向校验、balance value 钳位、`LegLedConfig`/`Leg`/`Color`/`color_to_rgb`/`leg_to_proto`/`scale_rgb_by_brightness` |
+| `led_joint_test.cpp` | 交互联调 | 与 Python `led_joint_test.py` 对称；不进 ctest |

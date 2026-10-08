@@ -79,3 +79,20 @@ target_link_libraries(test_robot_client PRIVATE
 
 include(GoogleTest)
 gtest_discover_tests(test_robot_client)
+
+# ---------------------------------------------------------------------------
+# Interactive LED joint-test harness (needs real robot / mock gRPC server)
+# Not registered with ctest — run manually:
+#   ./led_joint_test 127.0.0.1:50051 --suite cont
+# ---------------------------------------------------------------------------
+add_executable(led_joint_test led_joint_test.cpp)
+target_link_libraries(led_joint_test PRIVATE test_proto_lib)
+
+# ---------------------------------------------------------------------------
+# robot.video（C++，控制面）离线自检：开流等「有数据在流」+ 自愈 + 关闭决策。
+# 由 test/cpp/run_video_mock_check.py 启动 mock 服务端后运行（不需要机器人）：
+#   python3 run_video_mock_check.py
+# ---------------------------------------------------------------------------
+add_executable(video_mock_check video_mock_check.cpp)
+target_include_directories(video_mock_check PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../cpp")
+target_link_libraries(video_mock_check PRIVATE Threads::Threads)

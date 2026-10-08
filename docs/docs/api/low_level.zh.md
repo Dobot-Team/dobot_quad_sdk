@@ -75,10 +75,14 @@ DDS 的 QoS (Quality of Service) 配置决定了数据传输的可靠性和性�
 
 #### 订阅话题
 
-| 话题名称                             | 消息类型          | 说明                    |
-| ------------------------------------ | ----------------- | ----------------------- |
-| `rt/camera/camera2/image_compressed` | `CompressedImage` | 压缩的 RGB 图像（前置） |
-| `rt/camera/camera3/image_compressed` | `CompressedImage` | 压缩的 RGB 图像（后置） |
+| 话题名称                             | 消息类型          | 说明                                     |
+| ------------------------------------ | ----------------- | ---------------------------------------- |
+| `rt/camera/camera0/image_compressed` | `CompressedImage` | 压缩的 RGB 图像（前置相机）              |
+| `rt/camera/camera1/image_compressed` | `CompressedImage` | 压缩的 RGB 图像（后置相机）              |
+| `rt/camera/camera2/image_compressed` | `CompressedImage` | 压缩的 RGB 图像（前置深度相机的 RGB 图） |
+| `rt/camera/camera3/image_compressed` | `CompressedImage` | 压缩的 RGB 图像（后置深度相机的 RGB 图） |
+
+> 相机编号与本体位置的对应关系见《[本体图](../getting-started/robot_outline.md)》。
 
 #### 图像保存功能
 
@@ -135,7 +139,9 @@ Received RGB CompressedImage:
   Timestamp: 1706000000.123456789 (sec.nanosec)
   Frame ID: camera2_optical_frame
   Format: jpeg
-  Data size: 45678 bytesSaved raw image to rgb_images/rgb_1706000000_123456789.png---
+  Data size: 45678 bytes
+Saved raw image to rgb_images/rgb_1706000000_123456789.png
+---
   ...
 ```
 
@@ -167,10 +173,12 @@ qos_config = {
 
 #### 订阅话题
 
-| 话题名称                        | 消息类型 | 说明                 |
-| ------------------------------- | -------- | -------------------- |
-| `rt/camera/camera2/image_depth` | `Image`  | 原始深度图像（前置） |
-| `rt/camera/camera3/image_depth` | `Image`  | 原始深度图像（后置） |
+| 话题名称                        | 消息类型 | 说明                                   |
+| ------------------------------- | -------- | -------------------------------------- |
+| `rt/camera/camera2/image_depth` | `Image`  | 原始深度图像（前置深度相机，16UC1）    |
+| `rt/camera/camera3/image_depth` | `Image`  | 原始深度图像（后置深度相机，16UC1）    |
+
+> `camera0` / `camera1` 为纯 RGB 相机，无深度输出。
 
 #### 深度图像可视化
 
@@ -305,7 +313,6 @@ qos_config = {
 | `leg_light3`  | 腿部灯 3 | -                  |
 | `leg_light4`  | 腿部灯 4 | -                  |
 | `fill_light1` | 前照灯   | 机器人前方的照明灯 |
-| `fill_light2` | 补光灯 2 | 暂未开放功能       |
 | `fill_light3` | 后照灯   | 机器人后方的照明灯 |
 
 #### 示例代码
@@ -472,14 +479,17 @@ python3 e4_imu_state_sub.py
 
 #### 电机编号
 
-机器人有 16 个电机，编号 0-15，分布在四条腿上（点足式四足机器狗只有12个电机）：
+机器人有 16 个电机，编号 0-15，分布在四条腿上。点足与轮足**编号完全一致**——点足只是
+没有 `3`、`7`、`11`、`15` 这四个（轮足上驱轮的足端电机），即 12 个电机：
 
-| 腿部   | 电机编号       |
-| ------ | -------------- |
-| 前左腿 | 0, 1, 2, 3     |
-| 前右腿 | 4, 5, 6, 7     |
-| 后左腿 | 8, 9, 10, 11   |
-| 后右腿 | 12, 13, 14, 15 |
+| 腿部   | 轮足           | 点足        |
+| ------ | -------------- | ----------- |
+| 前左腿 | 0, 1, 2, 3     | 0, 1, 2     |
+| 前右腿 | 4, 5, 6, 7     | 4, 5, 6     |
+| 后左腿 | 8, 9, 10, 11   | 8, 9, 10    |
+| 后右腿 | 12, 13, 14, 15 | 12, 13, 14  |
+
+带编号的本体图见[本体图](../getting-started/robot_outline.zh.md)。
 
 #### 示例代码
 

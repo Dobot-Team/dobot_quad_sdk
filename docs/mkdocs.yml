@@ -1,5 +1,8 @@
 site_name: Dobot Quad SDK
-site_url: https://dobot-quad-sdk.readthedocs.io/
+# 故意不设置 site_url：本仓库只维护一份「用户本地双击即可打开」的静态手册，
+# 不用于对外发布站点（线上文档由公司文档站统一托管）。
+# 一旦设置 site_url，mkdocs 会为每一页生成指向该外站的 canonical，并把它写进
+# sitemap.xml，反而会让搜索引擎把本仓库/文档站的内容判为重复内容。
 repo_url: https://github.com/Dobot-Team/dobot_quad_sdk
 edit_uri: edit/main/docs/
 copyright: Copyright &copy; 2026 Dobot. All rights reserved.
@@ -52,6 +55,8 @@ plugins:
             Getting Started: 快速开始
             Installation: 安装指南
             Quick Start: 快速入门
+            Robot Outline: 本体图
+            Scenarios: 典型场景
             API Reference: API 参考
             High-Level API: 高层 API
             Low-Level API: 底层 API
@@ -90,6 +95,8 @@ nav:
   - Getting Started:
     - Installation: getting-started/installation.md
     - Quick Start: getting-started/quickstart.md
+    - Robot Outline: getting-started/robot_outline.md
+  - Scenarios: scenarios.md
   - API Reference:
     - High-Level API: api/high_level.md
     - Low-Level API: api/low_level.md

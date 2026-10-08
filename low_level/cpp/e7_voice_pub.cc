@@ -86,7 +86,18 @@ private:
 
 int main(int argc, char** argv)
 {
-    std::string mode = (argc > 1) ? argv[1] : "file"; // "file" or "streaming"
+    if (argc < 2) {
+        std::cout << "Usage: " << argv[0] << " <mode> [args]" << std::endl;
+        std::cout << "  Modes:" << std::endl;
+        std::cout << "    file <path_on_robot>            Play an audio file on the robot" << std::endl;
+        std::cout << "    streaming                       Stream audio from local microphone" << std::endl;
+        std::cout << "  Example:" << std::endl;
+        std::cout << "    " << argv[0] << " file /home/dobot/assets/demo.wav" << std::endl;
+        std::cout << "    " << argv[0] << " streaming" << std::endl;
+        return 1;
+    }
+
+    std::string mode = argv[1];
 
     auto middleware = std::make_shared<DDSMiddleware>(0);
 
@@ -101,7 +112,12 @@ int main(int argc, char** argv)
     std::cout << "Mode: " << mode << ", QoS: RELIABLE, KEEP_LAST(5), VOLATILE" << std::endl;
 
     if (mode == "file") {
-        std::string file_path = "/root/test2.flac";
+        if (argc < 3) {
+            std::cerr << "Error: file mode requires a path argument." << std::endl;
+            std::cerr << "  " << argv[0] << " file <path_on_robot>" << std::endl;
+            return 1;
+        }
+        std::string file_path = argv[2];
 
         VoiceCmd_ voice_cmd;
         fill_header(voice_cmd);
@@ -112,7 +128,8 @@ int main(int argc, char** argv)
         voice_cmd.data().clear();
         voice_cmd.flag(false); // stream-end flag, unused in file mode
 
-        std::this_thread::sleep_for(std::chrono::seconds(1)); // wait for DDS discovery
+        std::cout << "Waiting for DDS discovery (1s)..." << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         publisher->publish(voice_cmd);
         std::cout << "Published VoiceCmd (file): " << voice_cmd.path() << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1)); // let the sample flush before exit

@@ -22,8 +22,15 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <map>
+#include <memory>
+#include <tuple>
 
 namespace robot {
+
+namespace video {
+class Manager; // robot.video (camera video streaming), see video/video_client.h
+} // namespace video
 
 class Client; // Forward declaration for detail::g_safety_client
 
@@ -106,8 +113,8 @@ inline float clamp_angle(float a)
 }
 
 /// Clamp angle to [-180, 180] degrees for rotate_walk.
-/// Negative angles represent clockwise (right turn).
-/// Positive angles represent counter-clockwise (left turn).
+/// Negative angles represent counter-clockwise (left turn).
+/// Positive angles represent clockwise (right turn).
 inline float clamp_angle_signed(float a)
 {
     return std::max(-180.0f, std::min(180.0f, a));
@@ -185,6 +192,100 @@ struct BalanceMotion
     std::string mode = "dynamic"; ///< "dynamic" or "static"
 };
 
+/// Leg and fill-light identifiers (maps to proto LegName).
+enum class Leg {
+    FL = 1,          ///< Front-left leg light
+    FR = 2,          ///< Front-right leg light
+    RL = 3,          ///< Rear-left leg light
+    RR = 4,          ///< Rear-right leg light
+    FILL_FRONT = 5,  ///< Front fill light
+    FILL_BACK = 6    ///< Rear fill light
+};
+
+/// Predefined LED colors for convenience (maps to RGB via color_to_rgb).
+enum class Color {
+    OFF,
+    RED,
+    ORANGE,
+    YELLOW,
+    GREEN,
+    CYAN,
+    BLUE,
+    PURPLE,
+    WHITE
+};
+
+/// Per-leg RGB and brightness entry for batch SetLeds requests.
+struct LegLedConfig {
+    Leg leg;
+    uint8_t r = 0;         ///< Red channel [0, 255]
+    uint8_t g = 0;         ///< Green channel [0, 255]
+    uint8_t b = 0;         ///< Blue channel [0, 255]
+    int brightness = -1;   ///< Brightness [0, 255]; -1 keeps cached value
+};
+
+/// Convert a predefined Color to an (r, g, b) tuple.
+inline std::tuple<uint8_t, uint8_t, uint8_t> color_to_rgb(Color color)
+{
+    switch (color) {
+        case Color::RED:    return {255, 0, 0};
+        case Color::ORANGE: return {255, 165, 0};
+        case Color::YELLOW: return {255, 255, 0};
+        case Color::GREEN:  return {0, 255, 0};
+        case Color::CYAN:   return {0, 255, 255};
+        case Color::BLUE:   return {0, 0, 255};
+        case Color::PURPLE: return {128, 0, 128};
+        case Color::WHITE:  return {255, 255, 255};
+        case Color::OFF:    return {0, 0, 0};
+        default: return {0, 0, 0};
+    }
+}
+
+/// Convert a Leg enum value to the corresponding proto LegName.
+inline grpc_comm::LegName leg_to_proto(Leg leg)
+{
+    switch (leg) {
+        case Leg::FL: return grpc_comm::LEG_FL;
+        case Leg::FR: return grpc_comm::LEG_FR;
+        case Leg::RL: return grpc_comm::LEG_RL;
+        case Leg::RR: return grpc_comm::LEG_RR;
+        case Leg::FILL_FRONT: return grpc_comm::LEG_FILL_FRONT;
+        case Leg::FILL_BACK: return grpc_comm::LEG_FILL_BACK;
+        default: throw std::invalid_argument("Invalid Leg");
+    }
+}
+
+/// Return true if @p leg is one of the four main leg lights (FL/FR/RL/RR).
+inline bool is_leg_light(Leg leg)
+{
+    return leg == Leg::FL || leg == Leg::FR || leg == Leg::RL || leg == Leg::RR;
+}
+
+/// Reject fill lights for leg-LED set APIs.
+inline void validate_leg_light(Leg leg)
+{
+    if (!is_leg_light(leg)) {
+        throw std::invalid_argument(
+            "Leg LED set APIs only support FL, FR, RL, RR; "
+            "fill lights (FILL_FRONT/FILL_BACK) are not supported");
+    }
+}
+
+/// Bake brightness into RGB for hardware that ignores the brightness field.
+/// channel' = round(channel * brightness / 255). Logical RGB stays in cache.
+inline std::tuple<uint8_t, uint8_t, uint8_t> scale_rgb_by_brightness(
+    uint8_t r, uint8_t g, uint8_t b, uint8_t brightness)
+{
+    if (brightness >= 255)
+        return {r, g, b};
+    if (brightness == 0)
+        return {0, 0, 0};
+    auto scale = [brightness](uint8_t c) -> uint8_t {
+        return static_cast<uint8_t>((static_cast<unsigned>(c) * brightness + 127u) / 255u);
+    };
+    return {scale(r), scale(g), scale(b)};
+}
+
 // ---------------------------------------------------------------------------
 // Client: one-stop wrapper for the gRPC service
 // ---------------------------------------------------------------------------
@@ -198,11 +299,44 @@ public:
         // Seed local state from server, then ensure OA is on.
         // We track these locally because GetRobotState is eventually
         // consistent and may return stale values right after a Set* RPC.
+        // 视频子系统需要裸 IP（RTSP :8554 / go2rtc :1984 / GControll :22000）
+        {
+            const auto colon = addr.rfind(':');
+            video_host_ = colon == std::string::npos ? addr : addr.substr(0, colon);
+        }
         auto res = get_state();
         speed_ratio_ = res.success() ? res.current_speed_ratio() : 50;
         obstacle_avoidance_ = true;
         // set_obstacle_avoidance(true);
     }
+
+    // =====================================================================
+    // Camera Video Streaming (robot.video)
+    // =====================================================================
+
+    /// Camera video streaming (robot.video).
+    ///
+    /// Independent of motion control: video goes over RTSP, not through the gRPC
+    /// channel, so big media packets never hold up your motion commands. The
+    /// object is created on first use, so programs that do not use the camera
+    /// pay nothing for it.
+    ///
+    /// The SDK only switches the stream on and watches it: open() blocks until
+    /// data is really flowing and returns an RTSP address; pulling, decoding and
+    /// muxing are up to your own player.
+    ///
+    /// \code
+    ///   std::string uri = client.video().open(robot::video::CameraId::FrontRgb);
+    ///   // hand uri to ffplay / OpenCV / GStreamer
+    ///   client.video().close_all();
+    /// \endcode
+    ///
+    /// \note Include ``video/video_client.h`` to call this method; it is the
+    ///       only extra header the video feature adds to this one. Programs
+    ///       that never call video() do not compile the video code at all.
+    ///       Forgetting it fails at link time with
+    ///       ``undefined reference to `robot::Client::video()'``.
+    video::Manager& video();
 
     // =====================================================================
     // Core RPC: Query
@@ -438,8 +572,14 @@ public:
     bool rl(bool sp = true) { return set_target_state_with_delay_("rl", 2, sp); }
     bool set_flying_trot(bool sp = true) { return set_target_state_with_delay_("flying_trot", 2, sp); }
     bool flying_trot(bool sp = true) { return set_target_state_with_delay_("flying_trot", 2, sp); }
-    bool set_choreo(bool sp = true) { return set_target_state_with_delay_("choreo", 2, sp); }
-    bool choreo(bool sp = true) { return set_target_state_with_delay_("choreo", 2, sp); }
+    bool set_gongxi(bool sp = true) { return set_target_state_with_delay_("gongxi", 11.5, sp); }
+    bool gongxi(bool sp = true) { return set_target_state_with_delay_("gongxi", 11.5, sp); }
+    /// \deprecated The state was renamed to gongxi() in v1.3.0. Kept as a
+    ///             forwarding alias so v1.2.0 client code keeps working.
+    [[deprecated("choreo() has been renamed to gongxi(), use gongxi() instead")]]
+    bool set_choreo(bool sp = true) { return set_gongxi(sp); }
+    [[deprecated("choreo() has been renamed to gongxi(), use gongxi() instead")]]
+    bool choreo(bool sp = true) { return gongxi(sp); }
     bool set_dance0(bool sp = true) { return dance0(sp); }
     bool dance0(bool sp = true) { return dance0(13, sp); }
     bool dance0(int duration_sec, bool sp = true)
@@ -482,6 +622,53 @@ public:
         req.mutable_sequence()->add_motions()->set_motion_id("change_mode");
         return execute(req, show_progress);
     }
+
+    // =====================================================================
+    // Choreography Atomic Actions (MINI_QUAD only)
+    // =====================================================================
+
+    /// Trigger a choreography atomic action by name (case-insensitive).
+    /// The server handles any state switching the action needs and returns
+    /// to WALK when the action finishes; on success this call sleeps through
+    /// the action duration plus a settle margin.
+    /// @throws std::invalid_argument if the action name is unknown.
+    bool atomic_action(const std::string& action, bool show_progress = true)
+    {
+        // Post-trigger sleep: action duration + ~1s settle margin.
+        static const std::map<std::string, double> post_sleep_sec = {
+            {"twirl_jump", 2.0},  // 跳跃转体 (mimic, 0.7s)
+            {"diag_step", 7.0},   // 对角迈步 (mimic, 5.9s)
+            {"hop_step", 4.0},    // 前腿蹦跳迈步 (mimic, 3.0s)
+            {"groove", 9.0},      // 摇摆律动 (8s)
+            {"bounce", 7.0},      // 点头弹跳 (6s)
+            {"body_wave", 9.0},   // 身体波浪 (8s)
+            {"hip_circle", 9.0},  // 扭屁股/臀画圆 (8s)
+            {"head_circle", 9.0}, // 扭头/头画圆 (8s)
+        };
+        std::string norm = action;
+        std::transform(norm.begin(), norm.end(), norm.begin(), ::tolower);
+        auto it = post_sleep_sec.find(norm);
+        if (it == post_sleep_sec.end())
+            throw std::invalid_argument("Unknown atomic action '" + action + "'");
+        return set_target_state_with_delay_(norm, it->second, show_progress);
+    }
+
+    bool set_twirl_jump(bool sp = true) { return atomic_action("twirl_jump", sp); }
+    bool twirl_jump(bool sp = true) { return atomic_action("twirl_jump", sp); }
+    bool set_diag_step(bool sp = true) { return atomic_action("diag_step", sp); }
+    bool diag_step(bool sp = true) { return atomic_action("diag_step", sp); }
+    bool set_hop_step(bool sp = true) { return atomic_action("hop_step", sp); }
+    bool hop_step(bool sp = true) { return atomic_action("hop_step", sp); }
+    bool set_groove(bool sp = true) { return atomic_action("groove", sp); }
+    bool groove(bool sp = true) { return atomic_action("groove", sp); }
+    bool set_bounce(bool sp = true) { return atomic_action("bounce", sp); }
+    bool bounce(bool sp = true) { return atomic_action("bounce", sp); }
+    bool set_body_wave(bool sp = true) { return atomic_action("body_wave", sp); }
+    bool body_wave(bool sp = true) { return atomic_action("body_wave", sp); }
+    bool set_hip_circle(bool sp = true) { return atomic_action("hip_circle", sp); }
+    bool hip_circle(bool sp = true) { return atomic_action("hip_circle", sp); }
+    bool set_head_circle(bool sp = true) { return atomic_action("head_circle", sp); }
+    bool head_circle(bool sp = true) { return atomic_action("head_circle", sp); }
 
     // =====================================================================
     // State Switching – MINI_QUAD_WHEEL (轮足) wrappers
@@ -715,10 +902,10 @@ public:
 
     /// Dynamic pose: composite sinusoidal sweep on all axes simultaneously.
     /// @param duration    Duration in seconds [1, 5].
-    /// @param roll_deg    Roll target in degrees [-30, 30], 0 = no motion.
-    /// @param pitch_deg   Pitch target in degrees [-15, 15], 0 = no motion.
-    /// @param yaw_deg     Yaw target in degrees [-20, 20], 0 = no motion.
-    /// @param height_m    Height delta in meters [-0.12, 0], 0 = no motion.
+    /// @param roll_deg    Roll target in degrees [-17.0, 17.0], 0 = no motion.
+    /// @param pitch_deg   Pitch target in degrees [-11.5, 11.5], 0 = no motion.
+    /// @param yaw_deg     Yaw target in degrees [-11.5, 11.5], 0 = no motion.
+    /// @param height_m    Height delta in meters [-0.08, 0], 0 = no motion.
     bool dynamic_pose(float duration, float roll_deg = 0, float pitch_deg = 0, float yaw_deg = 0, float height_m = 0,
         bool show_progress = true)
     {
@@ -727,14 +914,256 @@ public:
 
     /// Static pose: ramp to target, hold for duration, ramp back.
     /// @param duration    Hold duration in seconds [1, 5].
-    /// @param roll_deg    Roll target in degrees [-30, 30], 0 = no motion.
-    /// @param pitch_deg   Pitch target in degrees [-15, 15], 0 = no motion.
-    /// @param yaw_deg     Yaw target in degrees [-20, 20], 0 = no motion.
-    /// @param height_m    Height delta in meters [-0.12, 0], 0 = no motion.
+    /// @param roll_deg    Roll target in degrees [-17.0, 17.0], 0 = no motion.
+    /// @param pitch_deg   Pitch target in degrees [-11.5, 11.5], 0 = no motion.
+    /// @param yaw_deg     Yaw target in degrees [-11.5, 11.5], 0 = no motion.
+    /// @param height_m    Height delta in meters [-0.08, 0], 0 = no motion.
     bool static_pose(float duration, float roll_deg = 0, float pitch_deg = 0, float yaw_deg = 0, float height_m = 0,
         bool show_progress = true)
     {
         return pose_motion_("static_pose", duration, roll_deg, pitch_deg, yaw_deg, height_m, show_progress);
+    }
+
+
+    // =====================================================================
+    // Core RPC: Leg LED Control
+    // =====================================================================
+
+    /// Batch-set RGB and brightness for leg lights FL/FR/RL/RR (single RPC).
+    ///
+    /// Current-version rule (all-or-nothing user control): every SetLeds always
+    /// carries all four main legs in FL/FR/RL/RR order.
+    ///   - Legs present in @p configs use the given RGB/brightness.
+    ///   - Legs already in the client cache are resent unchanged (supports
+    ///     incremental APIs such as set_leg_brightness).
+    ///   - Legs never set in this session are padded as RGB=0 (off).
+    ///
+    /// Brightness is baked into wire RGB (channel * brightness / 255). Wire
+    /// brightness is always sent as 255 (firmware often ignores that field and
+    /// may mishandle brightness==0). Client cache keeps logical RGB + bri.
+    ///
+    /// Fill lights (FILL_FRONT/FILL_BACK) are rejected. Duplicate legs in
+    /// @p configs: last entry wins.
+    /// @param configs            Per-leg color/brightness entries.
+    /// @param default_brightness Fallback when config.brightness == -1; uses
+    ///                           cache or 255 if unset.
+    /// @param verbose            Dump full command list and status messages.
+    /// @return true if the server accepted the request, false on RPC error.
+    bool set_legs_rgb(const std::vector<LegLedConfig>& configs,
+                      int default_brightness = -1,
+                      bool verbose = false)
+    {
+        if (configs.empty())
+            return true;
+
+        static const Leg kMainLegs[] = {
+            Leg::FL, Leg::FR, Leg::RL, Leg::RR
+        };
+
+        // Resolve explicit overrides (last duplicate wins).
+        std::map<Leg, std::tuple<uint8_t, uint8_t, uint8_t, uint8_t>> explicit_cmds;
+        for (const auto& cfg : configs) {
+            validate_leg_light(cfg.leg);
+
+            if (cfg.r > 255 || cfg.g > 255 || cfg.b > 255) {
+                throw std::invalid_argument("RGB values must be 0-255");
+            }
+
+            uint8_t final_brightness;
+            if (cfg.brightness >= 0) {
+                final_brightness = static_cast<uint8_t>(std::max(0, std::min(255, cfg.brightness)));
+            } else if (default_brightness >= 0) {
+                final_brightness = static_cast<uint8_t>(std::max(0, std::min(255, default_brightness)));
+            } else {
+                auto it = led_cache_.find(cfg.leg);
+                if (it != led_cache_.end()) {
+                    final_brightness = std::get<0>(it->second);
+                } else {
+                    final_brightness = 255;
+                }
+            }
+
+            explicit_cmds[cfg.leg] = std::make_tuple(
+                final_brightness, cfg.r, cfg.g, cfg.b);
+        }
+
+        grpc_comm::SetLedsRequest req;
+        auto leg_label = [](Leg leg) -> const char* {
+            switch (leg) {
+                case Leg::FL: return "FL";
+                case Leg::FR: return "FR";
+                case Leg::RL: return "RL";
+                case Leg::RR: return "RR";
+                default: return "?";
+            }
+        };
+
+        if (verbose) {
+            std::cout << "[LED] SetLeds commands (4):" << std::endl;
+        }
+
+        for (Leg leg : kMainLegs) {
+            uint8_t bri, r, g, b;
+            const char* source;
+            auto ex = explicit_cmds.find(leg);
+            if (ex != explicit_cmds.end()) {
+                bri = std::get<0>(ex->second);
+                r = std::get<1>(ex->second);
+                g = std::get<2>(ex->second);
+                b = std::get<3>(ex->second);
+                source = "explicit";
+            } else {
+                auto it = led_cache_.find(leg);
+                if (it != led_cache_.end()) {
+                    bri = std::get<0>(it->second);
+                    r = std::get<1>(it->second);
+                    g = std::get<2>(it->second);
+                    b = std::get<3>(it->second);
+                    source = "cache";
+                } else {
+                    bri = 255;
+                    r = g = b = 0;
+                    source = "pad-off";
+                }
+            }
+
+            led_cache_[leg] = std::make_tuple(bri, r, g, b);
+
+            auto wire = scale_rgb_by_brightness(r, g, b, bri);
+            const uint8_t wire_r = std::get<0>(wire);
+            const uint8_t wire_g = std::get<1>(wire);
+            const uint8_t wire_b = std::get<2>(wire);
+            // Always 255 on the wire: dimming is conveyed solely via scaled RGB.
+            const uint8_t wire_brightness = 255;
+
+            auto* cmd = req.add_commands();
+            cmd->set_leg(leg_to_proto(leg));
+            cmd->set_brightness(wire_brightness);
+            cmd->set_r(wire_r);
+            cmd->set_g(wire_g);
+            cmd->set_b(wire_b);
+
+            if (verbose) {
+                std::cout << "  " << leg_label(leg)
+                          << ": logical rgb(" << static_cast<int>(r) << ","
+                          << static_cast<int>(g) << "," << static_cast<int>(b)
+                          << ") bri=" << static_cast<int>(bri)
+                          << " -> wire rgb(" << static_cast<int>(wire_r) << ","
+                          << static_cast<int>(wire_g) << "," << static_cast<int>(wire_b)
+                          << ") brightness=" << static_cast<int>(wire_brightness)
+                          << " [" << source << "]" << std::endl;
+            }
+        }
+
+        grpc::ClientContext ctx;
+        grpc_comm::SetLedsResponse res;
+        auto st = stub_->SetLeds(&ctx, req, &res);
+        if (!st.ok() || !res.accepted()) {
+            if (verbose)
+                std::cerr << "[LED] SetLeds rejected: " << res.message() << std::endl;
+            return false;
+        }
+        if (verbose) {
+            std::cout << "[LED] Batch accepted." << std::endl;
+        }
+        return true;
+    }
+
+    /// Set RGB for a single leg light (FL/FR/RL/RR only).
+    /// @param brightness  [0, 255]; -1 keeps the cached brightness (default 255).
+    bool set_leg_rgb(Leg leg, uint8_t r, uint8_t g, uint8_t b,
+                     int brightness = -1, bool verbose = false)
+    {
+        return set_legs_rgb({{leg, r, g, b, brightness}}, -1, verbose);
+    }
+
+    /// Set a predefined color on a single leg (brightness from cache).
+    bool set_leg_color(Leg leg, Color color, bool verbose = false)
+    {
+        auto rgb = color_to_rgb(color);
+        return set_leg_rgb(leg, std::get<0>(rgb), std::get<1>(rgb), std::get<2>(rgb),
+                           -1, verbose);
+    }
+
+    /// Adjust brightness only; hue is taken from the client cache (white if unset).
+    bool set_leg_brightness(Leg leg, uint8_t brightness, bool verbose = false)
+    {
+        uint8_t r, g, b;
+        auto it = led_cache_.find(leg);
+        if (it != led_cache_.end()) {
+            r = std::get<1>(it->second);
+            g = std::get<2>(it->second);
+            b = std::get<3>(it->second);
+        } else {
+            r = g = b = 255;  // default white
+        }
+        return set_leg_rgb(leg, r, g, b, brightness, verbose);
+    }
+
+    /// Set all four main leg lights (FL/FR/RL/RR) to the same RGB.
+    bool set_all_legs_rgb(uint8_t r, uint8_t g, uint8_t b,
+                          uint8_t brightness = 255, bool verbose = false)
+    {
+        std::vector<LegLedConfig> configs = {
+            {Leg::FL, r, g, b, static_cast<int>(brightness)},
+            {Leg::FR, r, g, b, static_cast<int>(brightness)},
+            {Leg::RL, r, g, b, static_cast<int>(brightness)},
+            {Leg::RR, r, g, b, static_cast<int>(brightness)}
+        };
+        return set_legs_rgb(configs, -1, verbose);
+    }
+
+    /// Set all four main leg lights to a predefined color.
+    bool set_all_legs_color(Color color, uint8_t brightness = 255, bool verbose = false)
+    {
+        auto rgb = color_to_rgb(color);
+        return set_all_legs_rgb(std::get<0>(rgb), std::get<1>(rgb), std::get<2>(rgb),
+                                brightness, verbose);
+    }
+
+    /// Turn a leg light off (RGB=0) while keeping user control and cached brightness.
+    bool turn_off_leg(Leg leg, bool verbose = false)
+    {
+        uint8_t brightness = 255;
+        auto it = led_cache_.find(leg);
+        if (it != led_cache_.end())
+            brightness = std::get<0>(it->second);
+        return set_leg_rgb(leg, 0, 0, 0, brightness, verbose);
+    }
+
+    /// Release LED control to the robot's default logic.
+    /// @param legs  Legs to reset; empty vector resets all legs and fill lights.
+    bool reset_legs(const std::vector<Leg>& legs = {}, bool verbose = false)
+    {
+        grpc_comm::ResetLedsRequest req;
+        for (auto leg : legs) {
+            req.add_legs(leg_to_proto(leg));
+        }
+        // empty legs => server resets all
+
+        grpc::ClientContext ctx;
+        grpc_comm::ResetLedsResponse res;
+        auto st = stub_->ResetLeds(&ctx, req, &res);
+        if (!st.ok() || !res.accepted()) {
+            if (verbose)
+                std::cerr << "ResetLeds rejected: " << res.message() << std::endl;
+            return false;
+        }
+
+        // Clear cache for reset legs (or all if none specified)
+        if (legs.empty()) {
+            led_cache_.clear();
+        } else {
+            for (auto leg : legs) {
+                led_cache_.erase(leg);
+            }
+        }
+
+        if (verbose) {
+            std::cout << "Reset " << (legs.empty() ? "all" : std::to_string(legs.size()))
+                      << " leg(s) control." << std::endl;
+        }
+        return true;
     }
 
     /// Raw stub access for advanced usage.
@@ -745,11 +1174,11 @@ private:
     // Internal helpers
     // =====================================================================
 
-    bool set_target_state_with_delay_(const std::string& state, int delay_sec, bool show_progress)
+    bool set_target_state_with_delay_(const std::string& state, double delay_sec, bool show_progress)
     {
         bool ok = set_target_state(state, show_progress);
         if (ok) {
-            std::this_thread::sleep_for(std::chrono::seconds(delay_sec));
+            std::this_thread::sleep_for(std::chrono::duration<double>(delay_sec));
         }
         return ok;
     }
@@ -829,7 +1258,10 @@ private:
     std::unique_ptr<grpc_comm::gRPCService::Stub> stub_;
     int speed_ratio_ = 50;           ///< Last-known speed ratio from Set RPC response
     bool obstacle_avoidance_ = true; ///< Last-known OA state from Set RPC response
+    std::string video_host_;                        ///< 裸 IP（视频子系统用）
+    std::shared_ptr<video::Manager> video_manager_; ///< robot.video（懒加载）
     std::string robot_type_;         ///< Cached robot type from GetRobotState
+    std::map<Leg, std::tuple<uint8_t, uint8_t, uint8_t, uint8_t>> led_cache_;
 };
 
 // =========================================================================

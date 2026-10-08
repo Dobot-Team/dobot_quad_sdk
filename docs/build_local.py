@@ -97,6 +97,21 @@ def main():
     print(">>> Fixing absolute paths for local file browsing...")
     count = fix_absolute_paths(site_dir)
     print(f">>> Done. Fixed {count} file(s).")
+
+    # Step 3: Drop the sitemap.
+    # This repo ships a local manual that users open by double-clicking index.html,
+    # not a published site, so a sitemap has no consumer. Without site_url mkdocs
+    # writes the literal string "None" as the URL prefix (producing an invalid
+    # sitemap), and with site_url it advertises a site this repo does not own.
+    removed = []
+    for name in ("sitemap.xml", "sitemap.xml.gz"):
+        path = os.path.join(site_dir, name)
+        if os.path.exists(path):
+            os.remove(path)
+            removed.append(name)
+    if removed:
+        print(f">>> Removed {', '.join(removed)} (local manual needs no sitemap).")
+
     print(f">>> Open {os.path.join(site_dir, 'index.html')} in your browser.")
 
 
