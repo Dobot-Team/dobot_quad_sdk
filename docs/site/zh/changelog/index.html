@@ -1111,6 +1111,7 @@
 <ul>
 <li><strong><code>choreo()</code> 更名为 <code>gongxi()</code></strong>：原 <code>choreo</code> 状态统一更名为 <code>gongxi</code>（恭喜），更准确反映动作语义；增加了 11.5 秒触发后等待。<strong>旧名称保留可用</strong>：Python <code>RobotClient.choreo()</code>、C++ <code>Client::choreo()</code> / <code>Client::set_choreo()</code> 均转发到 <code>gongxi()</code> 并发出废弃告警；<code>set_target_state("choreo")</code> 也会自动映射到 <code>gongxi</code>。</li>
 <li><strong>URDF 模型文件</strong>：更新了点足和轮足构型的机器人模型定义。</li>
+<li><strong>内置 DDS 中间件包更新</strong>：<code>dist/</code> 内置包由 <code>0.23.3</code> 升级为 <code>0.25.11</code>（<code>amd64</code> / <code>arm64</code> 的 <code>dds-middleware-with-thirdparty</code> deb 包，以及 CPython 3.10 的 <code>x86_64</code> / <code>aarch64</code> wheel），内置消息类型与当前机器人固件一致。</li>
 </ul>
 <h3 id="_6">文档修复<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
 <ul>
