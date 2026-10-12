@@ -1117,6 +1117,7 @@ address; it never decodes frames, so no media dependency is added.</p>
 <ul>
 <li><strong>Renamed <code>choreo()</code> → <code>gongxi()</code></strong>: The <code>choreo</code> state has been renamed to <code>gongxi</code> to better reflect the motion semantics. Added 11.5s post-trigger delay. <strong>The old name keeps working for backward compatibility</strong>: Python <code>RobotClient.choreo()</code>, C++ <code>Client::choreo()</code> and <code>Client::set_choreo()</code> now forward to <code>gongxi()</code> and emit a deprecation warning; <code>set_target_state("choreo")</code> is also accepted and mapped to <code>gongxi</code>.</li>
 <li><strong>URDF model files</strong>: Updated robot model definitions for legged and wheel-legged variants.</li>
+<li><strong>Bundled DDS middleware updated</strong>: <code>dist/</code> now ships <code>0.25.11</code> (<code>dds-middleware-with-thirdparty</code> Debian packages for <code>amd64</code> / <code>arm64</code>, plus CPython 3.10 wheels for <code>x86_64</code> / <code>aarch64</code>), replacing <code>0.23.3</code>. The bundled message types now match the current robot firmware.</li>
 </ul>
 <h3 id="documentation-fixes">Documentation Fixes<a class="headerlink" href="#documentation-fixes" title="Permanent link">&para;</a></h3>
 <ul>

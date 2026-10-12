@@ -42,6 +42,7 @@
 
 - **`choreo()` 更名为 `gongxi()`**：原 `choreo` 状态统一更名为 `gongxi`（恭喜），更准确反映动作语义；增加了 11.5 秒触发后等待。**旧名称保留可用**：Python `RobotClient.choreo()`、C++ `Client::choreo()` / `Client::set_choreo()` 均转发到 `gongxi()` 并发出废弃告警；`set_target_state("choreo")` 也会自动映射到 `gongxi`。
 - **URDF 模型文件**：更新了点足和轮足构型的机器人模型定义。
+- **内置 DDS 中间件包更新**：`dist/` 内置包由 `0.23.3` 升级为 `0.25.11`（`amd64` / `arm64` 的 `dds-middleware-with-thirdparty` deb 包，以及 CPython 3.10 的 `x86_64` / `aarch64` wheel），内置消息类型与当前机器人固件一致。
 
 ### 文档修复
 
